@@ -18,6 +18,13 @@ async function loadJson(url) {
   throw new Error(response.status);
 }
 
+// activateThemeElement(id, type) {
+//   `${type}.list__item[data-state=selected]`
+//   if (type === 'themes') {
+
+//   }
+// }
+
 /* Todo: Refactor these to functions into one */
 function activateThemeElement(id) {
   const current = document.querySelector('#themes .list__item[data-state=selected]')

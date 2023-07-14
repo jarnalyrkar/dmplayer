@@ -17,6 +17,8 @@
             <span><?= $song->name; ?></span>
             <div>
               <button class="action-button" data-action="play">&#10148;</button>
+              <input type="file" id="new-file">
+              <label class="action-button" data-action="add-file" for="new-file">+</label>
               <button class="action-button" data-action="delete">-</button>
             </div>
           </div>
@@ -37,7 +39,7 @@
             </ul>
           <?php else : ?>
             <ul>
-              <li>Please add files to this preset</li>
+              <li>Please add audio files to this preset</li>
             </ul>
           <?php endif; ?>
         </li>

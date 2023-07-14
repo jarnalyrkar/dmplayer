@@ -25,6 +25,10 @@ input {
   color: inherit;
 }
 
+input[type=file] {
+  display: none;
+}
+
 input[type=button], button {
   cursor: pointer;
 }
