@@ -1,0 +1,124 @@
+* {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+html {
+  font-size: 18px;
+}
+
+body {
+  background-color: rgb(26, 15, 7);
+  color: white;
+}
+
+h1,h2,h3 {
+  margin-block: unset;
+}
+
+ul {
+  list-style: none;
+  padding-left: unset;
+  margin-block: unset;
+}
+
+input {
+  font-size: 1rem;
+  color: inherit;
+}
+
+input[type=button], button {
+  cursor: pointer;
+}
+
+::placeholder {
+  color: rgb(153, 107, 21);
+  opacity: 1;
+}
+
+main {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  &__label {
+    display: block;
+    flex: 100%;
+  }
+  &__input {
+    background-color:rgb(64, 37, 18);
+    border: 1px solid rgb(97, 56, 27);
+    outline: none;
+    padding: .5rem 1rem;
+    flex: 1;
+  }
+}
+
+.action-button {
+  background-color:rgb(64, 37, 18);
+  border: 1px solid rgb(97, 56, 27);
+  color: white;
+  padding: .5rem 1rem;
+  transition: background-color 300ms, transform 200ms;
+  &:hover {
+    background-color: rgb(174, 100, 48);
+  }
+  &:active {
+    transform: rotate(5deg);
+  }
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+.tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.files {
+  padding-left: 1rem;
+  &__file {
+    display: flex;
+    align-items: center;
+    & :first-child {
+      flex: 1;
+    }
+  }
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  &__item {
+    display: flex;
+    gap: .5rem;
+    & input[type=button] {
+      background-color: rgb(64, 37, 18);
+      color: white;
+      border: 1px solid rgb(97, 56, 27);
+      padding: .5rem 1rem;
+      flex: 1;
+      text-align: start;
+      transition: background-color 300ms, transform 200ms;
+      white-space: break-spaces;
+      &:hover {
+        background-color:rgb(174, 100, 48);
+      }
+      &:active {
+        transform: rotate(1deg);
+      }
+    }
+    &[data-state=selected] {
+      & input[type=button] {
+        color: #333;
+        border: 1px solid rgb(97, 56, 27);
+        background-color: goldenrod;
+      }
+    }
+  }
+}
