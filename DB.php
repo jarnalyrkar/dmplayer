@@ -1,5 +1,8 @@
 <?php
-define('TYPE', [['music' => 1], ['effect' => 2]]);
+define('TYPE', [
+  'music' => 1,
+  'effect' => 2
+]);
 
 class DB {
   protected $pdo;
@@ -15,7 +18,7 @@ class DB {
   public function get_themes() {
     $query = $this->pdo->query("SELECT name FROM theme");
     $themes = [];
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+    while ($row = $query->fetch(PDO::FETCH_OBJ)) {
       $themes[] = $row;
     }
     return $themes;
@@ -41,8 +44,11 @@ class DB {
     ");
     $query->bindValue(':theme_id', 1); // get value during init
     $query->execute();
-    $result = $query->fetch(PDO::FETCH_ASSOC);
-    return $result;
+    $results = [];
+    while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+      $results[] = $row;
+    }
+    return $results;
   }
   public function get_last_active_preset() {
     return $this->get_setting_by_name('last_preset');
@@ -70,9 +76,10 @@ class DB {
         $query->bindValue(':type_id', $type_id); // get value during init
         $query->execute();
         $results = [];
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $query->fetch(PDO::FETCH_OBJ)) {
           $results[] = $row;
         }
+        return $results;
   }
 
   public function get_music_by_theme($theme_id) {
@@ -102,7 +109,7 @@ class DB {
     $query->bindValue(':track_id', 1);
     $query->execute();
     $results = [];
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+    while ($row = $query->fetch(PDO::FETCH_OBJ)) {
       $results[] = $row;
     }
     return $results;
@@ -113,6 +120,9 @@ class DB {
   public function delete_file($id) {}
 
   // Settings
-  private function get_setting_by_name($option) {}
+  private function get_setting_by_name($option) {
+    $query = $this->pdo->query("SELECT value FROM settings WHERE option = \"$option\"");
+    return $query->execute();
+  }
 
 }
