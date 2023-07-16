@@ -1,4 +1,6 @@
 // Constants, helpers
+const keystrokes = '1234567890abcdefghijklmnopqrstuvwxyz'.split('')
+
 function removeTags(str) {
     if ((str===null) || (str===''))
         return false;
@@ -132,7 +134,6 @@ function setEffects(theme_id) {
   parent.innerHTML = ""
   loadJson(`/api/track/get.php?theme_id=${theme_id}&type=2`).then(data => {
     if (data && data.length > 0) {
-      const keystrokes = '1234567890abcdefghijklmnopqrstuvwxyz'.split('')
       let counter = 0
       data.forEach(item => {
         const template = document.querySelector("#effect-item")
@@ -209,7 +210,7 @@ function createTrack(value, theme_id, list) {
       li.querySelector('.track-title').innerHTML = value
       // TODO: set volume
       list.append(clone)
-      // TODO: Add exlamation for "Add file to this track"
+      // TODO: Add exclamation for "Add file to this track"
       const empty = list.querySelector('.empty')
       if (empty) empty.remove()
     })
@@ -225,7 +226,10 @@ function createEffect(value, theme_id, list) {
     li.querySelector('.track-title').innerHTML = value
     // TODO: set volume
     list.append(clone)
-    // TODO: Add exlamation for "Add file to this track"
+    const keystroke = keystrokes[list.children.length - 1]
+    li.setAttribute('data-keystroke', keystroke)
+    li.querySelector('.keystroke').innerHTML = keystroke
+    // TODO: Add exclamation for "Add file to this track"
     const empty = list.querySelector('.empty')
     if (empty) empty.remove()
   })
