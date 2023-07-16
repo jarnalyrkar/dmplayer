@@ -4,8 +4,12 @@ define('TYPE', [
   'effect' => 2
 ]);
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 class DB {
-  protected $pdo;
+  public $pdo;
 
   function __construct() {
     $this->pdo = new PDO("sqlite:" . $_SERVER['DOCUMENT_ROOT'] . "/dmplayer.db");
@@ -24,7 +28,7 @@ class DB {
   public function get_themes() {
     $query = $this->pdo->query("SELECT theme_id, name FROM theme");
     $themes = [];
-    while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
       $themes[] = $row;
     }
     return $themes;
@@ -51,49 +55,51 @@ class DB {
 
   // Preset
   // Create
-  public function create_preset($name, $theme_id) {
+  public function create_preset($name, $theme_id, $current = 0) {
     // create preset
     $sql = "INSERT INTO preset (name) VALUES(:name)";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->bindValue('name', $name);
+    $stmt->bindValue(':name', $name);
     $stmt->execute();
     $preset_id = $this->pdo->lastInsertId();
 
     // add preset to theme
-    $sql = "INSERT INTO theme_preset (theme_id, preset_id) VALUES(:theme_id, :preset_id)";
+    $sql = "INSERT INTO theme_preset (theme_id, preset_id, current) VALUES(:theme_id, :preset_id, :current)";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->bindValue('theme_id', $theme_id);
-    $stmt->bindValue('preset_id', $preset_id);
+    $stmt->bindValue(':theme_id', $theme_id);
+    $stmt->bindValue(':preset_id', $preset_id);
+    $stmt->bindValue(':current', $current);
     $stmt->execute();
 
-    return $this->pdo->lastInsertId();
+    return $preset_id;
   }
   // Read
   public function get_presets_by_theme($id) {
     $query = $this->pdo->prepare("
-      SELECT preset_id, name
+      SELECT preset_id, name, current
       FROM theme_preset
       INNER JOIN preset USING(preset_id)
       WHERE theme_id = :theme_id
     ");
-    $query->bindValue(':theme_id', 1); // get value during init
+    $query->bindValue(':theme_id', $id);
     $query->execute();
     $results = [];
-    while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
       $results[] = $row;
     }
     return $results;
   }
 
   public function get_last_active_preset($theme_id) {
-    $query = $this->pdo->query("
+    $query = $this->pdo->prepare("
       SELECT preset_id
       FROM theme_preset
-      WHERE theme_id = $theme_id
+      WHERE theme_id = :theme_id
       AND current = 1
     ");
+    $query->bindValue(":theme_id", $theme_id);
     $query->execute();
-    return $query->fetch()['preset_id'];
+    return $query->fetch(PDO::FETCH_ASSOC)['preset_id'];
   }
 
   // Update
@@ -104,8 +110,10 @@ class DB {
       UPDATE theme_preset
       SET current = 0
       WHERE current = 1
+      AND theme_id = :theme_id
     ";
     $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':theme_id', $theme_id);
     $stmt->execute();
 
     // set new
@@ -116,9 +124,20 @@ class DB {
       AND preset_id = :preset_id
       ";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->bindValue(':preset_id', $preset_id);
     $stmt->bindValue(':theme_id', $theme_id);
+    $stmt->bindValue(':preset_id', $preset_id);
     $stmt->execute();
+
+    $sql = "
+      SELECT preset_id
+      FROM theme_preset
+      ORDER BY preset_id
+      DESC LIMIT 1;
+    ";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetch();
   }
   // Delete
   public function delete_preset($id) {
@@ -130,7 +149,31 @@ class DB {
 
   // Track
   // Create
-  public function create_track($name) {}
+  public function create_track($name, $theme_id, $type_id) {
+    // create track
+    $sql = "INSERT INTO track (name, type_id) VALUES(:name, :type_id)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':name', $name);
+    $stmt->bindValue(':type_id', $type_id);
+    $stmt->execute();
+    $track_id = $this->pdo->lastInsertId();
+
+    // add empty entry to track_file
+    $sql = "INSERT INTO track_file (track_id) VALUES(:track_id)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':track_id', $track_id);
+    $stmt->execute();
+    $track_file_id = $this->pdo->lastInsertId();
+
+    // add track to theme
+    $sql = "INSERT INTO theme_track (theme_id, track_file_id) VALUES(:theme_id, :track_file_id)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':theme_id', $theme_id);
+    $stmt->bindValue(':track_file_id', $track_file_id);
+    $stmt->execute();
+
+    return $track_id;
+  }
   // Read
   private function get_tracks_by_theme($theme_id, $type_id) {
     $query = $this->pdo->prepare("
@@ -141,12 +184,11 @@ class DB {
       AND type_id = :type_id
       GROUP BY track_id, type_id
     ");
-    // AND type_id = 2 for lydeffekter
-    $query->bindValue(':theme_id', $theme_id); // get value during init
-    $query->bindValue(':type_id', $type_id); // get value during init
+    $query->bindValue(':theme_id', $theme_id);
+    $query->bindValue(':type_id', $type_id);
     $query->execute();
     $results = [];
-    while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
       $results[] = $row;
     }
     return $results;
@@ -163,7 +205,17 @@ class DB {
   // Update
   public function update_track($id, $newName) {}
   // Delete
-  public function delete_track($id) {}
+  public function delete_track($id) {
+    $sql = $this->pdo->prepare("SELECT track_file_id FROM track_file WHERE track_id = $id");
+    $sql->execute();
+    $track_file_id = $sql->fetch()['track_file_id'];
+
+    $this->pdo->query("DELETE FROM theme_track WHERE track_file_id = $track_file_id");
+    $this->pdo->query("DELETE FROM track_file WHERE track_id = $id");
+    $this->pdo->query("DELETE FROM track WHERE track_id = $id");
+
+    return ["message" => $id . " is deleted"];
+  }
 
   // File
   // Create
@@ -179,7 +231,7 @@ class DB {
     $query->bindValue(':track_id', $track_id);
     $query->execute();
     $results = [];
-    while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
       $results[] = $row;
     }
     return $results;

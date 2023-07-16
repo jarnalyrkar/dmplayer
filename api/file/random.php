@@ -1,10 +1,11 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/DB.php');
 
-$data = null;
+$data = "";
 $db = new DB();
 if (isset($_GET['id'])) {
-  $data = $db->get_presets_by_theme($_GET['id']);
+  $result = $db->get_files_by_track(htmlspecialchars($_GET['id']));
+  $data = $result[random_int(0, count($result) - 1)];
 }
 
 header("Content-Type: application/json");

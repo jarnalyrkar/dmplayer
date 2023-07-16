@@ -6,12 +6,15 @@ html {
 }
 
 body {
-  background-color: rgb(26, 15, 7);
+  background-color: rgb(43, 24, 11);
   color: white;
 }
 
 h1,h2,h3 {
   margin-block: unset;
+}
+h2 {
+  margin-bottom:1rem;
 }
 
 ul {
@@ -47,9 +50,12 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: .5rem;
+  margin-bottom: 1rem;
   &__label {
     display: block;
     flex: 100%;
+    font-size: .9rem;
+    margin-bottom: -.5rem;
   }
   &__input {
     background-color:rgb(64, 37, 18);
@@ -64,14 +70,23 @@ main {
   background-color:rgb(64, 37, 18);
   border: 1px solid rgb(97, 56, 27);
   color: white;
-  padding: .5rem 1rem;
   transition: background-color 300ms, transform 200ms;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: inline-block;
+  line-height: 1;
   &:hover {
     background-color: rgb(174, 100, 48);
   }
   &:active {
     transform: rotate(5deg);
   }
+}
+
+.play-actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
 }
 
 header {
@@ -84,16 +99,80 @@ header {
   gap: 1rem;
 }
 
-.files {
-  padding-left: 1rem;
-  &__file {
-    display: flex;
-    align-items: center;
-    & :first-child {
-      flex: 1;
-    }
+.track-title {
+  color: goldenrod;
+}
+
+.track-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+}
+.volume-bar {
+  color: goldenrod;
+  display: flex;
+  gap: .5rem;
+  padding-right: .5rem;
+}
+.volume-bar-background {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.volume-bar svg {
+  width: 1.25rem;
+  height: auto;
+}
+
+.volume-bar-background::before {
+  position: absolute;
+  content: '';
+  width: 100%;
+  background-color: currentColor;
+  // border: 1px solid goldenrod;
+  height: 2px;
+  z-index: 0;
+}
+
+.volume-bar input[type="range"] {
+  appearance: none;
+  background-color: unset;
+  border: unset;
+  position: relative;
+  z-index: 1;
+  padding: unset;
+  width: 100%;
+  &::-webkit-slider-thumb,
+  &::-moz-range-thumb {
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    background: rgb(255, 200, 98);
+    box-shadow: 0 0 2px 0 #555;
+    transition: background .3s ease-in-out;
+  }
+
+  &::-webkit-slider-thumb:hover,
+  &::-moz-range-thumb:hover {
+    background: white;
+    border-radius: 0;
+  }
+
+  &::-webkit-slider-runnable-track,
+  &::-moz-range-track {
+    appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
   }
 }
+
 .list {
   display: flex;
   flex-direction: column;

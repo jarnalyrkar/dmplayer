@@ -1,53 +1,78 @@
-<section id="tracks">
+<?php
+$items = $db->get_music_by_theme($active_theme_id);
+$data_type = "track";
+$placeholder = "E.g Howling wind, Water drips, War cries";
+?>
+<section id="track">
   <header>
     <h2>Tracks</h2>
-    <div>
-      <form class="add-form">
-        <label class="add-form__label" for="theme-name">Create new Track</label>
-        <input class="add-form__input" required placeholder="E.g Howling wind, Water drips, War cries" type="text" id="theme-name">
-        <button type="button" class="action-button" id="add-track">+</button>
-      </form>
-    </div>
+    <?php include $partials . "add-form.php"; ?>
   </header>
-  <?php if (count($songs) > 0) : ?>
-    <ul class="tracks">
-      <?php foreach ($songs as $song) : ?>
-        <li data-id="<?= $song->track_id ?>" data-volume="" data-type="tracks">
+  <ul class="list">
+    <?php if (count($items) > 0): ?>
+      <?php foreach ($items as $item) : ?>
+        <li data-id="<?= $item['track_id'] ?>" data-volume="">
           <div>
-            <span><?= $song->name; ?></span>
-            <div>
-              <button class="action-button" data-action="play">&#10148;</button>
-              <input type="file" id="new-file">
-              <label class="action-button" data-action="add-file" for="new-file">+</label>
-              <button class="action-button" data-action="delete">-</button>
+            <div class="track-row">
+              <div class="track-info">
+                <span class="track-title"><?= $item['name']; ?></span>
+                <div class="volume-bar">
+                  <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
+                  <div class="volume-bar-background">
+                    <input type="range" min="0" max="100" value="75">
+                  </div>
+                </div>
+              </div>
+              <div class="play-actions">
+                <button class="action-button" data-action="play">&#10148;</button>
+                <button class="action-button" data-action="see-files">&#128065;</button>
+                <button class="action-button" data-action="delete">-</button>
+              </div>
             </div>
           </div>
-          <?php
-          $files = $db->get_files_by_track($song->track_id);
-          if (count($files) > 0) :
-          ?>
-            <ul class="files">
-              <?php foreach ($files as $file) : ?>
-                <li class="files__file" data-filename="<?= $file->filename ?>">
-                  <span><?= $file->filename ?></span>
-                  <div>
-                    <button class="action-button">&#10148;</button>
-                    <button class="action-button" data-action="delete">-</button>
-                </li>
-                </div>
-              <?php endforeach; ?>
-            </ul>
-          <?php else : ?>
-            <ul>
-              <li>Please add audio files to this preset</li>
-            </ul>
-          <?php endif; ?>
         </li>
       <?php endforeach; ?>
-    </ul>
-  <?php else : ?>
-    <ul>
-      <li>Please add a track</li>
-    </ul>
-  <?php endif; ?>
+      <?php else: ?>
+      <li class="empty">No tracks yet</li>
+    <?php endif; ?>
+  </ul>
+  <template id="track-item">
+    <li data-id="">
+      <div>
+        <div class="track-row">
+          <div class="track-info">
+            <span class="track-title"></span>
+            <div class="volume-bar">
+              <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
+              <div class="volume-bar-background">
+                <input type="range" min="0" max="100" value="75">
+              </div>
+            </div>
+          </div>
+          <div class="play-actions">
+            <button class="action-button" data-action="play">&#10148;</button>
+            <button class="action-button" data-action="see-files">&#128065;</button>
+            <button class="action-button" data-action="delete">-</button>
+          </div>
+        </div>
+      </div>
+    </li>
+  </template>
+  <template id="track-files">
+    <dialog class="track-dialog">
+      <form>
+        <input type="file" id="new-file">
+        <label class="action-button" data-action="add-file" for="new-file">Add file to track</label>
+      </form>
+      <ul class="files">
+        <li class="files__file" data-filename="">
+          <span>filename</span>
+          <div>
+            <button class="action-button">&#10148;</button>
+            <button class="action-button" data-action="delete">-</button>
+          </div>
+        </li>
+      </ul>
+    </dialog>
+  </template>
 </section>

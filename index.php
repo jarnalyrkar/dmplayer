@@ -11,8 +11,18 @@
   <?php
     $partials = $_SERVER['DOCUMENT_ROOT'] . "/partials/";
     include $partials . "setup.php";
-    include $partials . "themes.php";
-    include $partials . "presets.php";
+
+    $title = "Themes";
+    $data_type = "theme";
+    $items = $db->get_themes();
+    $placeholder = "E.g Dungeon, Airship, Mountains, Village";
+    include $partials . "section.php";
+
+    $title = "Presets";
+    $data_type = "preset";
+    $items = $db->get_presets_by_theme($active_theme_id);
+    $placeholder = "E.g Busy townsquare, Quiet Night, Execution";
+    include $partials . "section.php";
     include $partials . "tracks.php";
     include $partials . "effects.php";
     ?>

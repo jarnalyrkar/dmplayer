@@ -1,53 +1,46 @@
-<section id="tracks">
+<?php
+$items = $db->get_effects_by_theme($active_theme_id);
+$placeholder = "E.g Scream, Sword hits Metal, Fire spell";
+$data_type = "effect";
+$alphabet = range('a', 'z');
+$numbers = range(1, 9);
+$keystrokes = array_merge($numbers, $alphabet);
+$keyCounter = 0;
+?>
+<section id="effect">
   <header>
     <h2>Effects</h2>
-    <div>
-      <form class="add-form">
-        <label class="add-form__label" for="theme-name">Create new Effect</label>
-        <input class="add-form__input" required placeholder="E.g Scream, Atonal Bells, Fire spell" type="text" id="theme-name">
-        <button type="button" class="action-button" id="add-track">+</button>
-      </form>
-    </div>
+    <?php include $partials . "add-form.php"; ?>
   </header>
-  <?php if (count($effects) > 0) : ?>
-    <ul class="tracks">
-      <?php foreach ($effects as $effect) : ?>
-        <li data-id="<?= $effect->track_id ?>" data-volume="" data-type="tracks">
+  <ul class="list">
+    <?php if (count($items) > 0): ?>
+      <?php foreach ($items as $item) : ?>
+        <li data-id="<?= $item['track_id'] ?>" data-keystroke="<?= $keystrokes[$keyCounter]; ?>">
           <div>
-            <span><?= $effect->name; ?></span>
-            <div>
+            <span>[<span class="keystroke"><?= $keystrokes[$keyCounter]; ?></span>]</span> <span class="track-title"><?= $item['name']; ?></span>
+            <div class="play-actions">
               <button class="action-button" data-action="play">&#10148;</button>
-              <input type="file" id="new-file">
-              <label class="action-button" data-action="add-file" for="new-file">+</label>
+              <button class="action-button" data-action="see-files">&#128065;</button>
               <button class="action-button" data-action="delete">-</button>
             </div>
           </div>
-          <?php
-          $files = $db->get_files_by_track($effect->track_id);
-          if (count($files) > 0) :
-          ?>
-            <ul class="files">
-              <?php foreach ($files as $file) : ?>
-                <li class="files__file" data-filename="<?= $file->filename ?>">
-                  <span><?= $file->filename ?></span>
-                  <div>
-                    <button class="action-button">&#10148;</button>
-                    <button class="action-button" data-action="delete">-</button>
-                </li>
-                </div>
-              <?php endforeach; ?>
-            </ul>
-          <?php else : ?>
-            <ul>
-              <li>Please add audio files to this preset</li>
-            </ul>
-          <?php endif; ?>
         </li>
+        <?php $keyCounter++; ?>
       <?php endforeach; ?>
-    </ul>
-  <?php else : ?>
-    <ul>
-      <li>Please add a track</li>
-    </ul>
-  <?php endif; ?>
+    <?php else: ?>
+      <li class="empty">No tracks yet</li>
+    <?php endif; ?>
+  </ul>
+  <template id="effect-item">
+    <li data-id="" data-keystroke="">
+      <div>
+        <span>[<span class="keystroke"></span>]</span> <span class="track-title"></span>
+        <div class="play-actions">
+          <button class="action-button" data-action="play">&#10148;</button>
+          <button class="action-button" data-action="see-files">&#128065;</button>
+          <button class="action-button" data-action="delete">-</button>
+        </div>
+      </div>
+    </li>
+  </template>
 </section>

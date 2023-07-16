@@ -9,7 +9,6 @@
       </form>
     </div>
   </header>
-  <?php if (count($presets) > 0) : ?>
     <ul class="list">
       <?php foreach ($presets as $preset) : ?>
         <li data-preset-id="<?= $preset->preset_id; ?>" data-type="preset" class="list__item" <?= ($preset->preset_id == $active_preset_id ? 'data-state="selected"' : "") ?>>
@@ -24,7 +23,4 @@
         <button class="action-button" data-action="delete">-</button>
       </li>
     </template>
-    <?php else: ?>
-      <ul class="list"><li>Please add a preset</li></ul>
-  <?php endif; ?>
 </section>
