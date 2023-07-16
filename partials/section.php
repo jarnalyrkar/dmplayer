@@ -4,6 +4,7 @@
     <?php include $partials . "add-form.php"; ?>
   </header>
     <ul class="list">
+      <?php if (count($items) > 0): ?>
       <?php foreach ($items as $item):
         $selected = "";
         if ($data_type === "theme") {
@@ -17,6 +18,9 @@
           <button class="action-button" data-action="delete">-</button>
         </li>
       <?php endforeach; ?>
+      <?php else: ?>
+        <li class="empty">No <?= $data_type; ?>s added yet!</li>
+      <?php endif; ?>
     </ul>
     <template id="item">
       <li data-id="" class="list__item">

@@ -28,7 +28,7 @@ $keyCounter = 0;
         <?php $keyCounter++; ?>
       <?php endforeach; ?>
     <?php else: ?>
-      <li class="empty">No tracks yet</li>
+      <li class="empty">No effects added yet!</li>
     <?php endif; ?>
   </ul>
   <template id="effect-item">

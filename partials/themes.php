@@ -9,6 +9,7 @@
       </form>
     </div>
   </header>
+  <?php echo count($themes); ?>
   <?php if (count($themes) > 0): ?>
     <ul class="list">
       <?php foreach ($themes as $theme) : ?>
@@ -24,5 +25,7 @@
         <button class="action-button" data-action="delete">-</button>
       </li>
     </template>
+    <?php else: ?>
+      <li class="empty">No theme added yet!</li>
   <?php endif; ?>
 </section>

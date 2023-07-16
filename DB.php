@@ -49,7 +49,6 @@ class DB {
     $this->pdo->query("DELETE FROM theme_track WHERE theme_id = $id;");
     $this->pdo->query("DELETE FROM theme_preset WHERE theme_id = $id;");
     $this->pdo->query("DELETE FROM theme WHERE theme_id = $id;");
-
     return ["message" => $id . " is deleted"];
   }
 
@@ -99,7 +98,13 @@ class DB {
     ");
     $query->bindValue(":theme_id", $theme_id);
     $query->execute();
-    return $query->fetch(PDO::FETCH_ASSOC)['preset_id'];
+    $result = $query->fetch(PDO::FETCH_NUM);
+    if (is_array($result) && array_key_exists(0, $result)) {
+      return $result[0];
+    } else {
+      return false;
+    }
+
   }
 
   // Update
@@ -145,6 +150,12 @@ class DB {
     $this->pdo->query("DELETE FROM preset WHERE preset_id = $id;");
 
     return ["message" => $id . " is deleted"];
+  }
+  public function delete_presets_by_theme($id) {
+    $presets = $this->get_presets_by_theme($id);
+    foreach ($presets as $preset) {
+      $this->delete_preset($preset['preset_id']);
+    }
   }
 
   // Track

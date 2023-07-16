@@ -33,7 +33,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
         </li>
       <?php endforeach; ?>
       <?php else: ?>
-      <li class="empty">No tracks yet</li>
+      <li class="empty">No tracks added yet!</li>
     <?php endif; ?>
   </ul>
   <template id="track-item">

@@ -124,7 +124,7 @@ function setTracks(theme_id) {
         parent.appendChild(clone)
       })
     } else {
-      parent.innerHTML = '<li class="empty">No tracks yet</li>'
+      parent.innerHTML = '<li class="empty">No tracks added yet!</li>'
     }
   })
 }
@@ -146,7 +146,7 @@ function setEffects(theme_id) {
         parent.appendChild(clone)
       })
     } else {
-      parent.innerHTML = '<li class="empty">No tracks yet</li>'
+      parent.innerHTML = '<li class="empty">No tracks added yet!</li>'
     }
   })
 }
@@ -170,10 +170,11 @@ function createTheme(value, list) {
     clone.querySelector('.list__item input[type=button]').value = value
     list.append(clone)
     activateElement(id, list)
+    const empty = list.querySelector('.empty')
+    if (empty) empty.remove()
     // Add default preset
     const presetList = document.querySelector('#preset .list')
     createPreset('Default', id, presetList)
-
   })
 }
 
@@ -191,10 +192,11 @@ function createPreset(value, theme_id, list) {
     clone.querySelector('.list__item input[type=button]').value = value
     list.append(clone)
     if (current) {
-      console.log(id, theme_id)
       loadJson(`/api/preset/set-last.php?preset_id=${id}&theme_id=${theme_id}`)
     }
     activateElement(id, list)
+    const empty = list.querySelector(".empty")
+    if (empty) empty.remove()
   })
 }
 
@@ -247,6 +249,12 @@ function createAudio(id) {
   return audio
 }
 
+function removePresets() {
+  const presetList = document.querySelector('#preset .list')
+  presetList.querySelectorAll('li').forEach(preset => preset.remove())
+  presetList.innerHTML = '<li class="empty">No presets added yet!</li>'
+}
+
 // Event handlers
 document.addEventListener('click', (ev) => {
   if (ev.target.id === "add-new") {
@@ -255,11 +263,16 @@ document.addEventListener('click', (ev) => {
     const value = removeTags(input.value)
     const list = button.closest("section").querySelector('.list')
     const type = list.parentElement.id
-    const theme_id = document.querySelector('#theme .list__item[data-state=selected]').getAttribute('data-id')
+    let theme_id = ""
+    const selectedTheme = document.querySelector('#theme .list__item[data-state=selected]')
+    if (selectedTheme) {
+      theme_id = selectedTheme.getAttribute('data-id')
+    }
     if (type === "theme") {
       createTheme(value, list)
     }
     if (type === "preset") {
+      // TODO: If no theme is selected, show "create theme first", message
       createPreset(value, theme_id, list)
     }
     if (type === "track") {
@@ -288,11 +301,22 @@ document.addEventListener('click', (ev) => {
       li.remove()
       return
     }
-    const selected = list.querySelector('[data-state=selected]').getAttribute('data-id')
+    const selected = list.querySelector('[data-state=selected]')
+    if (type === 'theme') {
+      loadJson(`/api/preset/delete-related.php?id=${id}`)
+    }
     li.remove()
-    if (id === selected) {
-      let available = list.querySelector('.list__item').getAttribute('data-id')
-      activateElement(available, list)
+    if (selected && id === selected.getAttribute('data-id')) {
+      let available = list.querySelector('.list__item')
+      if (!available) {
+        list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
+        loadJson(`/api/${type}/delete.php?id=${id}`)
+        removePresets()
+        return
+      }
+      activateElement(available.getAttribute('data-id'), list)
+    } else if(list.children.length === 0) {
+      list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
     }
     loadJson(`/api/${type}/delete.php?id=${id}`)
   }
