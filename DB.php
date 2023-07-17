@@ -169,18 +169,11 @@ class DB {
     $stmt->execute();
     $track_id = $this->pdo->lastInsertId();
 
-    // add empty entry to track_file
-    $sql = "INSERT INTO track_file (track_id) VALUES(:track_id)";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->bindValue(':track_id', $track_id);
-    $stmt->execute();
-    $track_file_id = $this->pdo->lastInsertId();
-
     // add track to theme
-    $sql = "INSERT INTO theme_track (theme_id, track_file_id) VALUES(:theme_id, :track_file_id)";
+    $sql = "INSERT INTO theme_track (theme_id, track_id) VALUES(:theme_id, :track_id)";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':theme_id', $theme_id);
-    $stmt->bindValue(':track_file_id', $track_file_id);
+    $stmt->bindValue(':track_id', $track_id);
     $stmt->execute();
 
     return $track_id;
@@ -188,12 +181,11 @@ class DB {
   // Read
   private function get_tracks_by_theme($theme_id, $type_id) {
     $query = $this->pdo->prepare("
-      SELECT track_id, name
-      FROM theme_track, track_file
+      SELECT *
+      FROM theme_track
       INNER JOIN track USING (track_id)
       WHERE theme_id = :theme_id
       AND type_id = :type_id
-      GROUP BY track_id, type_id
     ");
     $query->bindValue(':theme_id', $theme_id);
     $query->bindValue(':type_id', $type_id);
@@ -217,11 +209,7 @@ class DB {
   public function update_track($id, $newName) {}
   // Delete
   public function delete_track($id) {
-    $sql = $this->pdo->prepare("SELECT track_file_id FROM track_file WHERE track_id = $id");
-    $sql->execute();
-    $track_file_id = $sql->fetch()['track_file_id'];
-
-    $this->pdo->query("DELETE FROM theme_track WHERE track_file_id = $track_file_id");
+    $this->pdo->query("DELETE FROM theme_track WHERE track_id = $id");
     $this->pdo->query("DELETE FROM track_file WHERE track_id = $id");
     $this->pdo->query("DELETE FROM track WHERE track_id = $id");
 
@@ -230,11 +218,26 @@ class DB {
 
   // File
   // Create
-  public function create_file($filename, $track_id) {}
+  public function create_file($filename, $track_id) {
+    // Add to file table
+    $sql = "INSERT INTO file(filename) VALUES(:filename)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':filename', $filename);
+    $stmt->execute();
+    $file_id = $this->pdo->lastInsertId();
+
+    // add to file track table
+    $sql = "INSERT INTO track_file(track_id, file_id) VALUES(:track_id, :file_id)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':track_id', $track_id);
+    $stmt->bindValue(':file_id', $file_id);
+    $stmt->execute();
+    return $file_id;
+  }
   // Read
   public function get_files_by_track($track_id) {
     $query = $this->pdo->prepare("
-      SELECT filename
+      SELECT file_id, filename
       FROM file
       INNER JOIN track_file USING(file_id)
       WHERE track_id = :track_id
@@ -247,10 +250,28 @@ class DB {
     }
     return $results;
   }
+  public function get_files_except_by_track($track_id) {
+    $query = $this->pdo->prepare("
+      SELECT filename
+      FROM file
+      INNER JOIN track_file USING(file_id)
+      WHERE track_id NOT LIKE :track_id
+    ");
+    $query->bindValue(':track_id', $track_id);
+    $query->execute();
+    $results = [];
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+      $results[] = $row;
+    }
+    return $results;
+  }
   // Update
   public function update_file($id, $newName) {}
   // Delete
-  public function delete_file($id) {}
+  public function delete_file($id) {
+    $this->pdo->query("DELETE FROM file WHERE file_id = $id;");
+    $this->pdo->query("DELETE FROM track_file WHERE file_id = $id;");
+  }
 
   // Settings
   private function get_setting_by_name($option) {

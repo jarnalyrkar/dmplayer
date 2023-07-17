@@ -9,7 +9,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
     <?php include $partials . "add-form.php"; ?>
   </header>
   <ul class="list">
-    <?php if (count($items) > 0): ?>
+    <?php if (count($items) > 0) : ?>
       <?php foreach ($items as $item) : ?>
         <li data-id="<?= $item['track_id'] ?>" data-volume="">
           <div>
@@ -32,7 +32,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
           </div>
         </li>
       <?php endforeach; ?>
-      <?php else: ?>
+    <?php else : ?>
       <li class="empty">No tracks added yet!</li>
     <?php endif; ?>
   </ul>
@@ -50,7 +50,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
             </div>
           </div>
           <div class="play-actions">
-            <button class="action-button" data-action="play">&#10148;</button>
+            <button class="action-button" data-action="play" data-state="paused">&#10148;</button>
             <button class="action-button" data-action="see-files">&#128065;</button>
             <button class="action-button" data-action="delete">-</button>
           </div>
@@ -59,20 +59,26 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
     </li>
   </template>
   <template id="track-files">
-    <dialog class="track-dialog">
-      <form>
-        <input type="file" id="new-file">
-        <label class="action-button" data-action="add-file" for="new-file">Add file to track</label>
-      </form>
-      <ul class="files">
-        <li class="files__file" data-filename="">
-          <span>filename</span>
-          <div>
-            <button class="action-button">&#10148;</button>
-            <button class="action-button" data-action="delete">-</button>
+    <div class="dialog" class="track-dialog">
+      <div class="dialog__outer">
+        <div class="dialog__inner">
+          <button data-action="close-dialog" aria-label="close dialog">&times;</button>
+          <form>
+            <input type="file" id="new-file">
+            <label class="file-upload" data-action="add-file" for="new-file">Add file to track...</label>
+          </form>
+          <div class="dialog__files">
+            <h2>Files in track</h2>
+            <ul class="files"></ul>
+            <template id="file">
+              <li class="files__file" data-filename="" data-id="">
+                <span class="file__name">filename</span>
+                <button class="action-button" data-action="delete-file">-</button>
+              </li>
+            </template>
           </div>
-        </li>
-      </ul>
-    </dialog>
+        </div>
+      </div>
+    </div>
   </template>
 </section>

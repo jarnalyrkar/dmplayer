@@ -1,5 +1,5 @@
 // Constants, helpers
-const keystrokes = '1234567890abcdefghijklmnopqrstuvwxyz'.split('')
+const keystrokes = '123456789abcdefghijklmnopqrstuvwxyz'.split('')
 
 function removeTags(str) {
     if ((str===null) || (str===''))
@@ -74,10 +74,13 @@ function fadeIn(audio, targetVolume) {
 }
 
 function playEffect(id) {
-  let audio = createAudio(id)
-  audio.play()
-  audio.addEventListener('ended', () => {
-    audio.remove()
+  createAudio(id).then(audio => {
+    if (audio) {
+      audio.play()
+      audio.addEventListener('ended', () => {
+        audio.remove()
+      })
+    }
   })
 }
 
@@ -139,22 +142,17 @@ function setEffects(theme_id) {
         const template = document.querySelector("#effect-item")
         const clone = template.content.cloneNode(true)
         const li = clone.querySelector('li')
+        const keystroke = keystrokes[parent.querySelectorAll('li:not(.empty)').length + counter]
         li.setAttribute('data-id', item.track_id)
         li.querySelector('.track-title').innerHTML = item.name
-        li.setAttribute('data-keystroke', keystrokes[counter])
-        li.querySelector('.keystroke').innerHTML = keystrokes[counter]
+        li.setAttribute('data-keystroke', keystroke)
+        li.querySelector('.keystroke').innerHTML = keystroke
         parent.appendChild(clone)
+        counter++;
       })
     } else {
       parent.innerHTML = '<li class="empty">No tracks added yet!</li>'
     }
-  })
-}
-
-function setRandomSrc(track_id, audio) {
-  const path = "/audio/"
-  loadJson(`/api/file/random.php?id=${track_id}`).then(data => {
-    audio.src = path + data.filename
   })
 }
 
@@ -228,7 +226,7 @@ function createEffect(value, theme_id, list) {
     li.querySelector('.track-title').innerHTML = value
     // TODO: set volume
     list.append(clone)
-    const keystroke = keystrokes[list.children.length - 1]
+    const keystroke = keystrokes[list.querySelectorAll('li:not(.empty)').length - 1]
     li.setAttribute('data-keystroke', keystroke)
     li.querySelector('.keystroke').innerHTML = keystroke
     // TODO: Add exclamation for "Add file to this track"
@@ -237,16 +235,17 @@ function createEffect(value, theme_id, list) {
   })
 }
 
-function createFile(value, track_id, list) {
-  // TODO
-}
-
-function createAudio(id) {
-  const audio = document.createElement('audio')
-  setRandomSrc(id, audio)
-  audio.setAttribute('data-id', id)
-  document.body.appendChild(audio)
-  return audio
+async function createAudio(id) {
+  const el = document.createElement('audio')
+  const path = "/audio/"
+  const audio = await loadJson(`/api/file/random.php?id=${id}`)
+  if (audio) {
+    el.src = path + audio.filename
+    el.setAttribute('data-id', id)
+    document.body.appendChild(el)
+    return el
+  }
+  return false
 }
 
 function removePresets() {
@@ -311,6 +310,10 @@ document.addEventListener('click', (ev) => {
       if (!available) {
         list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
         loadJson(`/api/${type}/delete.php?id=${id}`)
+        if (type === "theme") {
+          const tracks = document.querySelectorAll('.list li:not(.empty)')
+          tracks.forEach(li => li.remove())
+        }
         removePresets()
         return
       }
@@ -322,7 +325,53 @@ document.addEventListener('click', (ev) => {
   }
 
   if (ev.target.getAttribute('data-action') === 'see-files') {
-    console.log("display files dialog")
+    const track_id = ev.target.closest('li').getAttribute('data-id')
+    const theme_id = document.querySelector('#theme [data-state=selected]').getAttribute('data-id')
+
+    const template = document.querySelector('#track-files')
+    const clone = template.content.cloneNode(true)
+    const dialog = clone.querySelector(".dialog")
+
+    // Get all existing files for the track
+    loadJson(`/api/file/get.php?track_id=${track_id}`).then(files => {
+      files.forEach(file => {
+        const template = dialog.querySelector('#file')
+        const clone = template.content.cloneNode(true)
+        const li = clone.querySelector('li')
+        li.setAttribute('data-id', file.file_id)
+        li.setAttribute('data-filename', file.filename)
+        li.querySelector('.file__name').innerHTML = file.filename
+        dialog.querySelector('.files').appendChild(clone)
+      })
+    })
+
+    // listen for uploads
+    dialog.querySelector('input[type=file]').addEventListener('change', (ev) => {
+      const file = document.querySelector('#new-file').files[0]
+      const data = new FormData()
+      data.append('file', file)
+      data.append('track_id', track_id)
+      fetch('/api/file/create.php', {
+        method: 'POST',
+        body: data
+      })
+      .then(data => {
+        if (data.status === 200) {
+          data.json().then(id => {
+            const template = document.querySelector('#file')
+            const clone = template.content.cloneNode(true)
+            const li = clone.querySelector('li')
+            li.setAttribute('data-filename', file.name)
+            li.setAttribute('data-id', id)
+            li.querySelector('.file__name').innerHTML = file.name
+            document.querySelector('.files').appendChild(clone)
+          })
+        }
+      })
+    })
+
+    document.body.appendChild(clone)
+    dialog.classList.add('dialog--show')
   }
 
   if (ev.target.getAttribute('data-action') === 'play') {
@@ -342,21 +391,44 @@ document.addEventListener('click', (ev) => {
         }
         return
       } else {
-        let audio = createAudio(id)
-        audio.volume = 0
-        audio.play()
-        fadeIn(audio, targetVolume)
-        return
+        createAudio(id).then(audio => {
+          if (audio) {
+            audio.volume = 0
+            audio.play()
+            fadeIn(audio, targetVolume)
+            return
+          }
+        })
     }
   } else { // Effect
-    let audio = createAudio(id)
-    audio.volume = 0.75 // TODO: get from master sound effect slider
-    audio.play()
-    audio.addEventListener('ended', ev => {
-      audio.remove()
+    createAudio(id).then(audio => {
+      if (audio) {
+        audio.volume = 0.75 // TODO: get from master sound effect slider
+        audio.play()
+        audio.addEventListener('ended', ev => {
+          audio.remove()
+        })
+      } else {
+        // TODO: No file set / No file found
+      }
     })
   }
   }
+
+  if (ev.target.getAttribute('data-action') === 'delete-file') {
+    const file_id = ev.target.parentElement.getAttribute('data-id')
+    loadJson(`/api/file/delete.php?id=${file_id}`)
+    ev.target.parentElement.remove()
+  }
+
+  if (ev.target.getAttribute('data-action') === 'close-dialog') {
+    document.querySelector('.dialog').remove()
+  }
+
+  if (ev.target.classList.contains('dialog__outer')) {
+    document.querySelector('.dialog').remove()
+  }
+
 })
 
 document.addEventListener('keydown', ev => {
@@ -367,10 +439,14 @@ document.addEventListener('keydown', ev => {
       const id = effects[i].getAttribute('data-id')
       playEffect(id)
     }
-    if (ev.code === effects[i].getAttribute('data-keystroke')) {
+    if (ev.code === "Key" + effects[i].getAttribute('data-keystroke').toLocaleUpperCase()) {
       const id = effects[i].getAttribute('data-id')
       playEffect(id)
     }
+  }
+
+  if (ev.code === "Escape") {
+    document.querySelector('.dialog').remove()
   }
 })
 

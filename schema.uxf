@@ -1,40 +1,40 @@
-<diagram program="umletino" version="15.1"><zoom_level>8</zoom_level><element><id>UMLClass</id><coordinates><x>448</x><y>392</y><w>96</w><h>56</h></coordinates><panel_attributes>presets
+<diagram program="umletino" version="15.1"><zoom_level>9</zoom_level><element><id>UMLClass</id><coordinates><x>737</x><y>342</y><w>108</w><h>63</h></coordinates><panel_attributes>preset
 --
 - id
-- name</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>360</x><y>232</y><w>128</w><h>104</h></coordinates><panel_attributes>theme_presets
+- name</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>638</x><y>162</y><w>144</w><h>117</h></coordinates><panel_attributes>theme_preset
 --
 - id
 - theme_id *
-- preset_id *</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>152</x><y>232</y><w>112</w><h>112</h></coordinates><panel_attributes>preset_track_volume
+- preset_id *</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>404</x><y>162</y><w>126</w><h>126</h></coordinates><panel_attributes>preset_track_volume
 --
 - id
 - volume
 - theme_preset_id *
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>144</x><y>536</y><w>120</w><h>96</h></coordinates><panel_attributes>track_files
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>206</x><y>504</y><w>135</w><h>108</h></coordinates><panel_attributes>track_file
 --
 - id
 - track_id *
-- file_id *</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>8</x><y>376</y><w>96</w><h>72</h></coordinates><panel_attributes>settings
+- file_id *</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>242</x><y>324</y><w>108</w><h>81</h></coordinates><panel_attributes>settings
 --
 - id
 - option
 - value
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>152</x><y>376</y><w>112</w><h>104</h></coordinates><panel_attributes>theme_tracks
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>404</x><y>324</y><w>126</w><h>117</h></coordinates><panel_attributes>theme_track
 --
 - id
 - theme_id *
-- track_files_id *</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>304</x><y>392</y><w>96</w><h>56</h></coordinates><panel_attributes>themes
+- track_id *</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>575</x><y>342</y><w>108</w><h>63</h></coordinates><panel_attributes>theme
 --
 - id
-- name</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>448</x><y>536</y><w>96</w><h>96</h></coordinates><panel_attributes>types
+- name</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>566</x><y>504</y><w>108</w><h>108</h></coordinates><panel_attributes>type
 --
 - id
-- name</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>192</x><y>472</y><w>24</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>256</x><y>416</y><w>64</w><h>24</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;10</additional_attributes></element><element><id>Relation</id><coordinates><x>440</x><y>328</y><w>72</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;70;50;70;80</additional_attributes></element><element><id>Relation</id><coordinates><x>344</x><y>328</y><w>64</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>60;10;60;50;10;50;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>392</x><y>584</y><w>72</w><h>24</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;70;10</additional_attributes></element><element><id>Relation</id><coordinates><x>256</x><y>288</y><w>120</w><h>24</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>304</x><y>536</y><w>96</w><h>96</h></coordinates><panel_attributes>tracks
+- name</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>449</x><y>432</y><w>27</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>521</x><y>369</y><w>72</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;10</additional_attributes></element><element><id>Relation</id><coordinates><x>728</x><y>270</y><w>81</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;70;50;70;80</additional_attributes></element><element><id>Relation</id><coordinates><x>620</x><y>270</y><w>72</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>60;10;60;50;10;50;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>503</x><y>558</y><w>81</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;70;10</additional_attributes></element><element><id>Relation</id><coordinates><x>521</x><y>225</y><w>135</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>404</x><y>504</y><w>108</w><h>108</h></coordinates><panel_attributes>track
 --
 - id
 - name
-- type_id *</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>536</y><w>96</w><h>96</h></coordinates><panel_attributes>files
+- type_id *</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>35</x><y>504</y><w>108</w><h>108</h></coordinates><panel_attributes>file
 --
 - id
 - filename
-- name</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>88</x><y>576</y><w>72</w><h>24</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>70;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>256</x><y>584</y><w>64</w><h>24</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;10</additional_attributes></element></diagram>
+- name</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>134</x><y>549</y><w>90</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>80;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>332</x><y>549</y><w>90</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;80;10</additional_attributes></element></diagram>
