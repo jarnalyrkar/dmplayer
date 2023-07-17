@@ -12,7 +12,8 @@ class DB {
   public $pdo;
 
   function __construct() {
-    $this->pdo = new PDO("sqlite:" . $_SERVER['DOCUMENT_ROOT'] . "/dmplayer.db");
+    $dbfile = $_SERVER['SERVER_NAME'] == "localhost" ? '/dmplayer.db' : '/dmplayer-dev.db';
+    $this->pdo = new PDO("sqlite:" . $_SERVER['DOCUMENT_ROOT'] . $dbfile);
   }
 
   // Theme

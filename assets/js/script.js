@@ -450,5 +450,8 @@ document.addEventListener('keydown', ev => {
   }
 })
 
+const host = 'ws://0.0.0.0:8009/websockets.php'
+const socket = new WebSocket(host)
+
 // Event handler bindings
 // Initial setup
