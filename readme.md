@@ -8,7 +8,7 @@
 You play Dungeons and Dragons, and want to play layered tracks of music, ambience and sound effects.
 You already have a local library of music, soundtracks and sound effects, or know how to get it.
 
-Apart from one music sample and one sound effect sample, there is no audio packs or sets included with this software. If you need pre-compiled audio sets and effects that are ready to go, <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better bet.
+Apart from one music sample and one sound effect sample, there is no audio packs or sets included with this software. If you need pre-compiled audio sets and effects that are ready to go, <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option.
 
 ### Using for online play:
 There are programs that can patch the audio from an application, into whatever output you require.
@@ -26,7 +26,7 @@ Running install-php.bat will take care of it.
 
 If you're more technically inclined, you can instead do this:
 - Download the most recent <a href="https://windows.php.net/download">php</a> zip-file
-- Unzip anywhere
+- Unzip anywhere, but remember the directory
 - <a href="https://www.computerhope.com/issues/ch000549.htm">Add that directory to PATH</a>
 - Try opening the bat-file. If it doesn't work, try a restart first.
 
