@@ -273,9 +273,6 @@ function removePresets() {
 
 // Event handlers
 document.addEventListener('click', (ev) => {
-  if (ev.target.id === "add-new") {
-
-  }
 
   if (ev.target.getAttribute('data-action') === 'select') {
     const id = ev.target.parentElement.getAttribute('data-id')
@@ -438,6 +435,9 @@ document.querySelectorAll('.add-form').forEach(form =>
     ev.preventDefault()
     const button = form.querySelector('input[type=submit]')
     const input = button.previousElementSibling
+    if (input.value === "") {
+      form.reportValidity()
+    }
     const value = removeTags(input.value)
     const list = button.closest("section").querySelector('.list')
     const type = list.parentElement.id
