@@ -23,13 +23,18 @@ On Windows, use dmplayer.bat (coming soon)<br>
 On Linux and MacOS, use dmplayer.sh
 
 ### Install PHP (windows):
-Running install-php.bat will take care of it. Right click and "Run as administrator".
+- Right-click install-php.bat and select "Run as administrator".
+- After it's complete, do a restart
+- Start dmplayer.bat
 
 If you'd rather do it manually:
 - Download the most recent <a href="https://windows.php.net/download">php</a> zip-file
 - Unzip anywhere, but remember the directory
 - <a href="https://www.computerhope.com/issues/ch000549.htm">Add that directory to PATH</a>
-- Try opening the bat-file. If it doesn't work, try a restart first.
+- Restart the machine, so windows can see the new path-variable we just added
+- Start dmplayer.bat
+
+If you have issues with any of these, please create an issue and attach a screenshot of what happens.
 
 ### Install PHP (linux):
 `sudo apt update && sudo apt upgrade`<br>
