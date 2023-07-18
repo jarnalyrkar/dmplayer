@@ -2,7 +2,7 @@
 setlocal
 
 REM Define variables
-set "phpDownloadUrl=https://windows.php.net/downloads/releases/php-8.0.0-nts-Win32-vs16-x64.zip"
+set "phpDownloadUrl=https://windows.php.net/downloads/releases/latest/php-8.2-nts-Win32-vs16-x86-latest.zip"
 set "phpZipFile=php.zip"
 set "phpExtractDir=php"
 
