@@ -28,7 +28,6 @@
     include $partials . "tracks.php";
     include $partials . "effects.php";
     ?>
-    <div id="root"></div>
   </main>
   <script src="/assets/js/script.js"></script>
 </body>
