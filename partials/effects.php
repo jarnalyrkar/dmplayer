@@ -36,13 +36,15 @@ $keyCounter = 0;
   </ul>
   <template id="effect-item">
     <li data-id="" data-keystroke="">
-      <div>
-        <span>[<span class="keystroke"></span>]</span> <span class="track-title"></span>
-        <div class="play-actions">
-          <button class="action-button" data-action="play">&#10148;</button>
-          <button class="action-button" data-action="see-files">&#128065;</button>
-          <button class="action-button" data-action="delete">-</button>
-        </div>
+      <div class="track-title__container">
+        <span class="track-title"></span>
+      </div>
+      <div class="keystroke__container">
+        <button class="keystroke" data-action="play"></button>
+      </div>
+      <div class="play-actions">
+        <button class="action-button" data-action="see-files">&#128065;</button>
+        <button class="action-button" data-action="delete">-</button>
       </div>
     </li>
   </template>

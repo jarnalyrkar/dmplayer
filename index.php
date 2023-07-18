@@ -37,7 +37,7 @@
     <div class="footer-sliders">
       <div class="footer-slider">
         <label>Effects</label>
-        <input type="range" min="0" max="100" value="100">
+        <input id="master-effects" type="range" min="0" max="100" value="100">
       </div>
       <div class="footer-slider">
         <label>Master</label>

@@ -418,7 +418,8 @@ document.addEventListener('click', (ev) => {
   } else { // Effect
     createAudio(id).then(audio => {
       if (audio) {
-        audio.volume = 0.75 // TODO: get from master sound effect slider
+        audio.setAttribute("data-type", "effect")
+        audio.volume = document.querySelector('[id=master-effects]').value / 100
         audio.play()
         audio.addEventListener('ended', ev => {
           audio.remove()
@@ -511,12 +512,17 @@ document.addEventListener('keydown', ev => {
 
 // Volume handling
 document.addEventListener('change', ev => {
-  if (ev.target.type === "range") {
+  if (ev.target.getAttribute('type') === "music") {
     const audioId = ev.target.closest('li').getAttribute('data-id')
     const audioElement = document.querySelector(`audio[data-id="${audioId}"]`)
     if (audioElement) {
       fadeTo(audioElement, ev.target.value)
     }
+  }
+  if (ev.target.id === "master-effects") {
+    document.querySelectorAll('audio[data-type="effect"]').forEach(effect => {
+      fadeTo(effect, ev.target.value)
+    })
   }
 })
 
