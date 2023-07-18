@@ -16,13 +16,14 @@ There are programs that can patch the audio from an application, into whatever o
 I've not yet found time to experiment with this, but this seems like a good start: https://vb-audio.com/Cable/
 
 ## How to install:
-First, download this repo
-PHP is required, so go ahead and install that, see below for instructions.
-On Windows, use dmplayer.bat.
+First, download this repo<br>
+PHP is required, so go ahead and install that, see below for instructions.<br>
+
+On Windows, use dmplayer.bat (coming soon)<br>
 On Linux and MacOS, use dmplayer.sh
 
 ### Install PHP (windows):
-Running install-php.bat will take care of it.
+Running install-php.bat will take care of it. (coming soon)
 
 If you're more technically inclined, you can instead do this:
 - Download the most recent <a href="https://windows.php.net/download">php</a> zip-file
