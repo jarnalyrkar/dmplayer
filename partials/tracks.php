@@ -19,7 +19,8 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
                 <div class="volume-bar">
                   <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
                   <div class="volume-bar-background">
-                    <input type="range" data-type="music" min="0" max="100" value="75">
+                    <?php $track_settings = $db->get_preset_track_settings($active_preset_id, $item['track_id']); ?>
+                    <input type="range" data-type="music" min="0" max="100" value="<?= $track_settings['volume'] ?? 75; ?>">
                   </div>
                 </div>
               </div>

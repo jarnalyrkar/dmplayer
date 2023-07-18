@@ -168,7 +168,6 @@ function setPresets(theme_id) {
 }
 
 function setTracks(theme_id) {
-  console.log("Set tracks")
   const parent = document.querySelector('#track .list')
   parent.innerHTML = ""
   loadJson(`/api/track/get.php?theme_id=${theme_id}&type=1`).then(data => {
@@ -179,8 +178,9 @@ function setTracks(theme_id) {
         const li = clone.querySelector('li')
         const preset_id = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
         li.setAttribute('data-id', item.track_id)
+        li.querySelector('[data-action=play]').classList.add('active')
         loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${item.track_id}`).then(data => {
-          // li.querySelector('input[type="range"]').value = data.volume
+          li.querySelector('input[type="range"]').value = data.volume
           if (data.playing) {
             const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
             if (!existing) {
@@ -298,7 +298,6 @@ function createEffect(value, theme_id, list) {
     const li = clone.querySelector('li')
     li.setAttribute('data-id', id)
     li.querySelector('.track-title').innerHTML = value
-    // TODO: set volume
     list.append(clone)
     const keystroke = keystrokes[list.querySelectorAll('li:not(.empty)').length - 1]
     li.setAttribute('data-keystroke', keystroke)
@@ -310,7 +309,7 @@ function createEffect(value, theme_id, list) {
 }
 
 async function createAudio(id) {
-  // if (document.querySelector(`audio[data-id="${id}"]`)) return;
+  if (document.querySelector(`audio[data-id="${id}"]`)) return;
   const el = document.createElement('audio')
   const path = await loadJson('/api/file/get_path.php')
   const audio = await loadJson(`/api/file/random.php?id=${id}`)
