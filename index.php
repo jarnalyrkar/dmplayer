@@ -33,11 +33,16 @@
     <div class="footer-buttons">
       <button class="action-button" data-action="settings">&#9881;</button>
       <button class="action-button" data-action="stop">&block;</button>
+      <button class="action-button" data-action="info">&#8505;</button>
     </div>
     <div class="footer-sliders">
       <div class="footer-slider">
         <label>Effects</label>
-        <input id="main-effects-volume" type="range" min="0" max="100" value="100">
+        <div class="volume-bar">
+          <div class="volume-bar-background">
+            <input id="main-effects-volume" type="range" min="0" max="100" value="100">
+          </div>
+        </div>
       </div>
   </footer>
   <script src="/assets/js/script.js"></script>
