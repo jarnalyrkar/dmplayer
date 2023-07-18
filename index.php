@@ -29,6 +29,21 @@
     include $partials . "effects.php";
     ?>
   </main>
+  <footer>
+    <div class="footer-buttons">
+      <button class="action-button" data-action="settings">&#9881;</button>
+      <button class="action-button" data-action="stop-all">&block;</button>
+    </div>
+    <div class="footer-sliders">
+      <div class="footer-slider">
+        <label>Effects</label>
+        <input type="range" min="0" max="100" value="100">
+      </div>
+      <div class="footer-slider">
+        <label>Master</label>
+        <input type="range" min="0" max="100" value="100">
+      </div>
+  </footer>
   <script src="/assets/js/script.js"></script>
 </body>
 

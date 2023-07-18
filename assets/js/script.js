@@ -1,5 +1,22 @@
 // Constants, helpers
 const keystrokes = '123456789abcdefghijklmnopqrstuvwxyz'.split('')
+setListHeight();
+
+function setListHeight() {
+
+  // get header height
+  const header = document.querySelector('header')
+  const headerHeight = header.clientHeight
+  // get footer height
+  const footerHeight = document.querySelector('footer').clientHeight
+  const margin = parseFloat(window.getComputedStyle(header)['marginBottom']) +
+                parseFloat(window.getComputedStyle(header)['marginTop'])
+  const taken = headerHeight + footerHeight + margin
+  document.querySelectorAll('.list').forEach(list => {
+    list.style.maxHeight = `calc(100vh - ${taken}px)`
+  })
+
+}
 
 function removeTags(str) {
     if ((str===null) || (str===''))
@@ -438,16 +455,18 @@ document.querySelectorAll('.add-form').forEach(form =>
   ))
 
 document.addEventListener('keydown', ev => {
-  const effects = document.querySelectorAll('#effect .list li')
+  const effects = document.querySelectorAll('#effect .list li:not(.empty)')
   const effectsLength = effects.length
-  for (let i = 0; i < effectsLength; i++) {
-    if (ev.code === `Digit${i+1}` || ev.code === `Numpad${i+1}`) {
-      const id = effects[i].getAttribute('data-id')
-      playEffect(id)
-    }
-    if (ev.code === "Key" + effects[i].getAttribute('data-keystroke').toLocaleUpperCase()) {
-      const id = effects[i].getAttribute('data-id')
-      playEffect(id)
+  if (effectsLength > 0) {
+    for (let i = 0; i < effectsLength; i++) {
+      if (ev.code === `Digit${i+1}` || ev.code === `Numpad${i+1}`) {
+        const id = effects[i].getAttribute('data-id')
+        playEffect(id)
+      }
+      if (ev.code === "Key" + effects[i].getAttribute('data-keystroke').toLocaleUpperCase()) {
+        const id = effects[i].getAttribute('data-id')
+        playEffect(id)
+      }
     }
   }
 
