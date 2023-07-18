@@ -24,15 +24,17 @@ On Linux and MacOS, use dmplayer.sh
 
 ### Install PHP (windows):
 - Right-click install-php.bat and select "Run as administrator".
-- After it's complete, do a restart
 - Start dmplayer.bat
 
 If you'd rather do it manually:
 - Download the most recent <a href="https://windows.php.net/download">php</a> zip-file
 - Unzip anywhere, but remember the directory
 - <a href="https://www.computerhope.com/issues/ch000549.htm">Add that directory to PATH</a>
-- Restart the machine, so windows can see the new path-variable we just added
 - Start dmplayer.bat
+
+#### Troubleshooting
+- You may need to restart the machine, so windows can see the new path-variable we just added
+- Right click folder, select properties, and turn off read only
 
 If you have issues with any of these, please create an issue and attach a screenshot of what happens.
 
