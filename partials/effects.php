@@ -13,21 +13,24 @@ $keyCounter = 0;
     <?php include $partials . "add-form.php"; ?>
   </header>
   <ul class="list">
-    <?php if (count($items) > 0): ?>
+    <?php if (count($items) > 0) : ?>
       <?php foreach ($items as $item) : ?>
         <li data-id="<?= $item['track_id'] ?>" data-keystroke="<?= $keystrokes[$keyCounter]; ?>">
-          <div>
-            <span>[<span class="keystroke"><?= $keystrokes[$keyCounter]; ?></span>]</span> <span class="track-title"><?= $item['name']; ?></span>
-            <div class="play-actions">
-              <button class="action-button" data-action="play">&#10148;</button>
-              <button class="action-button" data-action="see-files">&#128065;</button>
-              <button class="action-button" data-action="delete">-</button>
-            </div>
+          <div class="track-title__container">
+            <span class="track-title"><?= $item['name']; ?></span>
+          </div>
+          <div class="keystroke__container">
+            <button class="keystroke" data-action="play"><?= $keystrokes[$keyCounter]; ?></button>
+          </div>
+          <div class="play-actions">
+            <!-- <button class="action-button" data-action="play">&#10148;</button> -->
+            <button class="action-button" data-action="see-files">&#128065;</button>
+            <button class="action-button" data-action="delete">-</button>
           </div>
         </li>
         <?php $keyCounter++; ?>
       <?php endforeach; ?>
-    <?php else: ?>
+    <?php else : ?>
       <li class="empty">No effects added yet!</li>
     <?php endif; ?>
   </ul>

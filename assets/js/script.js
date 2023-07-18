@@ -452,7 +452,8 @@ document.addEventListener('keydown', ev => {
   }
 
   if (ev.code === "Escape") {
-    document.querySelector('.dialog').remove()
+    const dialog = document.querySelector('.dialog')
+    if (dialog) dialog.remove()
   }
 })
 

@@ -1,5 +1,6 @@
 * {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  box-sizing: border-box;
 }
 html {
   font-size: 18px;
@@ -95,6 +96,7 @@ main {
   display: flex;
   align-items: center;
   gap: .5rem;
+  justify-self: center;
 }
 
 header {
@@ -109,6 +111,10 @@ header {
 
 .track-title {
   color: goldenrod;
+  font-size:1.25rem;
+  &__container {
+    text-align: center;
+  }
 }
 
 .track-row {
@@ -283,4 +289,27 @@ header {
   & form {
     text-align: center;
   }
+}
+
+.keystroke {
+  width: 100%;
+  display: inline-block;
+  border-radius: 50%;
+  font-size: 2rem;
+  color: rgb(245, 227, 227);
+  background-color: rgb(124, 66, 30);
+  border: solid 3px rgb(245, 227, 227);
+  transition: background-color 300ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  aspect-ratio: 1/1;
+  &:active {
+    background-color:rgb(43, 24, 11);
+  }
+  &__container {
+    padding-inline: 2rem;
+  }
+}
+
+#effect li {
+  display: grid;
+  gap: 1rem;
 }
