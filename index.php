@@ -32,7 +32,7 @@
   <footer>
     <div class="footer-buttons">
       <button class="action-button" data-action="settings">&#9881;</button>
-      <button class="action-button" data-action="stop-all">&block;</button>
+      <button class="action-button" data-action="stop">&block;</button>
     </div>
     <div class="footer-sliders">
       <div class="footer-slider">

@@ -419,6 +419,15 @@ document.addEventListener('click', (ev) => {
     document.querySelector('.dialog').remove()
   }
 
+  if (ev.target.getAttribute('data-action') === 'stop') {
+    const activeFiles = document.querySelectorAll('audio')
+    if (activeFiles.length > 0) {
+      activeFiles.forEach(file => {
+        fadeOut(file)
+      })
+    }
+  }
+
   if (ev.target.classList.contains('dialog__outer')) {
     document.querySelector('.dialog').remove()
   }
