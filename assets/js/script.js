@@ -395,6 +395,7 @@ document.addEventListener('click', (ev) => {
     const id = li.getAttribute('data-id')
     const existingAudio = document.querySelector(`audio[data-id="${id}"]`)
     const volumeBar = li.querySelector('input[type=range]')
+    ev.target.classList.toggle('active')
     let targetVolume = null
     if (volumeBar) {
       targetVolume = volumeBar.value
@@ -512,7 +513,7 @@ document.addEventListener('keydown', ev => {
 
 // Volume handling
 document.addEventListener('change', ev => {
-  if (ev.target.getAttribute('type') === "music") {
+  if (ev.target.getAttribute('data-type') === "music") {
     const audioId = ev.target.closest('li').getAttribute('data-id')
     const audioElement = document.querySelector(`audio[data-id="${audioId}"]`)
     if (audioElement) {
