@@ -62,10 +62,12 @@ function setVolumeAttributes() {
 }
 
 function fadeOut(audio) {
+  const steps = 0.025
+  const interval = 50
   let fadeout = setInterval(() => {
-    if (audio.volume >= 0) {
+    if (audio.volume >= steps) {
       try {
-        audio.volume -= 0.025
+        audio.volume -= steps
       } catch (error) {
         audio.remove()
         clearInterval(fadeout)
@@ -75,24 +77,28 @@ function fadeOut(audio) {
       audio.pause()
       return
     }
-  }, 100)
+  }, interval)
 }
 
 function fadeIn(audio, targetVolume) {
   audio.volume = 0
   audio.play()
+  const steps = 0.025
+  const interval = 50
   let fadein = setInterval(() => {
-    if (audio.volume <= (targetVolume / 100)) {
-      audio.volume += 0.025
+    if (audio.volume.toFixed(2) <= (targetVolume / 100) - steps) {
+      audio.volume += steps
     } else {
+      audio.volume = targetVolume / 100
       clearInterval(fadein)
     }
-  }, 100)
+  }, interval)
 }
 
 function fadeTo(audio, targetVolume) {
   const steps = 0.025
   const target = targetVolume / 100
+  const interval = 50
   if (audio.volume < target) {
     let fadeTo = setInterval(() => {
       if (audio.volume.toFixed(2) >= target - steps) {
@@ -101,7 +107,7 @@ function fadeTo(audio, targetVolume) {
       } else {
         audio.volume += steps
       }
-    }, 100)
+    }, interval)
   } else {
     let fadeTo = setInterval(() => {
       if (audio.volume.toFixed(2) <= target + steps) {
@@ -110,7 +116,7 @@ function fadeTo(audio, targetVolume) {
       } else {
         audio.volume -= steps
       }
-    }, 100)
+    }, interval)
   }
 }
 
@@ -420,7 +426,7 @@ document.addEventListener('click', (ev) => {
     createAudio(id).then(audio => {
       if (audio) {
         audio.setAttribute("data-type", "effect")
-        audio.volume = document.querySelector('[id=master-effects]').value / 100
+        audio.volume = document.querySelector('[id=main-effects-volume]').value / 100
         audio.play()
         audio.addEventListener('ended', ev => {
           audio.remove()
@@ -520,9 +526,16 @@ document.addEventListener('change', ev => {
       fadeTo(audioElement, ev.target.value)
     }
   }
-  if (ev.target.id === "master-effects") {
+  if (ev.target.id === "main-effects-volume") {
     document.querySelectorAll('audio[data-type="effect"]').forEach(effect => {
       fadeTo(effect, ev.target.value)
+    })
+  }
+  if (ev.target.id === "main-volume") {
+    const value = ev.target.value / 100
+    document.querySelectorAll('audio').forEach(file => {
+      console.log(file, file.volume, value)
+      fadeTo(file, file.volume * value)
     })
   }
 })
