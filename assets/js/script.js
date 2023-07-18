@@ -90,6 +90,30 @@ function fadeIn(audio, targetVolume) {
   }, 100)
 }
 
+function fadeTo(audio, targetVolume) {
+  const steps = 0.025
+  const target = targetVolume / 100
+  if (audio.volume < target) {
+    let fadeTo = setInterval(() => {
+      if (audio.volume.toFixed(2) >= target - steps) {
+        audio.volume = target
+        clearInterval(fadeTo)
+      } else {
+        audio.volume += steps
+      }
+    }, 100)
+  } else {
+    let fadeTo = setInterval(() => {
+      if (audio.volume.toFixed(2) <= target + steps) {
+        audio.volume = target
+        clearInterval(fadeTo)
+      } else {
+        audio.volume -= steps
+      }
+    }, 100)
+  }
+}
+
 function playEffect(id) {
   createAudio(id).then(audio => {
     if (audio) {
@@ -461,7 +485,7 @@ document.querySelectorAll('.add-form').forEach(form =>
     }
     input.value = ""
   }
-  ))
+))
 
 document.addEventListener('keydown', ev => {
   const effects = document.querySelectorAll('#effect .list li:not(.empty)')
@@ -482,6 +506,17 @@ document.addEventListener('keydown', ev => {
   if (ev.code === "Escape") {
     const dialog = document.querySelector('.dialog')
     if (dialog) dialog.remove()
+  }
+})
+
+// Volume handling
+document.addEventListener('change', ev => {
+  if (ev.target.type === "range") {
+    const audioId = ev.target.closest('li').getAttribute('data-id')
+    const audioElement = document.querySelector(`audio[data-id="${audioId}"]`)
+    if (audioElement) {
+      fadeTo(audioElement, ev.target.value)
+    }
   }
 })
 
