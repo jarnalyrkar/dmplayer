@@ -8,7 +8,7 @@
 You play Dungeons and Dragons, and want to play layered tracks of music, ambience and sound effects.
 You already have a local library of music, soundtracks and sound effects, or know how to get it.
 
-Apart from one music sample and one sound effect sample, there is no audio packs or sets included with this software. If you need pre-compiled audio sets and effects that are ready to go, <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option.
+Apart from one music sample and one sound effect sample, there are no audio packs or sets included with this software. If you need pre-compiled audio sets and effects that are ready to go, <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option.
 
 ### Using for online play:
 There are programs that can patch the audio from an application, into whatever output you require.
