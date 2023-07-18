@@ -1,7 +1,7 @@
 # Dungeon Master Player
 <b>Warning: Pre-Alpha version - not all functionality is implemented yet.</b>
 
-<img src="https://scontent.fsvg2-1.fna.fbcdn.net/v/t1.15752-9/356652377_1275279750045847_7877918628450760678_n.png?_nc_cat=111&ccb=1-7&_nc_sid=ae9488&_nc_ohc=gP9QigbzU6UAX9BNpZI&_nc_ht=scontent.fsvg2-1.fna&oh=03_AdQ2aTIdz4NkaNHkT_k6D2wgPQMP_keukUS0zAJDaFY9Tw&oe=64DD2CE2" alt="Preview of the application">
+<img src="readme.jpeg" alt="Preview of the application">
 
 ## Use case:
 ### Using for table play

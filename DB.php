@@ -89,6 +89,17 @@ class DB {
     }
     return $results;
   }
+  public function get_preset_track_settings($preset_id, $track_id) {
+    $sql = "SELECT playing, volume
+            FROM preset_track
+            WHERE preset_id = :preset_id AND track_id = :track_id;";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':preset_id', $preset_id);
+    $stmt->bindValue(':track_id', $track_id);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+
+  }
 
   public function get_last_active_preset($theme_id) {
     $query = $this->pdo->prepare("

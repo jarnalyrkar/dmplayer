@@ -99,12 +99,21 @@ function fadeTo(audio, targetVolume) {
   const steps = 0.025
   const target = targetVolume / 100
   const interval = 50
+  const audio_id = audio.getAttribute('data-id')
+  let hasFader = document.querySelector(`#track li[data-id="${audio_id}"]`)
+  let fader = null
+  if (hasFader) {
+    fader = hasFader.querySelector('input[type=range]')
+  }
   if (audio.volume < target) {
     let fadeTo = setInterval(() => {
       if (audio.volume.toFixed(2) >= target - steps) {
         audio.volume = target
         clearInterval(fadeTo)
       } else {
+        if (fader) {
+          // fader.value += Math.round(steps * 100)
+        }
         audio.volume += steps
       }
     }, interval)
@@ -159,17 +168,37 @@ function setPresets(theme_id) {
 }
 
 function setTracks(theme_id) {
+  console.log("Set tracks")
   const parent = document.querySelector('#track .list')
   parent.innerHTML = ""
   loadJson(`/api/track/get.php?theme_id=${theme_id}&type=1`).then(data => {
-
     if (data && data.length > 0) {
       data.forEach(item => {
         const template = document.querySelector("#track-item")
         const clone = template.content.cloneNode(true)
         const li = clone.querySelector('li')
+        const preset_id = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
         li.setAttribute('data-id', item.track_id)
-        // TODO: clone.querySelector('input[type=range]').value = ""
+        loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${item.track_id}`).then(data => {
+          // li.querySelector('input[type="range"]').value = data.volume
+          if (data.playing) {
+            const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
+            if (!existing) {
+              createAudio(item.track_id).then(audio => {
+                if (audio.paused) {
+                  audio.play()
+                  fadeTo(audio, data.volume)
+                }
+              })
+            } else {
+              if (existing.paused) {
+                existing.play()
+              }
+              fadeTo(existing, data.volume)
+            }
+          }
+
+        })
         li.querySelector('.track-title').innerHTML = item.name
         parent.appendChild(clone)
       })
@@ -247,7 +276,6 @@ function createPreset(value, theme_id, list) {
 
 function createTrack(value, theme_id, list) {
   // TODO (type = 1)
-  // Assign keystroke
     loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=1`)
     .then(id => {
       const template = document.querySelector('#track-item')
@@ -255,7 +283,6 @@ function createTrack(value, theme_id, list) {
       const li = clone.querySelector('li')
       li.setAttribute('data-id', id)
       li.querySelector('.track-title').innerHTML = value
-      // TODO: set volume
       list.append(clone)
       // TODO: Add exclamation for "Add file to this track"
       const empty = list.querySelector('.empty')
@@ -283,6 +310,7 @@ function createEffect(value, theme_id, list) {
 }
 
 async function createAudio(id) {
+  // if (document.querySelector(`audio[data-id="${id}"]`)) return;
   const el = document.createElement('audio')
   const path = await loadJson('/api/file/get_path.php')
   const audio = await loadJson(`/api/file/random.php?id=${id}`)
@@ -291,9 +319,10 @@ async function createAudio(id) {
     el.setAttribute('data-id', id)
     document.body.appendChild(el)
     return el
+  } else {
+    return false
   }
-  return false
-  }
+}
 
 function removePresets() {
   const presetList = document.querySelector('#preset .list')
@@ -305,9 +334,34 @@ function removePresets() {
 document.addEventListener('click', (ev) => {
 
   if (ev.target.getAttribute('data-action') === 'select') {
-    const id = ev.target.parentElement.getAttribute('data-id')
-    const list = ev.target.closest("section").querySelector('.list')
-    activateElement(id, list)
+    const preset_id = ev.target.parentElement.getAttribute('data-id')
+    const section = ev.target.closest("section")
+    const list = section.querySelector('.list')
+    activateElement(preset_id, list)
+
+    if (section.id === "preset") {
+      const tracks = document.querySelectorAll('#track .list li')
+      tracks.forEach(track => {
+        loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${track.getAttribute('data-id')}`).then(data => {
+          track.querySelector('input[type="range"]').value = data.volume
+          if (data.playing) {
+            const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
+            if (!existing) {
+              createAudio(track.getAttribute('data-id')).then(audio => {
+                if (!audio.paused && audio.duration > 0) {
+                  fadeTo(audio, data.volume)
+                } else {
+                  audio.play()
+                }
+              })
+            } else {
+              existing.play()
+              fadeTo(existing, data.volume)
+            }
+          }
+        })
+      })
+    }
   }
 
   if (ev.target.getAttribute('data-action') === 'delete') {
@@ -520,6 +574,7 @@ document.addEventListener('keydown', ev => {
 // Volume handling
 document.addEventListener('change', ev => {
   if (ev.target.getAttribute('data-type') === "music") {
+    ev.preventDefault()
     const audioId = ev.target.closest('li').getAttribute('data-id')
     const audioElement = document.querySelector(`audio[data-id="${audioId}"]`)
     if (audioElement) {
@@ -529,13 +584,6 @@ document.addEventListener('change', ev => {
   if (ev.target.id === "main-effects-volume") {
     document.querySelectorAll('audio[data-type="effect"]').forEach(effect => {
       fadeTo(effect, ev.target.value)
-    })
-  }
-  if (ev.target.id === "main-volume") {
-    const value = ev.target.value / 100
-    document.querySelectorAll('audio').forEach(file => {
-      console.log(file, file.volume, value)
-      fadeTo(file, file.volume * value)
     })
   }
 })

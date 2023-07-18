@@ -352,6 +352,9 @@ footer {
 .action-button[data-action=settings] {
   font-size: 1.5rem;
 }
+.action-button[data-action=info] {
+  font-size: 1.5rem;
+}
 
 .action-button[data-action=play].active {
   background-color: goldenrod;
