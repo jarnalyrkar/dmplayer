@@ -237,16 +237,16 @@ function createEffect(value, theme_id, list) {
 
 async function createAudio(id) {
   const el = document.createElement('audio')
-  const path = "/audio/"
+  const path = await loadJson('/api/file/get_path.php')
   const audio = await loadJson(`/api/file/random.php?id=${id}`)
-  if (audio) {
+  if (audio && path) {
     el.src = path + audio.filename
     el.setAttribute('data-id', id)
     document.body.appendChild(el)
     return el
   }
   return false
-}
+  }
 
 function removePresets() {
   const presetList = document.querySelector('#preset .list')
@@ -257,30 +257,7 @@ function removePresets() {
 // Event handlers
 document.addEventListener('click', (ev) => {
   if (ev.target.id === "add-new") {
-    const button = ev.target
-    const input = button.previousElementSibling
-    const value = removeTags(input.value)
-    const list = button.closest("section").querySelector('.list')
-    const type = list.parentElement.id
-    let theme_id = ""
-    const selectedTheme = document.querySelector('#theme .list__item[data-state=selected]')
-    if (selectedTheme) {
-      theme_id = selectedTheme.getAttribute('data-id')
-    }
-    if (type === "theme") {
-      createTheme(value, list)
-    }
-    if (type === "preset") {
-      // TODO: If no theme is selected, show "create theme first", message
-      createPreset(value, theme_id, list)
-    }
-    if (type === "track") {
-      createTrack(value, theme_id, list)
-    }
-    if (type === "effect") {
-      createEffect(value, theme_id, list)
-    }
-    input.value = ""
+
   }
 
   if (ev.target.getAttribute('data-action') === 'select') {
@@ -428,8 +405,37 @@ document.addEventListener('click', (ev) => {
   if (ev.target.classList.contains('dialog__outer')) {
     document.querySelector('.dialog').remove()
   }
-
 })
+
+document.querySelectorAll('.add-form').forEach(form =>
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault()
+    const button = form.querySelector('input[type=submit]')
+    const input = button.previousElementSibling
+    const value = removeTags(input.value)
+    const list = button.closest("section").querySelector('.list')
+    const type = list.parentElement.id
+    let theme_id = ""
+    const selectedTheme = document.querySelector('#theme .list__item[data-state=selected]')
+    if (selectedTheme) {
+      theme_id = selectedTheme.getAttribute('data-id')
+    }
+    if (type === "theme") {
+      createTheme(value, list)
+    }
+    if (type === "preset") {
+      // TODO: If no theme is selected, show "create theme first", message
+      createPreset(value, theme_id, list)
+    }
+    if (type === "track") {
+      createTrack(value, theme_id, list)
+    }
+    if (type === "effect") {
+      createEffect(value, theme_id, list)
+    }
+    input.value = ""
+  }
+  ))
 
 document.addEventListener('keydown', ev => {
   const effects = document.querySelectorAll('#effect .list li')

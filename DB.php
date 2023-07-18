@@ -274,6 +274,10 @@ class DB {
     $this->pdo->query("DELETE FROM track_file WHERE file_id = $id;");
   }
 
+  public function get_media_folder() {
+    return $this->get_setting_by_name('media_folder');
+  }
+
   // Settings
   private function get_setting_by_name($option) {
     $query = $this->pdo->query("SELECT value FROM settings WHERE option = \"$option\"");

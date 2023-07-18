@@ -1,5 +1,5 @@
 @echo off
-:: echo Starting local Dungeon Master Player server...
+echo Starting Dungeon Master Player
 :: start servers
 start /B "" php -S localhost:8008 -c php.ini -q >NUL 2>&1
 start /B "" php -f ./websockets.php -c php.ini -q >NUL 2>&1
