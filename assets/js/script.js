@@ -100,10 +100,10 @@ function fadeTo(audio, targetVolume) {
   const target = targetVolume / 100
   const interval = 50
   const audio_id = audio.getAttribute('data-id')
-  let hasFader = document.querySelector(`#track li[data-id="${audio_id}"]`)
-  let fader = null
-  if (hasFader) {
-    fader = hasFader.querySelector('input[type=range]')
+  const track = document.querySelector(`li[data-id="${audio_id}"]`)
+  if (track) {
+    let range = track.querySelector('input[type=range]')
+    animateRange(range, targetVolume)
   }
   if (audio.volume < target) {
     let fadeTo = setInterval(() => {
@@ -111,9 +111,6 @@ function fadeTo(audio, targetVolume) {
         audio.volume = target
         clearInterval(fadeTo)
       } else {
-        if (fader) {
-          // fader.value += Math.round(steps * 100)
-        }
         audio.volume += steps
       }
     }, interval)
@@ -126,6 +123,26 @@ function fadeTo(audio, targetVolume) {
         audio.volume -= steps
       }
     }, interval)
+  }
+}
+
+function animateRange(range, value) {
+  if (range.value > value) {
+     let move = setInterval(() => {
+       if (range.value > value) {
+         range.value--
+       } else {
+         clearInterval(move)
+       }
+     }, 50)
+  } else {
+    let move = setInterval(() => {
+       if (range.value < value) {
+         range.value++
+       } else {
+         clearInterval(move)
+       }
+     }, 50)
   }
 }
 
@@ -180,13 +197,18 @@ function setTracks(theme_id) {
         li.setAttribute('data-id', item.track_id)
         li.querySelector('[data-action=play]').classList.add('active')
         loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${item.track_id}`).then(data => {
-          li.querySelector('input[type="range"]').value = data.volume
+          const range = li.querySelector('input[type=range]')
+          if (range) {
+            animateRange(range, data.volume)
+          }
           if (data.playing) {
             const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
             if (!existing) {
               createAudio(item.track_id).then(audio => {
-                if (audio.paused) {
-                  audio.play()
+                if (audio) {
+                  if (audio.paused) {
+                    audio.play()
+                  }
                   fadeTo(audio, data.volume)
                 }
               })
@@ -275,7 +297,6 @@ function createPreset(value, theme_id, list) {
 }
 
 function createTrack(value, theme_id, list) {
-  // TODO (type = 1)
     loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=1`)
     .then(id => {
       const template = document.querySelector('#track-item')
@@ -342,7 +363,8 @@ document.addEventListener('click', (ev) => {
       const tracks = document.querySelectorAll('#track .list li')
       tracks.forEach(track => {
         loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${track.getAttribute('data-id')}`).then(data => {
-          track.querySelector('input[type="range"]').value = data.volume
+
+          animateRange(track.querySelector('input[type="range"]'), data.volume)
           if (data.playing) {
             const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
             if (!existing) {
@@ -573,7 +595,6 @@ document.addEventListener('keydown', ev => {
 // Volume handling
 document.addEventListener('change', ev => {
   if (ev.target.getAttribute('data-type') === "music") {
-    ev.preventDefault()
     const audioId = ev.target.closest('li').getAttribute('data-id')
     const audioElement = document.querySelector(`audio[data-id="${audioId}"]`)
     if (audioElement) {
