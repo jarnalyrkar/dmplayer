@@ -1,5 +1,7 @@
 // Constants, helpers
 const keystrokes = '123456789abcdefghijklmnopqrstuvwxyz'.split('')
+let theme_width = document.querySelector('#theme').clientWidth // inline-padding
+document.querySelector('#theme').style.width = theme_width + "px"
 setListHeight();
 
 function setListHeight() {
@@ -529,6 +531,24 @@ document.addEventListener('click', (ev) => {
       activeFiles.forEach(file => {
         fadeOut(file)
       })
+    }
+  }
+
+  if (ev.target.getAttribute('data-action') === 'toggle-themes') {
+    const theme = document.querySelector('#theme')
+    let transform = theme_width + 32 // inline padding + gap
+    if (theme.style.width === "0px") {
+      ev.target.querySelector('.arrow').style.transform = "rotateY(0)"
+      ev.target.style.backgroundColor = "#402512"
+      theme.style.width = theme_width + "px"
+      theme.style.transform = `translateX(0px)`
+      theme.classList.remove('shrinking')
+    } else {
+      ev.target.style.backgroundColor = "goldenrod"
+      ev.target.querySelector('.arrow').style.transform = "rotateY(180deg)"
+      theme.classList.add('shrinking')
+      theme.style.width = "0px"
+      theme.style.transform = `translateX(-${theme_width}px)`
     }
   }
 

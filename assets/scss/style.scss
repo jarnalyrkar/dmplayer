@@ -53,7 +53,33 @@ input[type=file] + label {
 
 main {
   display: flex;
-  justify-content: space-evenly;
+  gap: 1rem;
+  padding-inline: 1rem;
+  position: relative;
+}
+
+.action-section {
+  flex: 1;
+  display: grid;
+  grid-template-columns: clamp(300px, 21vw, 400px) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.shrinking ~ .action-section {
+  grid-template-columns: clamp(300px, 21vw, 400px) minmax(0, 1fr) minmax(0, 1.5fr);
+}
+
+
+
+section:not(#preset) header {
+  margin-top: 2.5rem;
+}
+
+#theme {
+  transition: width 500ms linear, transform 500ms linear;
+  width: 100%;
+  overflow: hidden;
+  max-width: 400px;
 }
 
 .add-form {
@@ -114,6 +140,7 @@ header {
 .track-title {
   color: goldenrod;
   font-size:1.25rem;
+  word-wrap: break-word;
   &__container {
     text-align: center;
   }
@@ -121,24 +148,32 @@ header {
 
 .track-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1rem;
+  @media(min-width: 1800px) {
+    align-items: center;
+    flex-direction: row;
+    gap: unset;
+    justify-content: space-between;
+  }
 }
 
 .track-info {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 .volume-bar {
   color: goldenrod;
   display: flex;
   gap: .5rem;
-  padding-right: .5rem;
+  padding-right: 1rem;
 }
 .volume-bar-background {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .volume-bar svg {
@@ -226,8 +261,16 @@ header {
 }
 
 #effect .list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+#track, #effect {
+  & .list li {
+    background-color: rgba(0,0,0,25%);
+    padding: 1rem;
+  }
 }
 
 .dialog {
@@ -313,7 +356,7 @@ header {
     background-color: goldenrod;
   }
   &__container {
-    padding-inline: 1rem;
+    // padding: 1rem;
   }
 }
 
@@ -339,8 +382,9 @@ footer {
 
 .footer-slider {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  justify-content: center;
+  color: goldenrod;
 }
 
 .footer-buttons {
@@ -355,7 +399,16 @@ footer {
 .action-button[data-action=info] {
   font-size: 1.5rem;
 }
-
 .action-button[data-action=play].active {
   background-color: goldenrod;
+}
+.action-button[data-action=toggle-themes] {
+  width: unset;
+  height: unset;
+  padding: .25rem .5rem;
+  & .arrow {
+    transition: transform 300ms ease-in-out;
+    display: inline-block;
+    margin-right: .5rem;
+  }
 }

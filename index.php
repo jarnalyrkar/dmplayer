@@ -24,10 +24,14 @@
     $data_type = "preset";
     $items = $db->get_presets_by_theme($active_theme_id);
     $placeholder = "E.g Busy townsquare, Quiet Night, Execution";
-    include $partials . "section.php";
-    include $partials . "tracks.php";
-    include $partials . "effects.php";
     ?>
+    <div class="action-section">
+    <?php
+      include $partials . "section.php";
+      include $partials . "tracks.php";
+      include $partials . "effects.php";
+      ?>
+    </div>
   </main>
   <footer>
     <div class="footer-buttons">
@@ -39,6 +43,7 @@
       <div class="footer-slider">
         <label>Effects</label>
         <div class="volume-bar">
+          <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
           <div class="volume-bar-background">
             <input id="main-effects-volume" type="range" min="0" max="100" value="100">
           </div>
