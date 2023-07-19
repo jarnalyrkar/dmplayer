@@ -39,6 +39,10 @@ async function loadJson(url) {
   throw new Error(response.status);
 }
 
+function randomBetween(min, max) { // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 function activateElement(id, list) {
   const current = list.querySelector('.list__item[data-state=selected]')
   if (current && current.getAttribute('data-id') === id) return false;
@@ -340,6 +344,14 @@ async function createAudio(id) {
     el.src = path + audio.filename
     el.setAttribute('data-id', id)
     document.body.appendChild(el)
+    // get and play new track when ended
+    el.addEventListener('ended', () => {
+      el.remove()
+      const timeout = randomBetween(3000, 15000)
+      setTimeout(() => {
+        createAudio(id).then(newEl => newEl.play())
+      }, timeout)
+    })
     return el
   } else {
     return false
