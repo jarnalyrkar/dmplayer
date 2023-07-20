@@ -131,20 +131,23 @@ function fadeTo(audio, targetVolume) {
 
 function animateRange(range, value) {
   if (range.value == value) return;
+  let currentValue = parseInt(range.value)
+  console.log(currentValue)
   if (range.value > value) {
      let move = setInterval(() => {
        if (range.value > value) {
-         range.value = range.value -= 2
+        currentValue = parseInt(range.value)
+         range.value = currentValue -= 2
        } else {
          clearInterval(move)
        }
      }, 50)
   } else {
     let move = setInterval(() => {
-       if (parseInt(range.value) < value) {
-          currentValue = parseInt(range.value)
-         range.value = currentValue += 2
-       } else {
+      if (parseInt(range.value) < value) {
+        currentValue = parseInt(range.value)
+        range.value = currentValue += 2
+      } else {
          clearInterval(move)
        }
      }, 50)
