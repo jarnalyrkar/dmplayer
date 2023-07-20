@@ -661,9 +661,23 @@ document.addEventListener('change', ev => {
 })
 
 document.addEventListener('dblclick', ev => {
-  console.log(ev.target)
   if (ev.target.getAttribute('data-action') === "select") {
     console.log("data-select")
+    const data_type = ev.target.closest('section').id
+    ev.target.setAttribute('type', 'text')
+    ev.target.select()
+    const id = ev.target.closest('li').getAttribute('data-id')
+    document.addEventListener('click', (click) => {
+      if (click.target === ev.target) return
+      ev.target.setAttribute('type', 'button')
+      loadJson(`/api/${data_type}/update.php?id=${id}&new-name=${ev.target.value}`)
+    })
+    addEventListener('keydown', (pressed) => {
+      if (pressed.key === "Enter") {
+        loadJson(`/api/${data_type}/update.php?id=${id}&new-name=${ev.target.value}`)
+        ev.target.setAttribute('type', 'button')
+      }
+    })
     // find data-type
     // change input type to text
     // submit to update-method

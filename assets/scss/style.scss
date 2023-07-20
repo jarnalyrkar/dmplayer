@@ -238,7 +238,7 @@ header {
   &__item {
     display: flex;
     gap: .5rem;
-    & input[type=button] {
+    & input[type=button], input[type=text] {
       background-color: rgb(64, 37, 18);
       color: white;
       border: 1px solid rgb(97, 56, 27);
@@ -247,6 +247,7 @@ header {
       text-align: start;
       transition: background-color 300ms, transform 200ms;
       white-space: break-spaces;
+      outline: none;
       &:hover {
         background-color:rgb(174, 100, 48);
       }

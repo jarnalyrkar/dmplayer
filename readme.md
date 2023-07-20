@@ -11,9 +11,10 @@ You already have a local library of music, soundtracks and sound effects, or kno
 Apart from one music sample and one sound effect sample, there are no audio packs or sets included with this software. If you need pre-compiled audio sets and effects that are ready to go, <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option.
 
 ### Using for online play:
-There are programs that can patch the audio from an application, into whatever output you require.
+There are programs that can patch the audio from an application (such as your browser), into whatever output you require.
 
-I've not yet found time to experiment with this, but this seems like a good start: https://vb-audio.com/Cable/
+I've not yet found time to experiment with this, but this seems like a good start for windows:
+https://vb-audio.com/Cable/
 
 ## How to install:
 First, download this repo<br>

@@ -38,7 +38,13 @@ class DB {
     return $this->get_setting_by_name('last_theme');
   }
   // Update
-  public function update_theme($id, $newName) {}
+  public function update_theme($theme_id, $newName) {
+    $sql = "UPDATE theme SET name = :new_name WHERE theme_id = :theme_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':theme_id', $theme_id);
+    $stmt->bindValue(':new_name', $newName);
+    $stmt->execute();
+  }
   public function update_last_theme($id) {
     $sql = "UPDATE settings SET value = :id WHERE option = \"last_theme\"";
     $stmt = $this->pdo->prepare($sql);
@@ -119,7 +125,14 @@ class DB {
   }
 
   // Update
-  public function update_preset($id, $newName) {}
+  public function update_preset($preset_id, $newName) {
+    $sql = "UPDATE preset SET name = :new_name WHERE preset_id = :theme_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':theme_id', $preset_id);
+    $stmt->bindValue(':new_name', $newName);
+    $stmt->execute();
+  }
+
   public function update_last_preset($preset_id, $theme_id) {
     // remove old
     $sql = "
@@ -155,8 +168,7 @@ class DB {
 
     return $stmt->fetch();
   }
-  public function update_preset_track_volume($preset_id, $track_id, $volume)
-  {
+  public function update_preset_track_volume($preset_id, $track_id, $volume) {
     $sql = "UPDATE preset_track
             SET volume = :volume
             WHERE preset_id = :preset_id AND track_id = :track_id;";
@@ -167,8 +179,7 @@ class DB {
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
-  public function update_preset_track_play_status($preset_id, $track_id, $playing)
-  {
+  public function update_preset_track_play_status($preset_id, $track_id, $playing) {
     $sql = "UPDATE preset_track
             SET playing = :playing
             WHERE preset_id = :preset_id AND track_id = :track_id;";
