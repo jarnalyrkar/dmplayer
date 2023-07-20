@@ -102,7 +102,7 @@ function fadeTo(audio, targetVolume) {
   const target = targetVolume / 100
   const interval = 50
   const audio_id = audio.getAttribute('data-id')
-  const track = document.querySelector(`li[data-id="${audio_id}"]`)
+  const track = document.querySelector(`#track li[data-id="${audio_id}"]`)
   if (track) {
     let range = track.querySelector('input[type=range]')
     audio.volume = range.value / 100
@@ -333,9 +333,13 @@ function createEffect(value, theme_id, list) {
     if (empty) empty.remove()
   })
 }
-
+function isMusic(id) {
+  return document.querySelector(`#track [data-id="${id}"]`)
+}
 async function createAudio(id) {
-  if (document.querySelector(`audio[data-id="${id}"]`)) return;
+  if (isMusic(id) && document.querySelector(`audio[data-id="${id}"]`)) {
+    return;
+  }
   const el = document.createElement('audio')
   const path = await loadJson('/api/file/get_path.php')
   const audio = await loadJson(`/api/file/random.php?id=${id}`)
@@ -344,19 +348,26 @@ async function createAudio(id) {
     el.setAttribute('data-id', id)
     document.body.appendChild(el)
     // get and play new track when ended
+    if (!isMusic(id)) {
+      el.volume = document.querySelector('[id=main-effects-volume]').value / 100
+      el.setAttribute('data-type', 'effect')
+      el.play()
+    }
     el.addEventListener('ended', () => {
       el.remove()
-      const timeout = randomBetween(3000, 15000)
-      setTimeout(() => {
-        createAudio(id).then(newEl => {
-          if (newEl) {
-            let volume = document.querySelector(`#track [data-id="${id}"] [type=range]`).value / 100
-            newEl.volume = volume
-            newEl.play()
-          }
-        })
-      }, timeout)
-    })
+      if (isMusic(id)) {
+        const timeout = randomBetween(3000, 15000)
+        setTimeout(() => {
+          createAudio(id).then(newEl => {
+            if (newEl) {
+              let volume = document.querySelector(`#track [data-id="${id}"] [type=range]`).value / 100
+              newEl.volume = volume
+              newEl.play()
+            }
+          })
+        }, timeout)
+      }
+      })
     return el
   } else {
     return false
@@ -505,7 +516,7 @@ document.addEventListener('click', (ev) => {
     const presetId = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
     loadJson(`/api/preset/update-play-status.php?track_id=${id}&preset_id=${presetId}&playing=${shouldPlay}`)
     let targetVolume = null
-    if (volumeBar) {
+    if (volumeBar) { // music
       targetVolume = volumeBar.value
       if (existingAudio) {
         if (existingAudio.paused) {
@@ -525,18 +536,7 @@ document.addEventListener('click', (ev) => {
         })
     }
   } else { // Effect
-    createAudio(id).then(audio => {
-      if (audio) {
-        audio.setAttribute("data-type", "effect")
-        audio.volume = document.querySelector('[id=main-effects-volume]').value / 100
-        audio.play()
-        audio.addEventListener('ended', ev => {
-          audio.remove()
-        })
-      } else {
-        // TODO: No file set / No file found
-      }
-    })
+    createAudio(id)
   }
   }
 
@@ -650,6 +650,8 @@ document.addEventListener('change', ev => {
   }
   if (ev.target.id === "main-effects-volume") {
     document.querySelectorAll('audio[data-type="effect"]').forEach(effect => {
+
+      console.log(effect, ev.target.value)
       fadeTo(effect, ev.target.value)
     })
   }
