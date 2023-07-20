@@ -329,6 +329,16 @@ class DB {
     return $this->get_setting_by_name('media_folder');
   }
 
+  public function get_last_effect_volume() {
+    return $this->get_setting_by_name('effect_volume');
+  }
+  public function set_last_effect_volume($volume) {
+    $sql = "UPDATE settings SET value = :volume WHERE option = \"effect_volume\"";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':volume', $volume);
+    $stmt->execute();
+  }
+
   // Settings
   private function get_setting_by_name($option) {
     $query = $this->pdo->query("SELECT value FROM settings WHERE option = \"$option\"");

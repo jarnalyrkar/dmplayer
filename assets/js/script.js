@@ -653,10 +653,9 @@ document.addEventListener('change', ev => {
   }
   if (ev.target.id === "main-effects-volume") {
     document.querySelectorAll('audio[data-type="effect"]').forEach(effect => {
-
-      console.log(effect, ev.target.value)
       fadeTo(effect, ev.target.value)
     })
+    loadJson(`/api/track/set-effect-volume.php?volume=${ev.target.value}`)
   }
 })
 

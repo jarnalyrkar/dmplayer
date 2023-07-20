@@ -45,7 +45,7 @@
         <div class="volume-bar">
           <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
           <div class="volume-bar-background">
-            <input id="main-effects-volume" type="range" min="0" max="100" value="100">
+            <input id="main-effects-volume" type="range" min="0" max="100" value="<?= $init_volume; ?>">
           </div>
         </div>
       </div>

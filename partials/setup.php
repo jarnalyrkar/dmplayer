@@ -5,3 +5,4 @@ include $_SERVER['DOCUMENT_ROOT'] . '/DB.php';
 $db = new DB();
 $active_theme_id = $db->get_last_active_theme();
 $active_preset_id = $db->get_last_active_preset($active_theme_id);
+$init_volume = $db->get_last_effect_volume();
