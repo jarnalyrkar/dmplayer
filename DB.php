@@ -98,7 +98,6 @@ class DB {
     $stmt->bindValue(':track_id', $track_id);
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
-
   }
 
   public function get_last_active_preset($theme_id) {
@@ -155,6 +154,30 @@ class DB {
     $stmt->execute();
 
     return $stmt->fetch();
+  }
+  public function update_preset_track_volume($preset_id, $track_id, $volume)
+  {
+    $sql = "UPDATE preset_track
+            SET volume = :volume
+            WHERE preset_id = :preset_id AND track_id = :track_id;";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':preset_id', $preset_id);
+    $stmt->bindValue(':track_id', $track_id);
+    $stmt->bindValue(':volume', $volume);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+  public function update_preset_track_play_status($preset_id, $track_id, $playing)
+  {
+    $sql = "UPDATE preset_track
+            SET playing = :playing
+            WHERE preset_id = :preset_id AND track_id = :track_id;";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':preset_id', $preset_id);
+    $stmt->bindValue(':track_id', $track_id);
+    $stmt->bindValue(':playing', $playing);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
   // Delete
   public function delete_preset($id) {

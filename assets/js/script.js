@@ -63,12 +63,8 @@ function activateElement(id, list) {
   }
 }
 
-function setVolumeAttributes() {
-  console.log("Moving volume sliders and knobs...")
-}
-
 function fadeOut(audio) {
-  const steps = 0.025
+  const steps = 0.05
   const interval = 50
   let fadeout = setInterval(() => {
     if (audio.volume >= steps) {
@@ -89,7 +85,7 @@ function fadeOut(audio) {
 function fadeIn(audio, targetVolume) {
   audio.volume = 0
   audio.play()
-  const steps = 0.025
+  const steps = 0.05
   const interval = 50
   let fadein = setInterval(() => {
     if (audio.volume.toFixed(2) <= (targetVolume / 100) - steps) {
@@ -102,13 +98,14 @@ function fadeIn(audio, targetVolume) {
 }
 
 function fadeTo(audio, targetVolume) {
-  const steps = 0.025
+  const steps = 0.05
   const target = targetVolume / 100
   const interval = 50
   const audio_id = audio.getAttribute('data-id')
   const track = document.querySelector(`li[data-id="${audio_id}"]`)
   if (track) {
     let range = track.querySelector('input[type=range]')
+    audio.volume = range.value / 100
     animateRange(range, targetVolume)
   }
   if (audio.volume < target) {
@@ -133,18 +130,20 @@ function fadeTo(audio, targetVolume) {
 }
 
 function animateRange(range, value) {
+  if (range.value == value) return;
   if (range.value > value) {
      let move = setInterval(() => {
        if (range.value > value) {
-         range.value--
+         range.value = range.value -= 2
        } else {
          clearInterval(move)
        }
      }, 50)
   } else {
     let move = setInterval(() => {
-       if (range.value < value) {
-         range.value++
+       if (parseInt(range.value) < value) {
+          currentValue = parseInt(range.value)
+         range.value = currentValue += 2
        } else {
          clearInterval(move)
        }
@@ -349,7 +348,13 @@ async function createAudio(id) {
       el.remove()
       const timeout = randomBetween(3000, 15000)
       setTimeout(() => {
-        createAudio(id).then(newEl => newEl.play())
+        createAudio(id).then(newEl => {
+          if (newEl) {
+            let volume = document.querySelector(`#track [data-id="${id}"] [type=range]`).value / 100
+            newEl.volume = volume
+            newEl.play()
+          }
+        })
       }, timeout)
     })
     return el
@@ -377,23 +382,28 @@ document.addEventListener('click', (ev) => {
       const tracks = document.querySelectorAll('#track .list li')
       tracks.forEach(track => {
         loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${track.getAttribute('data-id')}`).then(data => {
-
-          animateRange(track.querySelector('input[type="range"]'), data.volume)
           if (data.playing) {
             const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
+            const volume = track.querySelector('[type=range]').value / 100
             if (!existing) {
               createAudio(track.getAttribute('data-id')).then(audio => {
+                audio.volume = volume
+                fadeTo(audio, data.volume)
                 if (!audio.paused && audio.duration > 0) {
-                  fadeTo(audio, data.volume)
+                  // nada
                 } else {
                   audio.play()
                 }
               })
             } else {
-              existing.play()
+              existing.volume = volume
               fadeTo(existing, data.volume)
+              existing.play()
             }
+            track.querySelector('[data-action=play]').classList.add('active')
           }
+          let range = track.querySelector('input[type="range"]')
+          animateRange(range, data.volume)
         })
       })
     }
@@ -491,6 +501,9 @@ document.addEventListener('click', (ev) => {
     const existingAudio = document.querySelector(`audio[data-id="${id}"]`)
     const volumeBar = li.querySelector('input[type=range]')
     ev.target.classList.toggle('active')
+    let shouldPlay = ev.target.classList.contains('active') ? 1 : 0
+    const presetId = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
+    loadJson(`/api/preset/update-play-status.php?track_id=${id}&preset_id=${presetId}&playing=${shouldPlay}`)
     let targetVolume = null
     if (volumeBar) {
       targetVolume = volumeBar.value
@@ -630,13 +643,31 @@ document.addEventListener('change', ev => {
     const audioId = ev.target.closest('li').getAttribute('data-id')
     const audioElement = document.querySelector(`audio[data-id="${audioId}"]`)
     if (audioElement) {
+      const presetId = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
       fadeTo(audioElement, ev.target.value)
+      loadJson(`/api/preset/update-volume.php?preset_id=${presetId}&track_id=${audioId}&volume=${ev.target.value}`)
     }
   }
   if (ev.target.id === "main-effects-volume") {
     document.querySelectorAll('audio[data-type="effect"]').forEach(effect => {
       fadeTo(effect, ev.target.value)
     })
+  }
+})
+
+document.addEventListener('dblclick', ev => {
+  console.log(ev.target)
+  if (ev.target.getAttribute('data-action') === "select") {
+    console.log("data-select")
+    // find data-type
+    // change input type to text
+    // submit to update-method
+  }
+  if (ev.target.classList.contains('track-title')) {
+    console.log("track-title")
+    // find data type
+    // hide span, add input-field
+    // submit to update-method
   }
 })
 
