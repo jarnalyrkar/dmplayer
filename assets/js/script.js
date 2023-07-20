@@ -678,17 +678,52 @@ document.addEventListener('dblclick', ev => {
         ev.target.setAttribute('type', 'button')
       }
     })
-    // find data-type
-    // change input type to text
-    // submit to update-method
   }
   if (ev.target.classList.contains('track-title')) {
-    console.log("track-title")
-    // find data type
-    // hide span, add input-field
-    // submit to update-method
+    const data_type = ev.target.closest('section').id
+    const current_item = ev.target.closest('li')
+    const id = current_item.getAttribute('data-id')
+
+    ev.target.style.display = "none"
+
+    const textarea = createTitleInput(ev.target.innerHTML)
+    ev.target.insertAdjacentElement('afterend', textarea)
+    textarea.focus()
+    textarea.select()
+    textarea.addEventListener('keydown', (pressed) => {
+      if (pressed.key === "Enter") {
+        ev.preventDefault()
+        ev.target.removeAttribute('style')
+        ev.target.innerHTML = textarea.value
+        textarea.remove()
+        loadJson(`/api/track/update.php?id=${id}&new-name=${textarea.value}`)
+      }
+    })
+
+    document.addEventListener('click', (click) => {
+      if (click.target.type === "textarea") return
+      ev.target.removeAttribute('style')
+      ev.target.innerHTML = textarea.value
+      textarea.remove()
+      loadJson(`/api/track/update.php?id=${id}&new-name=${textarea.value}`)
+    })
   }
 })
+
+function createTitleInput(value) {
+  const input = document.createElement('textarea')
+  input.type = "text"
+  input.value = value
+  input.rows = 1
+  input.select()
+  input.style.flex = "unset"
+  input.addEventListener('input', () => {
+    input.style.height = ""
+    input.style.height = input.scrollHeight + "px"
+  })
+
+  return input
+}
 
 const host = 'ws://127.0.0.1:8009/websockets.php'
 const socket = new WebSocket(host)

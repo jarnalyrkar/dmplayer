@@ -252,7 +252,13 @@ class DB {
   }
 
   // Update
-  public function update_track($id, $newName) {}
+  public function update_track($track_id, $newName) {
+    $sql = "UPDATE track SET name = :new_name WHERE track_id = :track_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':track_id', $track_id);
+    $stmt->bindValue(':new_name', $newName);
+    $stmt->execute();
+  }
   // Delete
   public function delete_track($id) {
     $this->pdo->query("DELETE FROM theme_track WHERE track_id = $id");
