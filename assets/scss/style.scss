@@ -69,6 +69,10 @@ main {
   grid-template-columns: clamp(300px, 21vw, 400px) minmax(0, 1fr) minmax(0, 1.5fr);
 }
 
+.files {
+  gap: 1rem;
+  display: grid;
+}
 
 
 section:not(#preset) header {
