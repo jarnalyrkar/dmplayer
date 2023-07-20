@@ -20,7 +20,7 @@ https://vb-audio.com/Cable/
 First, download this repo<br>
 PHP is required, so go ahead and install that, see below for instructions.<br>
 
-On Windows, use dmplayer.bat (coming soon)<br>
+On Windows, use dmplayer.bat<br>
 On Linux and MacOS, use dmplayer.sh
 
 ### Install PHP (windows):
