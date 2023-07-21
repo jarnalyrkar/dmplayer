@@ -368,12 +368,15 @@ function createPreset(value, theme_id, list) {
   if (value === "Default") {
     current = 1
   }
-  loadJson(`/api/preset/create.php?name=${value}&theme_id=${theme_id}&current=${current}`)
+  const order = list.children.length + 1
+
+  loadJson(`/api/preset/create.php?name=${value}&theme_id=${theme_id}&order=${order}&current=${current}`)
   .then(id => {
     const template = document.querySelector('#item')
     const clone = template.content.cloneNode(true)
     const li = clone.querySelector('.list__item')
     li.setAttribute('data-id', id)
+    li.setAttribute('data-order', order)
     clone.querySelector('.list__item input[type=button]').value = value
     list.append(clone)
     if (current) {
@@ -386,22 +389,25 @@ function createPreset(value, theme_id, list) {
 }
 
 function createTrack(value, theme_id, list) {
-    loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=1`)
-    .then(id => {
-      const template = document.querySelector('#track-item')
-      const clone = template.content.cloneNode(true)
-      const li = clone.querySelector('li')
-      li.setAttribute('data-id', id)
-      li.querySelector('.track-title').innerHTML = value
-      list.append(clone)
-      // TODO: Add exclamation for "Add file to this track"
-      const empty = list.querySelector('.empty')
-      if (empty) empty.remove()
-    })
+  const order = list.children.length + 1
+  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=1&order=${order}`)
+  .then(id => {
+    const template = document.querySelector('#track-item')
+    const clone = template.content.cloneNode(true)
+    const li = clone.querySelector('li')
+    li.setAttribute('data-id', id)
+    li.setAttribute('data-order', order)
+    li.querySelector('.track-title').innerHTML = value
+    list.append(clone)
+    tagTracksWithoutFiles()
+    const empty = list.querySelector('.empty')
+    if (empty) empty.remove()
+  })
 }
 
 function createEffect(value, theme_id, list) {
-  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=2`)
+  const order = list.children.length + 1
+  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=2&order=${order}`)
   .then(id => {
     const template = document.querySelector('#effect-item')
     const clone = template.content.cloneNode(true)
@@ -412,7 +418,7 @@ function createEffect(value, theme_id, list) {
     const keystroke = keystrokes[list.querySelectorAll('li:not(.empty)').length - 1]
     li.setAttribute('data-keystroke', keystroke)
     li.querySelector('.keystroke').innerHTML = keystroke
-    // TODO: Add exclamation for "Add file to this track"
+    tagTracksWithoutFiles()
     const empty = list.querySelector('.empty')
     if (empty) empty.remove()
   })
@@ -515,6 +521,9 @@ document.addEventListener('click', (ev) => {
     if (type === "effect" || type === "track") {
       loadJson(`/api/track/delete.php?id=${id}`)
       li.remove()
+      if (list.children.length === 0) {
+        list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
+      }
       return
     }
     const selected = list.querySelector('[data-state=selected]')
@@ -649,7 +658,7 @@ document.addEventListener('click', (ev) => {
 
   if (ev.target.getAttribute('data-action') === 'toggle-themes') {
     const theme = document.querySelector('#theme')
-    let transform = theme_width + 32 // inline padding + gap
+    let transform = theme_width // inline padding + gap
     if (theme.style.width === "0px") {
       ev.target.querySelector('.arrow').style.transform = "rotateY(0)"
       ev.target.style.backgroundColor = "#402512"

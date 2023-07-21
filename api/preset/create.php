@@ -5,7 +5,11 @@ $data = null;
 $db = new DB();
 if (isset($_GET['name']) && isset($_GET['theme_id'])) {
   $current = $_GET['current'] ?? 0;
-  $data = $db->create_preset(htmlspecialchars($_GET['name']), htmlspecialchars($_GET['theme_id']), $current);
+  $data = $db->create_preset(
+    htmlspecialchars($_GET['name']),
+    htmlspecialchars($_GET['theme_id']),
+    htmlspecialchars($_GET['order']),
+    $current);
 }
 
 header("Content-Type: application/json");

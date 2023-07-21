@@ -10,6 +10,7 @@
 
 <body>
   <main>
+    <button class="action-button" data-action="toggle-themes"><span class="arrow">&larr;</span> Themes</button>
     <?php
     $partials = $_SERVER['DOCUMENT_ROOT'] . "/partials/";
     include $partials . "setup.php";
@@ -26,7 +27,7 @@
     $placeholder = "E.g Busy townsquare, Quiet Night, Execution";
     ?>
     <div class="action-section">
-    <?php
+      <?php
       include $partials . "section.php";
       include $partials . "tracks.php";
       include $partials . "effects.php";

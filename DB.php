@@ -73,7 +73,7 @@ class DB {
 
   // Preset
   // Create
-  public function create_preset($name, $theme_id, $current = 0) {
+  public function create_preset($name, $theme_id, $order, $current = 0) {
     // create preset
     $sql = "INSERT INTO preset (name) VALUES(:name)";
     $stmt = $this->pdo->prepare($sql);
@@ -82,11 +82,12 @@ class DB {
     $preset_id = $this->pdo->lastInsertId();
 
     // add preset to theme
-    $sql = "INSERT INTO theme_preset (theme_id, preset_id, current) VALUES(:theme_id, :preset_id, :current)";
+    $sql = "INSERT INTO theme_preset (theme_id, preset_id, current, \"order\") VALUES(:theme_id, :preset_id, :current, :order)";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':theme_id', $theme_id);
     $stmt->bindValue(':preset_id', $preset_id);
     $stmt->bindValue(':current', $current);
+    $stmt->bindValue(':order', $order);
     $stmt->execute();
 
     return $preset_id;
@@ -228,7 +229,7 @@ class DB {
 
   // Track
   // Create
-  public function create_track($name, $theme_id, $type_id) {
+  public function create_track($name, $theme_id, $type_id, $order) {
     // create track
     $sql = "INSERT INTO track (name, type_id) VALUES(:name, :type_id)";
     $stmt = $this->pdo->prepare($sql);
@@ -238,10 +239,11 @@ class DB {
     $track_id = $this->pdo->lastInsertId();
 
     // add track to theme
-    $sql = "INSERT INTO theme_track (theme_id, track_id) VALUES(:theme_id, :track_id)";
+    $sql = "INSERT INTO theme_track (theme_id, track_id, \"order\") VALUES(:theme_id, :track_id, :order)";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':theme_id', $theme_id);
     $stmt->bindValue(':track_id', $track_id);
+    $stmt->bindValue(':order', $order);
     $stmt->execute();
 
     return $track_id;

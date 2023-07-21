@@ -1,13 +1,6 @@
 <section id="<?= $data_type ?>">
   <header>
-    <?php if ($data_type === "preset") : ?>
-      <div class="preset-header-row">
-        <button class="action-button" data-action="toggle-themes"><span class="arrow">&larr;</span> Themes</button>
-        <h2><?= $title ?></h2>
-      </div>
-    <?php else : ?>
-      <h2><?= $title ?></h2>
-    <?php endif; ?>
+    <h2><?= $title ?></h2>
     <?php include $partials . "add-form.php"; ?>
   </header>
   <ul class="list">
@@ -32,7 +25,7 @@
     <?php endif; ?>
   </ul>
   <template id="item">
-    <li data-id="" class="list__item" data-order="" draggable="true">
+    <li data-order="" draggable="true" data-id="" class="list__item">
       <input data-action="select" type="button" value="">
       <button class="action-button" data-action="delete">-</button>
     </li>
