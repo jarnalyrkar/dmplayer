@@ -15,7 +15,7 @@ $keyCounter = 0;
   <ul class="list">
     <?php if (count($items) > 0) : ?>
       <?php foreach ($items as $item) : ?>
-        <li data-id="<?= $item['track_id'] ?>" data-keystroke="<?= $keystrokes[$keyCounter]; ?>">
+        <li draggable="true" data-id="<?= $item['track_id'] ?>" data-keystroke="<?= $keystrokes[$keyCounter]; ?>">
           <div class="track-title__container">
             <span class="track-title"><?= $item['name']; ?></span>
           </div>
@@ -23,7 +23,6 @@ $keyCounter = 0;
             <button class="keystroke" data-action="play"><?= $keystrokes[$keyCounter]; ?></button>
           </div>
           <div class="play-actions">
-            <!-- <button class="action-button" data-action="play">&#10148;</button> -->
             <button class="action-button" data-action="see-files">&#128065;</button>
             <button class="action-button" data-action="delete">-</button>
           </div>
@@ -35,7 +34,7 @@ $keyCounter = 0;
     <?php endif; ?>
   </ul>
   <template id="effect-item">
-    <li data-id="" data-keystroke="">
+    <li draggable="true" data-order="" data-id="" data-keystroke="">
       <div class="track-title__container">
         <span class="track-title"></span>
       </div>

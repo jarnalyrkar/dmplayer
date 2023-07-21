@@ -43,6 +43,22 @@ function randomBetween(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
+function createTitleInput(value) {
+  const input = document.createElement('textarea')
+  input.type = "text"
+  input.value = value
+  input.rows = 1
+  input.select()
+  input.style.flex = "unset"
+  input.addEventListener('input', () => {
+    input.style.height = ""
+    input.style.height = input.scrollHeight + "px"
+  })
+
+  return input
+}
+
+
 function activateElement(id, list) {
   const current = list.querySelector('.list__item[data-state=selected]')
   if (current && current.getAttribute('data-id') === id) return false;
@@ -709,20 +725,80 @@ document.addEventListener('dblclick', ev => {
   }
 })
 
-function createTitleInput(value) {
-  const input = document.createElement('textarea')
-  input.type = "text"
-  input.value = value
-  input.rows = 1
-  input.select()
-  input.style.flex = "unset"
-  input.addEventListener('input', () => {
-    input.style.height = ""
-    input.style.height = input.scrollHeight + "px"
-  })
+let dragged;
+let order;
+let index;
+let indexDrop;
+let list;
 
-  return input
+document.addEventListener("dragstart", ({target}) => {
+  dragged = target;
+  order = target.getAttribute('data-order');
+  list = target.parentNode.children;
+  for(let i = 0; i < list.length; i += 1) {
+    if(list[i] === dragged){
+      index = i;
+    }
+  }
+});
+
+document.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+
+document.addEventListener("drop", ({target}) => {
+  if (target.nodeName === "LI" && target.getAttribute('data-order') !== order) {
+    dragged.remove( dragged );
+    for(let i = 0; i < list.length; i += 1) {
+      if(list[i] === target){
+        indexDrop = i;
+      }
+    }
+    if(index > indexDrop) {
+      target.before( dragged );
+    } else {
+      target.after( dragged );
+    }
+    saveNewOrder(target)
+  }
+});
+
+function saveNewOrder(target) {
+  const data_type = target.closest('section').id
+  const theme_id = document.querySelector('#theme [data-state=selected]').getAttribute('data-id')
+  if (data_type === "theme") {
+    const items = document.querySelectorAll('#theme li')
+    const length = items.length
+    for (let i = 1; i <= length; i++) {
+      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
+      const id = items[i - 1].getAttribute('data-id')
+      loadJson(`/api/theme/update-order.php?id=${id}&order=${i}`)
+    }
+  } else if (data_type === "preset") {
+    const items = document.querySelectorAll('#preset li')
+    const length = items.length
+    for (let i = 1; i <= length; i++) {
+      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
+      const id = items[i - 1].getAttribute('data-id')
+      loadJson(`/api/preset/update-order.php?preset_id=${id}&theme_id=${theme_id}&order=${i}`)
+    }
+  } else if (data_type === "track" || data_type === "effect") {
+    // Update track order
+    let items = null
+    if (data_type === "track") {
+      items = document.querySelectorAll('#track li')
+    } else if (data_type === "effect") {
+      items = document.querySelectorAll('#effect li')
+    }
+    const length = items.length
+    for (let i = 1; i <= length; i++) {
+      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
+      const id = items[i - 1].getAttribute('data-id')
+      loadJson(`/api/track/update-order.php?track_id=${id}&theme_id=${theme_id}&order=${i}`)
+    }
+  }
 }
+
 
 const host = 'ws://127.0.0.1:8009/websockets.php'
 const socket = new WebSocket(host)

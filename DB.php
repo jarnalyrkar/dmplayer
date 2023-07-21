@@ -27,7 +27,11 @@ class DB {
   }
   // Read
   public function get_themes() {
-    $query = $this->pdo->query("SELECT theme_id, name FROM theme");
+    $query = $this->pdo->query("
+      SELECT *
+      FROM theme
+      ORDER BY \"order\" ASC
+    ");
     $themes = [];
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
       $themes[] = $row;
@@ -49,6 +53,13 @@ class DB {
     $sql = "UPDATE settings SET value = :id WHERE option = \"last_theme\"";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':id', $id);
+    $stmt->execute();
+  }
+  public function update_theme_order($id, $order) {
+    $sql = "UPDATE theme SET \"order\" = :order WHERE theme_id = :theme_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':theme_id', $id);
+    $stmt->bindValue(':order', $order);
     $stmt->execute();
   }
   // Delete
@@ -86,6 +97,7 @@ class DB {
       FROM theme_preset
       INNER JOIN preset USING(preset_id)
       WHERE theme_id = :theme_id
+      ORDER BY \"order\"
     ");
     $query->bindValue(':theme_id', $id);
     $query->execute();
@@ -190,6 +202,15 @@ class DB {
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
+  public function update_preset_theme_order($preset_id, $theme_id, $order) {
+    $sql = "UPDATE theme_preset SET \"order\" = :order WHERE preset_id = :preset_id AND theme_id = :theme_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':order', $order);
+    $stmt->bindValue(':preset_id', $preset_id);
+    $stmt->bindValue(':theme_id', $theme_id);
+    $stmt->execute();
+  }
+
   // Delete
   public function delete_preset($id) {
     $this->pdo->query("DELETE FROM theme_preset WHERE preset_id = $id;");
@@ -232,6 +253,7 @@ class DB {
       INNER JOIN track USING (track_id)
       WHERE theme_id = :theme_id
       AND type_id = :type_id
+      ORDER BY \"order\"
     ");
     $query->bindValue(':theme_id', $theme_id);
     $query->bindValue(':type_id', $type_id);
@@ -258,6 +280,15 @@ class DB {
     $stmt->bindValue(':track_id', $track_id);
     $stmt->bindValue(':new_name', $newName);
     $stmt->execute();
+  }
+  public function update_theme_track_order($track_id, $theme_id, $order) {
+    $sql = "UPDATE theme_track SET \"order\" = :order WHERE track_id = :track_id AND theme_id = :theme_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':order', $order);
+    $stmt->bindValue(':track_id', $track_id);
+    $stmt->bindValue(':theme_id', $theme_id);
+    $stmt->execute();
+    return $stmt->fetch();
   }
   // Delete
   public function delete_track($id) {

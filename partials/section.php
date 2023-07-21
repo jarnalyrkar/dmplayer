@@ -11,6 +11,7 @@
     <?php include $partials . "add-form.php"; ?>
   </header>
   <ul class="list">
+    <?php $counter = 1; ?>
     <?php if (count($items) > 0) : ?>
       <?php foreach ($items as $item) :
         $selected = "";
@@ -20,17 +21,18 @@
           $selected = ($item["preset_id"] == $active_preset_id) ? ' data-state="selected"' : "";
         }
       ?>
-        <li data-id="<?= $item[$data_type . "_id"]; ?>" class="list__item" <?= $selected ?>>
+        <li data-order="<?= $counter; ?>" draggable="true" data-id="<?= $item[$data_type . "_id"]; ?>" class="list__item" <?= $selected ?>>
           <input data-action="select" type="button" value="<?= $item['name']; ?>">
           <button class="action-button" data-action="delete">-</button>
         </li>
+        <?php $counter++; ?>
       <?php endforeach; ?>
     <?php else : ?>
       <li class="empty">No <?= $data_type; ?>s added yet!</li>
     <?php endif; ?>
   </ul>
   <template id="item">
-    <li data-id="" class="list__item">
+    <li data-id="" class="list__item" data-order="" draggable="true">
       <input data-action="select" type="button" value="">
       <button class="action-button" data-action="delete">-</button>
     </li>

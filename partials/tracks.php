@@ -11,7 +11,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
   <ul class="list">
     <?php if (count($items) > 0) : ?>
       <?php foreach ($items as $item) : ?>
-        <li data-id="<?= $item['track_id'] ?>" data-volume="">
+        <li draggable="true" data-id="<?= $item['track_id'] ?>" data-order="<?= $item['order'] ?>">
           <div>
             <div class="track-row">
               <div class="track-info">
@@ -38,7 +38,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
     <?php endif; ?>
   </ul>
   <template id="track-item">
-    <li data-id="">
+    <li data-id="" draggable="true">
       <div>
         <div class="track-row">
           <div class="track-info">
