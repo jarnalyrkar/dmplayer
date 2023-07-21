@@ -12,23 +12,21 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
     <?php if (count($items) > 0) : ?>
       <?php foreach ($items as $item) : ?>
         <li draggable="true" data-id="<?= $item['track_id'] ?>" data-order="<?= $item['order'] ?>">
-          <div>
-            <div class="track-row">
-              <div class="track-info">
-                <span class="track-title"><?= $item['name']; ?></span>
-                <div class="volume-bar">
-                  <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
-                  <div class="volume-bar-background">
-                    <?php $track_settings = $db->get_preset_track_settings($active_preset_id, $item['track_id']); ?>
-                    <input type="range" data-type="music" min="0" max="100" value="<?= $track_settings['volume'] ?? 75; ?>">
-                  </div>
+          <div class="track-row">
+            <div class="track-info">
+              <span class="track-title"><?= $item['name']; ?></span>
+              <div class="volume-bar">
+                <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
+                <div class="volume-bar-background">
+                  <?php $track_settings = $db->get_preset_track_settings($active_preset_id, $item['track_id']); ?>
+                  <input type="range" data-type="music" min="0" max="100" value="<?= $track_settings['volume'] ?? 75; ?>">
                 </div>
               </div>
-              <div class="play-actions">
-                <button class="action-button" data-action="play">&#10148;</button>
-                <button class="action-button" data-action="see-files">&#128065;</button>
-                <button class="action-button" data-action="delete">-</button>
-              </div>
+            </div>
+            <div class="play-actions">
+              <button class="action-button" data-action="play">&#10148;</button>
+              <button class="action-button" data-action="see-files">&#9881;</button>
+              <button class="action-button" data-action="delete">-</button>
             </div>
           </div>
         </li>
@@ -38,23 +36,21 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
     <?php endif; ?>
   </ul>
   <template id="track-item">
-    <li data-id="" draggable="true">
-      <div>
-        <div class="track-row">
-          <div class="track-info">
-            <span class="track-title"></span>
-            <div class="volume-bar">
-              <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
-              <div class="volume-bar-background">
-                <input type="range" min="0" max="100" value="75">
-              </div>
+    <li data-id="" draggable="true" data-order="">
+      <div class="track-row">
+        <div class="track-info">
+          <span class="track-title"></span>
+          <div class="volume-bar">
+            <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
+            <div class="volume-bar-background">
+              <input type="range" min="0" max="100" value="75">
             </div>
           </div>
-          <div class="play-actions">
-            <button class="action-button" data-action="play" data-state="paused">&#10148;</button>
-            <button class="action-button" data-action="see-files">&#128065;</button>
-            <button class="action-button" data-action="delete">-</button>
-          </div>
+        </div>
+        <div class="play-actions">
+          <button class="action-button" data-action="play" data-state="paused">&#10148;</button>
+          <button class="action-button" data-action="see-files">&#9881;</button>
+          <button class="action-button" data-action="delete">-</button>
         </div>
       </div>
     </li>
@@ -64,8 +60,8 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
       <div class="dialog__outer">
         <div class="dialog__inner">
           <button data-action="close-dialog" aria-label="close dialog">&times;</button>
-          <form>
-            <input type="file" id="new-file">
+          <form action="/api/file/create.php" method="post" enctype="multipart/form-data">
+            <input type="file" id="new-file" name="new-file">
             <label class="file-upload" data-action="add-file" for="new-file">Add file to track...</label>
           </form>
           <div class="dialog__files">

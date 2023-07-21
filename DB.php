@@ -18,10 +18,11 @@ class DB {
 
   // Theme
   // Create
-  public function create_theme($name) {
-    $query = "INSERT INTO theme (name) VALUES(:name)";
+  public function create_theme($name, $order) {
+    $query = "INSERT INTO theme (name, \"order\") VALUES(:name, :order)";
     $stmt = $this->pdo->prepare($query);
     $stmt->bindValue('name', $name);
+    $stmt->bindValue('order', $order);
     $stmt->execute();
     return $this->pdo->lastInsertId();
   }

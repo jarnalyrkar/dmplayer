@@ -58,7 +58,6 @@ function createTitleInput(value) {
   return input
 }
 
-
 function activateElement(id, list) {
   const current = list.querySelector('.list__item[data-state=selected]')
   if (current && current.getAttribute('data-id') === id) return false;
@@ -148,7 +147,6 @@ function fadeTo(audio, targetVolume) {
 function animateRange(range, value) {
   if (range.value == value) return;
   let currentValue = parseInt(range.value)
-  console.log(currentValue)
   if (range.value > value) {
      let move = setInterval(() => {
        if (range.value > value) {
@@ -200,10 +198,13 @@ function setPresets(theme_id) {
         const clone = template.content.cloneNode(true)
         const li = clone.querySelector('.list__item')
         li.setAttribute('data-id', item.preset_id)
+        li.setAttribute('data-order', item.order)
         if (item.current) li.setAttribute('data-state', 'selected')
         clone.querySelector('[data-action=select]').value = item.name
         parent.appendChild(clone)
       })
+    } else {
+      parent.insertAdjacentHTML('beforeEnd', '<li class="empty">No presets added yet!</li>')
     }
   })
 }
@@ -219,6 +220,7 @@ function setTracks(theme_id) {
         const li = clone.querySelector('li')
         const preset_id = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
         li.setAttribute('data-id', item.track_id)
+        li.setAttribute('data-order', item.order)
         li.querySelector('[data-action=play]').classList.add('active')
         loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${item.track_id}`).then(data => {
           const range = li.querySelector('input[type=range]')
@@ -266,6 +268,7 @@ function setEffects(theme_id) {
         const li = clone.querySelector('li')
         const keystroke = keystrokes[parent.querySelectorAll('li:not(.empty)').length + counter]
         li.setAttribute('data-id', item.track_id)
+        li.setAttribute('data-order', item.order)
         li.querySelector('.track-title').innerHTML = item.name
         li.setAttribute('data-keystroke', keystroke)
         li.querySelector('.keystroke').innerHTML = keystroke
@@ -278,15 +281,77 @@ function setEffects(theme_id) {
   })
 }
 
+function saveNewOrder(target) {
+  const data_type = target.closest('section').id
+  const theme_id = document.querySelector('#theme [data-state=selected]').getAttribute('data-id')
+  if (data_type === "theme") {
+    const items = document.querySelectorAll('#theme li')
+    const length = items.length
+    for (let i = 1; i <= length; i++) {
+      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
+      const id = items[i - 1].getAttribute('data-id')
+      items[i - 1].setAttribute('data-order', i)
+      loadJson(`/api/theme/update-order.php?id=${id}&order=${i}`)
+    }
+  } else if (data_type === "preset") {
+    const items = document.querySelectorAll('#preset li')
+    const length = items.length
+    for (let i = 1; i <= length; i++) {
+      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
+      const id = items[i - 1].getAttribute('data-id')
+      items[i - 1].setAttribute('data-order', i)
+      loadJson(`/api/preset/update-order.php?preset_id=${id}&theme_id=${theme_id}&order=${i}`)
+    }
+  } else if (data_type === "track" || data_type === "effect") {
+    // Update track order
+    let items = null
+    if (data_type === "track") {
+      items = document.querySelectorAll('#track li')
+    } else if (data_type === "effect") {
+      items = document.querySelectorAll('#effect li')
+    }
+    const length = items.length
+    for (let i = 1; i <= length; i++) {
+      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
+      const id = items[i - 1].getAttribute('data-id')
+      items[i - 1].setAttribute('data-order', i)
+      if (data_type === "effect") {
+        items[i - 1].setAttribute('data-keystroke', i)
+        items[i - 1].querySelector('[data-action=play]').innerHTML = i
+      }
+      loadJson(`/api/track/update-order.php?track_id=${id}&theme_id=${theme_id}&order=${i}`)
+    }
+  }
+}
+
+function tagTracksWithoutFiles() {
+  const songs = document.querySelectorAll('#track li')
+  const effects = document.querySelectorAll('#effect li')
+  const tracks = [...songs, ...effects]
+  tracks.forEach(track => {
+    const id = track.getAttribute('data-id')
+    loadJson(`/api/track/has-files.php?id=${id}`).then(files => {
+      if (files.length < 1) {
+        track.classList.add('no-files')
+      } else {
+        track.classList.remove('no-files')
+      }
+    })
+  })
+}
+tagTracksWithoutFiles()
+
 // DOM Node references
 // DOM update functions
 function createTheme(value, list) {
-  loadJson(`/api/theme/create.php?name=${value}`)
+  const order = list.children.length + 1
+  loadJson(`/api/theme/create.php?name=${value}&order=${order}`)
   .then(id => {
     const template = document.querySelector('#item')
     const clone = template.content.cloneNode(true)
     const li = clone.querySelector('.list__item')
     li.setAttribute('data-id', id)
+    li.setAttribute('data-order', order)
     clone.querySelector('.list__item input[type=button]').value = value
     list.append(clone)
     activateElement(id, list)
@@ -352,9 +417,11 @@ function createEffect(value, theme_id, list) {
     if (empty) empty.remove()
   })
 }
+
 function isMusic(id) {
   return document.querySelector(`#track [data-id="${id}"]`)
 }
+
 async function createAudio(id) {
   if (isMusic(id) && document.querySelector(`audio[data-id="${id}"]`)) {
     return;
@@ -527,6 +594,7 @@ document.addEventListener('click', (ev) => {
   if (ev.target.getAttribute('data-action') === 'play') {
     // find if audio-element already exists with this file_id, if so, fade pause
     const li = ev.target.closest('li')
+    if (li.classList.contains('no-files')) return
     const id = li.getAttribute('data-id')
     const existingAudio = document.querySelector(`audio[data-id="${id}"]`)
     const volumeBar = li.querySelector('input[type=range]')
@@ -567,6 +635,7 @@ document.addEventListener('click', (ev) => {
 
   if (ev.target.getAttribute('data-action') === 'close-dialog') {
     document.querySelector('.dialog').remove()
+    tagTracksWithoutFiles()
   }
 
   if (ev.target.getAttribute('data-action') === 'stop') {
@@ -598,6 +667,7 @@ document.addEventListener('click', (ev) => {
 
   if (ev.target.classList.contains('dialog__outer')) {
     document.querySelector('.dialog').remove()
+    tagTracksWithoutFiles()
   }
 })
 
@@ -652,7 +722,10 @@ document.addEventListener('keydown', ev => {
 
   if (ev.code === "Escape") {
     const dialog = document.querySelector('.dialog')
-    if (dialog) dialog.remove()
+    if (dialog) {
+      dialog.remove()
+      tagTracksWithoutFiles()
+    }
   }
 })
 
@@ -667,6 +740,7 @@ document.addEventListener('change', ev => {
       loadJson(`/api/preset/update-volume.php?preset_id=${presetId}&track_id=${audioId}&volume=${ev.target.value}`)
     }
   }
+
   if (ev.target.id === "main-effects-volume") {
     document.querySelectorAll('audio[data-type="effect"]').forEach(effect => {
       fadeTo(effect, ev.target.value)
@@ -694,6 +768,7 @@ document.addEventListener('dblclick', ev => {
       }
     })
   }
+
   if (ev.target.classList.contains('track-title')) {
     const data_type = ev.target.closest('section').id
     const current_item = ev.target.closest('li')
@@ -763,41 +838,7 @@ document.addEventListener("drop", ({target}) => {
   }
 });
 
-function saveNewOrder(target) {
-  const data_type = target.closest('section').id
-  const theme_id = document.querySelector('#theme [data-state=selected]').getAttribute('data-id')
-  if (data_type === "theme") {
-    const items = document.querySelectorAll('#theme li')
-    const length = items.length
-    for (let i = 1; i <= length; i++) {
-      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
-      const id = items[i - 1].getAttribute('data-id')
-      loadJson(`/api/theme/update-order.php?id=${id}&order=${i}`)
-    }
-  } else if (data_type === "preset") {
-    const items = document.querySelectorAll('#preset li')
-    const length = items.length
-    for (let i = 1; i <= length; i++) {
-      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
-      const id = items[i - 1].getAttribute('data-id')
-      loadJson(`/api/preset/update-order.php?preset_id=${id}&theme_id=${theme_id}&order=${i}`)
-    }
-  } else if (data_type === "track" || data_type === "effect") {
-    // Update track order
-    let items = null
-    if (data_type === "track") {
-      items = document.querySelectorAll('#track li')
-    } else if (data_type === "effect") {
-      items = document.querySelectorAll('#effect li')
-    }
-    const length = items.length
-    for (let i = 1; i <= length; i++) {
-      if (parseInt(items[i - 1].getAttribute('data-order')) === i) continue
-      const id = items[i - 1].getAttribute('data-id')
-      loadJson(`/api/track/update-order.php?track_id=${id}&theme_id=${theme_id}&order=${i}`)
-    }
-  }
-}
+
 
 
 const host = 'ws://127.0.0.1:8009/websockets.php'

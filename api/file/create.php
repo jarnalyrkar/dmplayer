@@ -5,7 +5,14 @@ $data = null;
 $db = new DB();
 
 
-
+if (!isset($_FILES['file'])) {
+  echo json_encode(['status' => 400, 'message' => 'No file found', 'data' => file_get_contents( 'php://input' )]);
+  return;
+}
+if (!isset($_POST['track_id'])) {
+  echo json_encode(['status' => 400, 'message' => 'Missing track id']);
+  return;
+}
 $allowedFormats = ['mp3', 'flac', 'ogg', 'vorbis', 'wav', 'mp4'];
 $extension = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 if (in_array($extension, $allowedFormats)) {
