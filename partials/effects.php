@@ -25,8 +25,8 @@ $keyCounter = 0;
                 <button class="keystroke" data-action="play"><?= $keystrokes[$keyCounter]; ?></button>
               </div>
               <div class="play-actions">
-                <button class="action-button" data-action="see-files">&#9881;</button>
-                <button class="action-button" data-action="delete">-</button>
+                <button class="action-button" data-action="see-files" title="Effect settings"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?></button>
+                <button class="action-button" data-action="delete" title="Delete"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?></button>
               </div>
             </div>
           </div>
@@ -46,8 +46,8 @@ $keyCounter = 0;
         <button class="keystroke" data-action="play"></button>
       </div>
       <div class="play-actions">
-        <button class="action-button" data-action="see-files">&#9881;</button>
-        <button class="action-button" data-action="delete">-</button>
+        <button class="action-button" data-action="see-files"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?></button>
+        <button class="action-button" data-action="delete"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?></button>
       </div>
     </li>
   </template>

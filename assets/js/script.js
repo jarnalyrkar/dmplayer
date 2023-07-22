@@ -333,8 +333,10 @@ function tagTracksWithoutFiles() {
     loadJson(`/api/track/has-files.php?id=${id}`).then(files => {
       if (files.length < 1) {
         track.classList.add('no-files')
+        track.querySelector('[data-action=play]').title = "No files added to this track yet"
       } else {
         track.classList.remove('no-files')
+        track.querySelector('[data-action=play]').title = "Play"
       }
     })
   })
@@ -656,17 +658,23 @@ document.addEventListener('click', (ev) => {
     }
   }
 
+  if (ev.target.getAttribute('data-action') === 'info') {
+    document.querySelector('#infobox').classList.add('dialog--show')
+  }
+
   if (ev.target.getAttribute('data-action') === 'toggle-themes') {
     const theme = document.querySelector('#theme')
     let transform = theme_width // inline padding + gap
     if (theme.style.width === "0px") {
       ev.target.querySelector('.arrow').style.transform = "rotateY(0)"
       ev.target.style.backgroundColor = "#402512"
+      ev.target.style.color = "goldenrod"
       theme.style.width = theme_width + "px"
       theme.style.transform = `translateX(0px)`
       theme.classList.remove('shrinking')
     } else {
       ev.target.style.backgroundColor = "goldenrod"
+      ev.target.style.color = "#402512"
       ev.target.querySelector('.arrow').style.transform = "rotateY(180deg)"
       theme.classList.add('shrinking')
       theme.style.width = "0px"
@@ -816,6 +824,7 @@ let indexDrop;
 let list;
 
 document.addEventListener("dragstart", ({target}) => {
+  console.log("drag", target)
   dragged = target;
   order = target.getAttribute('data-order');
   list = target.parentNode.children;

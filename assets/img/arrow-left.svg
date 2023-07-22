@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="33.866665mm"
+   height="33.866665mm"
+   viewBox="0 0 33.866665 33.866665"
+   version="1.1"
+   id="svg14224"
+   sodipodi:docname="arrow-left.svg"
+   inkscape:export-filename="arrow-left.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview5781"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.8437501"
+     inkscape:cx="64.271183"
+     inkscape:cy="63.999997"
+     inkscape:window-width="1920"
+     inkscape:window-height="1128"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14224" />
+  <defs
+     id="defs14221" />
+  <g
+     id="layer1"
+     style="stroke-width:5;stroke-dasharray:none">
+    <g
+       id="g14745"
+       transform="translate(0.39687429,1.0583326)"
+       style="stroke-width:5;stroke-dasharray:none">
+      <path
+         style="fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-dasharray:none"
+         d="M 2.6458333,15.875 H 30.427083"
+         id="path14373" />
+      <path
+         style="fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-dasharray:none"
+         d="M 15.875,9.2604166 2.6458333,15.875"
+         id="path14375" />
+      <path
+         style="fill:none;stroke:currentColor;stroke-width:5;stroke-linecap:round;stroke-dasharray:none"
+         d="M 2.6458333,15.875 15.875,22.489583"
+         id="path14377" />
+    </g>
+  </g>
+</svg>

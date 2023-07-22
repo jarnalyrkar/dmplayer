@@ -24,9 +24,15 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
               </div>
             </div>
             <div class="play-actions">
-              <button class="action-button" data-action="play">&#10148;</button>
-              <button class="action-button" data-action="see-files">&#9881;</button>
-              <button class="action-button" data-action="delete">-</button>
+              <button class="action-button" data-action="play" title="Play">
+                <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/triangle-right.svg" ?>
+              </button>
+              <button class="action-button" data-action="see-files" title="Track settings">
+                <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?>
+              </button>
+              <button class="action-button" data-action="delete" title="Delete">
+                <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?>
+              </button>
             </div>
           </div>
         </li>
@@ -48,9 +54,9 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
           </div>
         </div>
         <div class="play-actions">
-          <button class="action-button" data-action="play" data-state="paused">&#10148;</button>
-          <button class="action-button" data-action="see-files">&#9881;</button>
-          <button class="action-button" data-action="delete">-</button>
+          <button class="action-button" data-action="play" data-state="paused" title="Play"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/triangle-right.svg" ?></button>
+          <button class="action-button" data-action="see-files" title="Track settings"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?></button>
+          <button class="action-button" data-action="delete" title="Delete"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?></button>
         </div>
       </div>
     </li>
@@ -59,7 +65,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
     <div class="dialog" class="track-dialog">
       <div class="dialog__outer">
         <div class="dialog__inner">
-          <button data-action="close-dialog" aria-label="close dialog">&times;</button>
+          <button data-action="close-dialog" aria-label="close dialog" title="Close settings">&times;</button>
           <form action="/api/file/create.php" method="post" enctype="multipart/form-data">
             <input type="file" id="new-file" name="new-file">
             <label class="file-upload" data-action="add-file" for="new-file">Add file to track...</label>
@@ -70,7 +76,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
             <template id="file">
               <li class="files__file" data-filename="" data-id="">
                 <span class="file__name">filename</span>
-                <button class="action-button" data-action="delete-file">-</button>
+                <button class="action-button" data-action="delete-file" title="Delete">-</button>
               </li>
             </template>
           </div>

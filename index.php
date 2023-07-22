@@ -10,7 +10,12 @@
 
 <body>
   <main>
-    <button class="action-button" data-action="toggle-themes"><span class="arrow">&larr;</span> Themes</button>
+    <button class="action-button" data-action="toggle-themes">
+      <span class="arrow">
+        <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/arrow-left.svg" ?>
+      </span>
+      Themes
+    </button>
     <?php
     $partials = $_SERVER['DOCUMENT_ROOT'] . "/partials/";
     include $partials . "setup.php";
@@ -34,12 +39,23 @@
       ?>
     </div>
   </main>
-  <footer>
+  <aside>
+    <?php include $partials . "infobox.php"; ?>
+  </aside>
+
+  <footer class="page-footer">
     <div class="footer-buttons">
-      <button class="action-button" title="Settings" data-action="settings">&#9881;</button>
-      <button class="action-button" title="Stop all tracks" data-action="stop">&block;</button>
-      <button class="action-button" title="Info about the program" data-action="info">&#8505;</button>
+      <button class="action-button" title="Settings" data-action="settings">
+        <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?>
+      </button>
+      <button class="action-button" title="Stop all tracks" data-action="stop">
+        <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/square.svg" ?>
+      </button>
+      <button class="action-button" title="Info about the program" data-action="info">
+        <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/info.svg" ?>
+      </button>
     </div>
+
     <div class="footer-sliders">
       <div class="footer-slider">
         <label>Effects</label>

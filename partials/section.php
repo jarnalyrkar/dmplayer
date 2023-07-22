@@ -16,7 +16,7 @@
       ?>
         <li data-order="<?= $counter; ?>" draggable="true" data-id="<?= $item[$data_type . "_id"]; ?>" class="list__item" <?= $selected ?>>
           <input data-action="select" type="button" value="<?= $item['name']; ?>">
-          <button class="action-button" data-action="delete">-</button>
+          <button class="action-button" data-action="delete" title="Delete"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?></button>
         </li>
         <?php $counter++; ?>
       <?php endforeach; ?>
@@ -27,7 +27,7 @@
   <template id="item">
     <li data-order="" draggable="true" data-id="" class="list__item">
       <input data-action="select" type="button" value="">
-      <button class="action-button" data-action="delete">-</button>
+      <button class="action-button" data-action="delete"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?></button>
     </li>
   </template>
 </section>
