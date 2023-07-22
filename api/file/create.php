@@ -18,6 +18,7 @@ $existing = $db->get_file_by_name($_FILES['file']['name']);
 if ($existing) {
   $db->add_file_to_track($existing, htmlspecialchars($_POST['track_id']));
   echo json_encode($existing);
+  return;
 }
 
 $allowedFormats = ['mp3', 'flac', 'ogg', 'vorbis', 'wav', 'mp4'];

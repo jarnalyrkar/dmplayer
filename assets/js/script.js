@@ -39,6 +39,15 @@ async function loadJson(url) {
   throw new Error(response.status);
 }
 
+function showToast(message) {
+  const toast = document.querySelector('#toast')
+  toast.classList.add('show')
+  toast.innerHTML = message
+  setTimeout(() => {
+    toast.classList.remove('show')
+  }, 4000)
+}
+
 function randomBetween(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
@@ -78,6 +87,10 @@ function activateElement(id, list) {
   }
 }
 
+addEventListener('click', (ev) => {
+  console.log(ev.target)
+})
+
 function fadeOut(audio) {
   const steps = 0.05
   const interval = 50
@@ -92,6 +105,7 @@ function fadeOut(audio) {
       }
     } else {
       audio.pause()
+      audio.remove()
       return
     }
   }, interval)
@@ -438,8 +452,14 @@ async function createAudio(id) {
   const el = document.createElement('audio')
   const path = await loadJson('/api/file/get_path.php')
   const audio = await loadJson(`/api/file/random.php?id=${id}`)
+
   if (audio && path) {
     el.src = path + audio.filename
+    el.addEventListener('error', ev => {
+      if (isMusic()) {
+        document.querySelector(`#track [data-id="${id}"] .active`).classList.remove('active')
+      }
+    })
     el.setAttribute('data-id', id)
     document.body.appendChild(el)
     // get and play new track when ended
@@ -465,6 +485,7 @@ async function createAudio(id) {
       })
     return el
   } else {
+
     return false
   }
 }
@@ -653,7 +674,12 @@ document.addEventListener('click', (ev) => {
   }
 
   if (ev.target.getAttribute('data-action') === 'close-dialog') {
-    document.querySelector('.dialog').remove()
+    const dialog = ev.target.closest('.dialog')
+    if (dialog.id === "infobox") {
+      dialog.classList.remove('dialog--show')
+    } else {
+      dialog.remove()
+    }
   }
 
   if (ev.target.getAttribute('data-action') === 'stop') {

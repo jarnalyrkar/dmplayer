@@ -326,10 +326,7 @@ class DB {
 
   public function get_file_by_name($name) {
     $query = $this->pdo->query("SELECT file_id FROM file WHERE filename LIKE \"$name\"");
-    if ($query->fetch(PDO::FETCH_ASSOC) && isset($query->fetch(PDO::FETCH_ASSOC)['file_id'])) {
-      return $query->fetch(PDO::FETCH_ASSOC)['file_id'];
-    }
-    return false;
+    return $query->fetch(PDO::FETCH_ASSOC)['file_id'] ?? false;
   }
   // Read
   public function get_files_by_track($track_id) {

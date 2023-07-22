@@ -13,5 +13,10 @@ if (isset($_GET['id'])) {
 }
 
 header("Content-Type: application/json");
-echo json_encode($data);
+$path = $db->get_media_folder() . $data['filename'];
+if (file_exists($_SERVER['DOCUMENT_ROOT'] . $path)) {
+  echo json_encode($data);
+} else {
+  echo json_encode(['message' => "file not found", 'status' => 404, 'data' => $path]);
+}
 exit();

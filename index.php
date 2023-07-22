@@ -41,6 +41,7 @@
   </main>
   <aside>
     <?php include $partials . "infobox.php"; ?>
+    <?php include $partials . "toast.php"; ?>
   </aside>
 
   <footer class="page-footer">
