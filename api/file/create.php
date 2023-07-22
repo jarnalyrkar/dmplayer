@@ -13,6 +13,13 @@ if (!isset($_POST['track_id'])) {
   echo json_encode(['status' => 400, 'message' => 'Missing track id']);
   return;
 }
+
+$existing = $db->get_file_by_name($_FILES['file']['name']);
+if ($existing) {
+  $db->add_file_to_track($existing, htmlspecialchars($_POST['track_id']));
+  echo json_encode($existing);
+}
+
 $allowedFormats = ['mp3', 'flac', 'ogg', 'vorbis', 'wav', 'mp4'];
 $extension = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 if (in_array($extension, $allowedFormats)) {

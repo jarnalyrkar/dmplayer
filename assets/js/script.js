@@ -334,7 +334,6 @@ function tagTracksWithoutFiles() {
     loadJson(`/api/track/has-files.php?id=${id}`).then(files => {
       if (files.length < 1) {
         track.classList.add('no-files')
-        console.log(track)
         track.querySelector('[data-action=play]').title = "No files added to this track yet"
       } else {
         track.classList.remove('no-files')
@@ -600,6 +599,7 @@ document.addEventListener('click', (ev) => {
             li.setAttribute('data-id', id)
             li.querySelector('.file__name').innerHTML = file.name
             document.querySelector('.files').appendChild(clone)
+            tagTracksWithoutFiles()
           })
         }
       })
@@ -773,7 +773,6 @@ document.addEventListener('change', ev => {
 
 document.addEventListener('dblclick', ev => {
   if (ev.target.getAttribute('data-action') === "select") {
-    console.log("data-select")
     const data_type = ev.target.closest('section').id
     ev.target.setAttribute('type', 'text')
     ev.target.select()
@@ -829,7 +828,6 @@ let indexDrop;
 let list;
 
 document.addEventListener("dragstart", ({target}) => {
-  console.log("drag", target)
   dragged = target;
   order = target.getAttribute('data-order');
   list = target.parentNode.children;
