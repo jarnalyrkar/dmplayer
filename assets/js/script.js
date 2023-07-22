@@ -329,10 +329,12 @@ function tagTracksWithoutFiles() {
   const effects = document.querySelectorAll('#effect li')
   const tracks = [...songs, ...effects]
   tracks.forEach(track => {
+    if (track.classList.contains('empty')) return;
     const id = track.getAttribute('data-id')
     loadJson(`/api/track/has-files.php?id=${id}`).then(files => {
       if (files.length < 1) {
         track.classList.add('no-files')
+        console.log(track)
         track.querySelector('[data-action=play]').title = "No files added to this track yet"
       } else {
         track.classList.remove('no-files')
@@ -521,6 +523,10 @@ document.addEventListener('click', (ev) => {
     const list = parent.querySelector(".list")
     const id = li.getAttribute('data-id')
     if (type === "effect" || type === "track") {
+      const existingAudio = document.querySelector(`audio[data-id="${id}"]`)
+      if (existingAudio) {
+        existingAudio.remove()
+      }
       loadJson(`/api/track/delete.php?id=${id}`)
       li.remove()
       if (list.children.length === 0) {
@@ -546,6 +552,7 @@ document.addEventListener('click', (ev) => {
         return
       }
       activateElement(available.getAttribute('data-id'), list)
+      tagTracksWithoutFiles()
     } else if(list.children.length === 0) {
       list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
     }
@@ -642,11 +649,11 @@ document.addEventListener('click', (ev) => {
     const file_id = ev.target.parentElement.getAttribute('data-id')
     loadJson(`/api/file/delete.php?id=${file_id}`)
     ev.target.parentElement.remove()
+    tagTracksWithoutFiles()
   }
 
   if (ev.target.getAttribute('data-action') === 'close-dialog') {
     document.querySelector('.dialog').remove()
-    tagTracksWithoutFiles()
   }
 
   if (ev.target.getAttribute('data-action') === 'stop') {
@@ -684,14 +691,13 @@ document.addEventListener('click', (ev) => {
 
   if (ev.target.classList.contains('dialog__outer')) {
     document.querySelector('.dialog').remove()
-    tagTracksWithoutFiles()
   }
 })
 
 document.querySelectorAll('.add-form').forEach(form =>
   form.addEventListener('submit', (ev) => {
     ev.preventDefault()
-    const button = form.querySelector('input[type=submit]')
+    const button = form.querySelector('[type=submit]')
     const input = button.previousElementSibling
     if (input.value === "") {
       form.reportValidity()
@@ -741,7 +747,6 @@ document.addEventListener('keydown', ev => {
     const dialog = document.querySelector('.dialog')
     if (dialog) {
       dialog.remove()
-      tagTracksWithoutFiles()
     }
   }
 })
