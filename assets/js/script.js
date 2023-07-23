@@ -922,3 +922,20 @@ const socket = new WebSocket(host)
 
 // Event handler bindings
 // Initial setup
+
+// Theme
+const root = document.documentElement
+
+const primaryColor = document.querySelector('#primary-color').dataset.color
+const primaryValues = primaryColor.match(/\d+/g).map(Number);
+root.style.setProperty('--primary-100', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] + 20}%)`)
+root.style.setProperty('--primary-200', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] + 10}%)`)
+root.style.setProperty('--primary-300', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2]}%)`)
+root.style.setProperty('--primary-400', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 5}%)`)
+root.style.setProperty('--primary-500', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 10}%)`)
+root.style.setProperty('--primary-600', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 15}%)`)
+
+const accentColor = document.querySelector('#accent-color').dataset.color
+const accentValues = accentColor.match(/\d+/g).map(Number);
+console.log(accentValues)
+root.style.setProperty('--accent', `hsl(${accentValues[0]}, ${accentValues[1]}%, ${accentValues[2]}%)`)

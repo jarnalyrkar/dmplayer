@@ -1,3 +1,9 @@
+<?php
+$partials = $_SERVER['DOCUMENT_ROOT'] . "/partials/";
+include $partials . "setup.php";
+$background_image = "https://images.ctfassets.net/swt2dsco9mfe/1sM6XUZXHZOP7l9vfJU7PN/d026f03125c3fb337d58de7d23cc16e2/1920x1080-starter.jpg"
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +14,7 @@
   <link rel="stylesheet" href="/assets/scss/style.css">
 </head>
 
-<body>
+<body <?= isset($background_image) ? "style=\"background-image: url($background_image)\"" : '' ?>>
   <main>
     <button class="action-button" data-action="toggle-themes">
       <span class="arrow">
@@ -16,10 +22,8 @@
       </span>
       Themes
     </button>
-    <?php
-    $partials = $_SERVER['DOCUMENT_ROOT'] . "/partials/";
-    include $partials . "setup.php";
 
+    <?php
     $title = "Themes";
     $data_type = "theme";
     $items = $db->get_themes();
@@ -68,6 +72,9 @@
         </div>
       </div>
   </footer>
+  <input type="hidden" id="primary-color" data-color="hsl(234, 56%, 29%)">
+  <input type="hidden" id="accent-color" data-color="hsl(41, 15%, 80%)">
+  <input type="hidden" id="text-color" data-color="rgb(255,255,255)">
   <script src="/assets/js/script.js"></script>
 </body>
 
