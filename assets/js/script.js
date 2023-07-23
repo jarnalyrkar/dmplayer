@@ -87,10 +87,6 @@ function activateElement(id, list) {
   }
 }
 
-addEventListener('click', (ev) => {
-  console.log(ev.target)
-})
-
 function fadeOut(audio) {
   const steps = 0.05
   const interval = 50
@@ -455,13 +451,19 @@ async function createAudio(id) {
 
   if (audio && path) {
     el.src = path + audio.filename
-    el.addEventListener('error', ev => {
-      if (isMusic()) {
-        document.querySelector(`#track [data-id="${id}"] .active`).classList.remove('active')
-      }
-    })
     el.setAttribute('data-id', id)
     document.body.appendChild(el)
+    if (!audio.filename) {
+      loadJson('/api/file/delete.php?id=' + id).then(data => {
+        console.log(data)
+        showToast(`File ${audio.filename} was not found. Removing from track.`)
+        if (isMusic()) {
+          document.querySelector(`#track [data-id="${id}"] .active`).classList.remove('active')
+        }
+        return
+      })
+      return
+    }
     // get and play new track when ended
     if (!isMusic(id)) {
       el.volume = document.querySelector('[id=main-effects-volume]').value / 100
