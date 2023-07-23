@@ -1,7 +1,7 @@
 <?php
 $partials = $_SERVER['DOCUMENT_ROOT'] . "/partials/";
 include $partials . "setup.php";
-$background_image = "https://images.ctfassets.net/swt2dsco9mfe/1sM6XUZXHZOP7l9vfJU7PN/d026f03125c3fb337d58de7d23cc16e2/1920x1080-starter.jpg"
+// $background_image = "https://images.ctfassets.net/swt2dsco9mfe/1sM6XUZXHZOP7l9vfJU7PN/d026f03125c3fb337d58de7d23cc16e2/1920x1080-starter.jpg"
 ?>
 
 <!DOCTYPE html>
