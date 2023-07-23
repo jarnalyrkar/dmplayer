@@ -456,7 +456,6 @@ async function createAudio(id) {
     document.body.appendChild(el)
     if (!audio.filename) {
       loadJson('/api/file/delete.php?id=' + id).then(data => {
-        console.log(data)
         showToast(`File ${audio.filename} was not found. Removing from track.`)
         if (isMusic()) {
           document.querySelector(`#track [data-id="${id}"] .active`).classList.remove('active')
@@ -526,7 +525,6 @@ document.addEventListener('click', (ev) => {
                   if (data.playing) {
                     audio.play()
                   } else {
-                    console.log("Lights out, boys")
                     fadeOut(audio)
                   }
                 }
