@@ -191,7 +191,8 @@ class DB {
     $stmt->bindValue(':track_id', $track_id);
     $stmt->bindValue(':volume', $volume);
     $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $data;
   }
   public function update_preset_track_play_status($preset_id, $track_id, $playing) {
     $sql = "UPDATE preset_track
@@ -229,7 +230,7 @@ class DB {
 
   // Track
   // Create
-  public function create_track($name, $theme_id, $type_id, $order) {
+  public function create_track($name, $theme_id, $type_id, $preset_id, $order) {
     // create track
     $sql = "INSERT INTO track (name, type_id) VALUES(:name, :type_id)";
     $stmt = $this->pdo->prepare($sql);
@@ -246,8 +247,24 @@ class DB {
     $stmt->bindValue(':order', $order);
     $stmt->execute();
 
+    $this->add_track_to_preset($track_id, $preset_id);
+
     return $track_id;
   }
+
+  public function add_track_to_preset($track_id, $preset_id) {
+    $sql = "INSERT INTO preset_track (track_id, preset_id, playing, volume) VALUES(:track_id, :preset_id, 0, 75)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':track_id', $track_id);
+    $stmt->bindValue(':preset_id', $preset_id);
+    $stmt->execute();
+  }
+
+  public function get_track_preset($track_id, $preset_id) {
+    $sql = $this->pdo->query("SELECT * FROM preset_track WHERE track_id = $track_id AND preset_id = $preset_id");
+    return $sql->fetch(PDO::FETCH_ASSOC);
+  }
+
   // Read
   private function get_tracks_by_theme($theme_id, $type_id) {
     $query = $this->pdo->prepare("
@@ -300,6 +317,11 @@ class DB {
     $this->pdo->query("DELETE FROM track WHERE track_id = $id");
 
     return ["message" => $id . " is deleted"];
+  }
+
+  public function delete_tracks_by_preset($id) {
+    $sql = $this->pdo->query("DELETE FROM preset_track WHERE preset_id = $id");
+    return $sql->fetch(PDO::FETCH_ASSOC);
   }
 
   // File
