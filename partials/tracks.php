@@ -71,7 +71,7 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
             <label class="file-upload" data-action="add-file" for="new-file">Add file to track...</label>
           </form>
           <div class="dialog__files">
-            <h2>Files in track</h2>
+            <h2>Files in track:</h2>
             <ul class="files"></ul>
             <template id="file">
               <li class="files__file" data-filename="" data-id="">

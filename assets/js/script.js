@@ -618,6 +618,7 @@ document.addEventListener('click', (ev) => {
 
     // Get all existing files for the track
     loadJson(`/api/file/get.php?track_id=${track_id}`).then(files => {
+      if (files.length > 0) {
       files.forEach(file => {
         const template = dialog.querySelector('#file')
         const clone = template.content.cloneNode(true)
@@ -627,10 +628,16 @@ document.addEventListener('click', (ev) => {
         li.querySelector('.file__name').innerHTML = file.filename
         dialog.querySelector('.files').appendChild(clone)
       })
+      } else {
+        dialog.querySelector('.files').insertAdjacentHTML('afterbegin', '<li class="empty">No files yet</li>')
+      }
     })
 
     // listen for uploads
     dialog.querySelector('input[type=file]').addEventListener('change', (ev) => {
+      const empty = dialog.querySelector('.empty')
+      if (empty) empty.remove()
+
       const file = document.querySelector('#new-file').files[0]
       const data = new FormData()
       data.append('file', file)
@@ -749,8 +756,9 @@ document.addEventListener('click', (ev) => {
   }
 
   if (ev.target.getAttribute('data-action') === 'reset-theme') {
-    loadJson(`/api/settings/reset-theme.php`)
-    location.reload()
+    loadJson(`/api/settings/reset-theme.php`).then(x => {
+      location.reload()
+    })
   }
 
   if (ev.target.classList.contains('dialog__outer')) {
@@ -997,23 +1005,6 @@ accentPicker.on('drag', (r,g,b,a) => {
 
 accentPicker.on('stop', () => {
   loadJson(`/api/settings/set-accent-color.php?color=${accentHSL}`)
-})
-
-const textEl = document.querySelector('#text-color')
-const textPicker = new CP(textEl)
-let textHSL;
-textPicker.on('drag', (r,g,b,a) => {
-  const value = `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`
-  textEl.nextElementSibling.value = value
-  textEl.style.backgroundColor = value
-  // convert rgba to hsl, then this:
-  const textValues = RGBToHSL(r,g,b)
-  textHSL = `hsl(${textValues[0].toFixed(2)},${textValues[1].toFixed(2)}%,${textValues[2].toFixed(2)}%)`
-  root.style.setProperty('--text', textHSL)
-})
-
-textPicker.on('stop', () => {
-  loadJson(`/api/settings/set-text-color.php?color=${textHSL}`)
 })
 
 function RGBToHSL(r, g, b) {

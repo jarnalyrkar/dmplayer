@@ -552,6 +552,7 @@ button[data-action=close-dialog] {
   border: solid 5px var(--primary-300);
   transition: background-color 300ms cubic-bezier(0.165, 0.84, 0.44, 1);
   aspect-ratio: 1/1;
+  pointer-events: initial;
   &:hover {
     background-color:var(--primary-600);
   }
