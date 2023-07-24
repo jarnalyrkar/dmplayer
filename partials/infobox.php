@@ -45,6 +45,18 @@
       <p>
         Finally, you can reorder any list by grabbing the grid pattern next to an entry, and drag it up or down.
       </p>
+
+      <h3>Setting</h3>
+      <h4>Colors</h4>
+      <p>
+        To access the settings, click the cogwheel at the lower left of the screen.
+        You can also choose the UI colors to your desires, by setting a primary color, and an accent color.
+      </p>
+      <p>You can always revert back to the default brown theme by hitting the Reset theme button.</p>
+      <h4>Background image</h4>
+      <p>
+        You can add a background image, either as an external URL, or by putting an image file inside the app directory with the name "bg".
+      </p>
       <footer>Made by <a href="https://github.com/jarnalyrkar">jarnalyrkar@github</a></footer>
     </div>
   </div>

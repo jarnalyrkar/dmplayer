@@ -17,13 +17,8 @@
               <input type="hidden" id="accent-value" value="<?= $db->HSLToRGB($accent_color); ?>">
               <h4>Accent color</h3>
             </article>
-            <article>
-              <div id="text-color" class="circle" style="background-color: <?= $db->HSLToRGB($text_color); ?>"></div>
-              <input type="hidden" id="text-value" value="<?= $db->HSLToRGB($text_color); ?>">
-              <h4>Text color</h3>
-            </article>
           </div>
-          <button data-action="reset-theme">Reset theme</button>
+          <button data-action="reset-theme">Set Default Theme</button>
         </div>
         <div class="file-persistance">
           <h3>Deleting files</h3>

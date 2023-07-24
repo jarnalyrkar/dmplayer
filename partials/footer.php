@@ -3,11 +3,11 @@
     <button class="action-button" title="Settings" data-action="settings">
       <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?>
     </button>
-    <button class="action-button" title="Stop all tracks" data-action="stop">
-      <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/square.svg" ?>
-    </button>
     <button class="action-button" title="Info about the program" data-action="info">
       <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/info.svg" ?>
+    </button>
+    <button class="action-button" title="Stop all tracks" data-action="stop">
+      <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/square.svg" ?>
     </button>
   </div>
 
