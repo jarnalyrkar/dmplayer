@@ -734,16 +734,18 @@ document.addEventListener('click', (ev) => {
   if (ev.target.getAttribute('data-action') === 'toggle-themes') {
     const theme = document.querySelector('#theme')
     let transform = theme_width // inline padding + gap
+    const mainColor = root.style.getPropertyValue('--primary-400')
+    const accentColor = root.style.getPropertyValue('--accent')
     if (theme.style.width === "0px") {
       ev.target.querySelector('.arrow').style.transform = "rotateY(0)"
-      ev.target.style.backgroundColor = "#402512"
-      ev.target.style.color = "goldenrod"
+      ev.target.style.backgroundColor = mainColor
+      ev.target.style.color = accentColor
       theme.style.width = theme_width + "px"
       theme.style.transform = `translateX(0px)`
       theme.classList.remove('shrinking')
     } else {
-      ev.target.style.backgroundColor = "goldenrod"
-      ev.target.style.color = "#402512"
+      ev.target.style.backgroundColor = accentColor
+      ev.target.style.color = mainColor
       ev.target.querySelector('.arrow').style.transform = "rotateY(180deg)"
       theme.classList.add('shrinking')
       theme.style.width = "0px"

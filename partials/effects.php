@@ -9,7 +9,6 @@ $keyCounter = 0;
 ?>
 <section id="effect">
   <header>
-    <h2>Effects</h2>
     <?php include $partials . "add-form.php"; ?>
   </header>
   <ul class="list">

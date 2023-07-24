@@ -29,7 +29,7 @@ include $partials . "setup.php";
   <?php endif; ?>
 </head>
 <body <?= isset($background_image) ? "style=\"background-image: url($background_image)\"" : '' ?>>
-  <div class="blurlayer"></div>
+  <div class="header-bg"></div>
   <main>
     <button class="action-button" data-action="toggle-themes">
       <span class="arrow">

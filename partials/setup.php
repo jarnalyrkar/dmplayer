@@ -15,7 +15,7 @@ $shades = $db->get_shades();
 $background_image = null;
 $background_image = $db->get_background_image();
 
-$local_image = glob("./bg.{jpg,jpeg,png,gif,webp,avif}", GLOB_BRACE)[0];
+$local_image = glob("bg.{jpg,jpeg,png,gif,webp,avif}", GLOB_BRACE)[0];
 if (!$background_image && file_exists($local_image)) {
   $background_image = $local_image;
 }

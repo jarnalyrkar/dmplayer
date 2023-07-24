@@ -1,6 +1,5 @@
 <section id="<?= $data_type ?>">
   <header>
-    <h2><?= $title ?></h2>
     <?php include $partials . "add-form.php"; ?>
   </header>
   <ul class="list">

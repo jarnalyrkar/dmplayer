@@ -5,7 +5,6 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
 ?>
 <section id="track">
   <header>
-    <h2>Tracks</h2>
     <?php include $partials . "add-form.php"; ?>
   </header>
   <ul class="list">
