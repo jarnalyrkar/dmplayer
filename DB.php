@@ -8,17 +8,20 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-class DB {
+class DB
+{
   public $pdo;
 
-  function __construct() {
+  function __construct()
+  {
     $dbfile = $_SERVER['SERVER_NAME'] == "localhost" ? '/dmplayer.db' : '/dmplayer-dev.db';
     $this->pdo = new PDO("sqlite:" . $_SERVER['DOCUMENT_ROOT'] . $dbfile);
   }
 
   // Theme
   // Create
-  public function create_theme($name, $order) {
+  public function create_theme($name, $order)
+  {
     $query = "INSERT INTO theme (name, \"order\") VALUES(:name, :order)";
     $stmt = $this->pdo->prepare($query);
     $stmt->bindValue('name', $name);
@@ -27,7 +30,8 @@ class DB {
     return $this->pdo->lastInsertId();
   }
   // Read
-  public function get_themes() {
+  public function get_themes()
+  {
     $query = $this->pdo->query("
       SELECT *
       FROM theme
@@ -39,24 +43,28 @@ class DB {
     }
     return $themes;
   }
-  public function get_last_active_theme() {
+  public function get_last_active_theme()
+  {
     return $this->get_setting_by_name('last_theme');
   }
   // Update
-  public function update_theme($theme_id, $newName) {
+  public function update_theme($theme_id, $newName)
+  {
     $sql = "UPDATE theme SET name = :new_name WHERE theme_id = :theme_id";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':theme_id', $theme_id);
     $stmt->bindValue(':new_name', $newName);
     $stmt->execute();
   }
-  public function update_last_theme($id) {
+  public function update_last_theme($id)
+  {
     $sql = "UPDATE settings SET value = :id WHERE option = \"last_theme\"";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':id', $id);
     $stmt->execute();
   }
-  public function update_theme_order($id, $order) {
+  public function update_theme_order($id, $order)
+  {
     $sql = "UPDATE theme SET \"order\" = :order WHERE theme_id = :theme_id";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':theme_id', $id);
@@ -64,7 +72,8 @@ class DB {
     $stmt->execute();
   }
   // Delete
-  public function delete_theme($id) {
+  public function delete_theme($id)
+  {
     $this->pdo->query("DELETE FROM theme_track WHERE theme_id = $id;");
     $this->pdo->query("DELETE FROM theme_preset WHERE theme_id = $id;");
     $this->pdo->query("DELETE FROM theme WHERE theme_id = $id;");
@@ -73,7 +82,8 @@ class DB {
 
   // Preset
   // Create
-  public function create_preset($name, $theme_id, $order, $current = 0) {
+  public function create_preset($name, $theme_id, $order, $current = 0)
+  {
     // create preset
     $sql = "INSERT INTO preset (name) VALUES(:name)";
     $stmt = $this->pdo->prepare($sql);
@@ -93,7 +103,8 @@ class DB {
     return $preset_id;
   }
   // Read
-  public function get_presets_by_theme($id) {
+  public function get_presets_by_theme($id)
+  {
     $query = $this->pdo->prepare("
       SELECT preset_id, name, current
       FROM theme_preset
@@ -109,7 +120,8 @@ class DB {
     }
     return $results;
   }
-  public function get_preset_track_settings($preset_id, $track_id) {
+  public function get_preset_track_settings($preset_id, $track_id)
+  {
     $sql = "SELECT playing, volume
             FROM preset_track
             WHERE preset_id = :preset_id AND track_id = :track_id;";
@@ -120,7 +132,8 @@ class DB {
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
-  public function get_last_active_preset($theme_id) {
+  public function get_last_active_preset($theme_id)
+  {
     $query = $this->pdo->prepare("
       SELECT preset_id
       FROM theme_preset
@@ -135,11 +148,11 @@ class DB {
     } else {
       return false;
     }
-
   }
 
   // Update
-  public function update_preset($preset_id, $newName) {
+  public function update_preset($preset_id, $newName)
+  {
     $sql = "UPDATE preset SET name = :new_name WHERE preset_id = :theme_id";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':theme_id', $preset_id);
@@ -147,7 +160,8 @@ class DB {
     $stmt->execute();
   }
 
-  public function update_last_preset($preset_id, $theme_id) {
+  public function update_last_preset($preset_id, $theme_id)
+  {
     // remove old
     $sql = "
       UPDATE theme_preset
@@ -182,7 +196,8 @@ class DB {
 
     return $stmt->fetch();
   }
-  public function update_preset_track_volume($preset_id, $track_id, $volume) {
+  public function update_preset_track_volume($preset_id, $track_id, $volume)
+  {
     $sql = "UPDATE preset_track
             SET volume = :volume
             WHERE preset_id = :preset_id AND track_id = :track_id;";
@@ -194,7 +209,8 @@ class DB {
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
     return $data;
   }
-  public function update_preset_track_play_status($preset_id, $track_id, $playing) {
+  public function update_preset_track_play_status($preset_id, $track_id, $playing)
+  {
     $sql = "UPDATE preset_track
             SET playing = :playing
             WHERE preset_id = :preset_id AND track_id = :track_id;";
@@ -205,7 +221,8 @@ class DB {
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
-  public function update_preset_theme_order($preset_id, $theme_id, $order) {
+  public function update_preset_theme_order($preset_id, $theme_id, $order)
+  {
     $sql = "UPDATE theme_preset SET \"order\" = :order WHERE preset_id = :preset_id AND theme_id = :theme_id";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':order', $order);
@@ -215,13 +232,15 @@ class DB {
   }
 
   // Delete
-  public function delete_preset($id) {
+  public function delete_preset($id)
+  {
     $this->pdo->query("DELETE FROM theme_preset WHERE preset_id = $id;");
     $this->pdo->query("DELETE FROM preset WHERE preset_id = $id;");
 
     return ["message" => $id . " is deleted"];
   }
-  public function delete_presets_by_theme($id) {
+  public function delete_presets_by_theme($id)
+  {
     $presets = $this->get_presets_by_theme($id);
     foreach ($presets as $preset) {
       $this->delete_preset($preset['preset_id']);
@@ -230,7 +249,8 @@ class DB {
 
   // Track
   // Create
-  public function create_track($name, $theme_id, $type_id, $preset_id, $order) {
+  public function create_track($name, $theme_id, $type_id, $preset_id, $order)
+  {
     // create track
     $sql = "INSERT INTO track (name, type_id) VALUES(:name, :type_id)";
     $stmt = $this->pdo->prepare($sql);
@@ -252,7 +272,8 @@ class DB {
     return $track_id;
   }
 
-  public function add_track_to_preset($track_id, $preset_id) {
+  public function add_track_to_preset($track_id, $preset_id)
+  {
     $sql = "INSERT INTO preset_track (track_id, preset_id, playing, volume) VALUES(:track_id, :preset_id, 0, 75)";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':track_id', $track_id);
@@ -260,13 +281,15 @@ class DB {
     $stmt->execute();
   }
 
-  public function get_track_preset($track_id, $preset_id) {
+  public function get_track_preset($track_id, $preset_id)
+  {
     $sql = $this->pdo->query("SELECT * FROM preset_track WHERE track_id = $track_id AND preset_id = $preset_id");
     return $sql->fetch(PDO::FETCH_ASSOC);
   }
 
   // Read
-  private function get_tracks_by_theme($theme_id, $type_id) {
+  private function get_tracks_by_theme($theme_id, $type_id)
+  {
     $query = $this->pdo->prepare("
       SELECT *
       FROM theme_track
@@ -285,23 +308,27 @@ class DB {
     return $results;
   }
 
-  public function get_music_by_theme($theme_id) {
+  public function get_music_by_theme($theme_id)
+  {
     return $this->get_tracks_by_theme($theme_id, TYPE['music']);
   }
 
-  public function get_effects_by_theme($theme_id) {
+  public function get_effects_by_theme($theme_id)
+  {
     return $this->get_tracks_by_theme($theme_id, TYPE['effect']);
   }
 
   // Update
-  public function update_track($track_id, $newName) {
+  public function update_track($track_id, $newName)
+  {
     $sql = "UPDATE track SET name = :new_name WHERE track_id = :track_id";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':track_id', $track_id);
     $stmt->bindValue(':new_name', $newName);
     $stmt->execute();
   }
-  public function update_theme_track_order($track_id, $theme_id, $order) {
+  public function update_theme_track_order($track_id, $theme_id, $order)
+  {
     $sql = "UPDATE theme_track SET \"order\" = :order WHERE track_id = :track_id AND theme_id = :theme_id";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':order', $order);
@@ -311,7 +338,8 @@ class DB {
     return $stmt->fetch();
   }
   // Delete
-  public function delete_track($id) {
+  public function delete_track($id)
+  {
     $this->pdo->query("DELETE FROM theme_track WHERE track_id = $id");
     $this->pdo->query("DELETE FROM track_file WHERE track_id = $id");
     $this->pdo->query("DELETE FROM track WHERE track_id = $id");
@@ -319,14 +347,16 @@ class DB {
     return ["message" => $id . " is deleted"];
   }
 
-  public function delete_tracks_by_preset($id) {
+  public function delete_tracks_by_preset($id)
+  {
     $sql = $this->pdo->query("DELETE FROM preset_track WHERE preset_id = $id");
     return $sql->fetch(PDO::FETCH_ASSOC);
   }
 
   // File
   // Create
-  public function create_file($filename, $track_id) {
+  public function create_file($filename, $track_id)
+  {
     // Add to file table
     $sql = "INSERT INTO file(filename) VALUES(:filename)";
     $stmt = $this->pdo->prepare($sql);
@@ -337,7 +367,8 @@ class DB {
     return $file_id;
   }
 
-  public function add_file_to_track($file_id, $track_id) {
+  public function add_file_to_track($file_id, $track_id)
+  {
     // add to file track table
     $sql = "INSERT INTO track_file(track_id, file_id) VALUES(:track_id, :file_id)";
     $stmt = $this->pdo->prepare($sql);
@@ -346,12 +377,14 @@ class DB {
     $stmt->execute();
   }
 
-  public function get_file_by_name($name) {
+  public function get_file_by_name($name)
+  {
     $query = $this->pdo->query("SELECT file_id FROM file WHERE filename LIKE \"$name\"");
     return $query->fetch(PDO::FETCH_ASSOC)['file_id'] ?? false;
   }
   // Read
-  public function get_files_by_track($track_id) {
+  public function get_files_by_track($track_id)
+  {
     $query = $this->pdo->prepare("
       SELECT file_id, filename
       FROM file
@@ -366,7 +399,8 @@ class DB {
     }
     return $results;
   }
-  public function get_files_except_by_track($track_id) {
+  public function get_files_except_by_track($track_id)
+  {
     $query = $this->pdo->prepare("
       SELECT filename
       FROM file
@@ -382,21 +416,27 @@ class DB {
     return $results;
   }
   // Update
-  public function update_file($id, $newName) {}
+  public function update_file($id, $newName)
+  {
+  }
   // Delete
-  public function delete_file($id) {
+  public function delete_file($id)
+  {
     $this->pdo->query("DELETE FROM file WHERE file_id = $id;");
     $this->pdo->query("DELETE FROM track_file WHERE file_id = $id;");
   }
 
-  public function get_media_folder() {
+  public function get_media_folder()
+  {
     return $this->get_setting_by_name('media_folder');
   }
 
-  public function get_last_effect_volume() {
+  public function get_last_effect_volume()
+  {
     return $this->get_setting_by_name('effect_volume');
   }
-  public function set_last_effect_volume($volume) {
+  public function set_last_effect_volume($volume)
+  {
     $sql = "UPDATE settings SET value = :volume WHERE option = \"effect_volume\"";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':volume', $volume);
@@ -404,10 +444,106 @@ class DB {
   }
 
   // Settings
-  private function get_setting_by_name($option) {
+  public function set_background_image($url)
+  {
+    $query = $this->pdo->query("UPDATE settings SET value = \"$url\" WHERE option = \"background_image\"");
+    return $query->fetch();
+  }
+
+  public function get_background_image()
+  {
+    return $this->get_setting_by_name('background_image');
+  }
+
+  public function set_primary_color($color)
+  {
+    $query = $this->pdo->query("UPDATE settings SET value = \"$color\" WHERE option = \"primary_color\"");
+    return $query->fetch();
+  }
+
+  public function set_accent_color($color)
+  {
+    $query = $this->pdo->query("UPDATE settings SET value = \"$color\" WHERE option = \"accent_color\"");
+    return $query->fetch();
+  }
+  public function set_text_color($color)
+  {
+    $query = $this->pdo->query("UPDATE settings SET value = \"$color\" WHERE option = \"text_color\"");
+    return $query->fetch();
+  }
+
+  public function get_shades()
+  {
+    $primary = $this->get_primary_color();
+    if (!$primary) return;
+    $primaryValues = explode(',', substr(str_replace('%', '', $primary), 4, -1));
+    $p1 = $primaryValues[2] + 20;
+    $p2 = $primaryValues[2] + 10;
+    $p3 = $primaryValues[2];
+    $p4 = $primaryValues[2] - 5;
+    $p5 = $primaryValues[2] - 10;
+    $p6 = $primaryValues[2] - 15;
+    return [
+      "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p1}%)",
+      "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p2}%)",
+      "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p3}%)",
+      "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p4}%)",
+      "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p5}%)",
+      "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p6}%)",
+    ];
+  }
+
+  public function get_primary_color()
+  {
+    return $this->get_setting_by_name('primary_color');
+  }
+  public function get_accent_color()
+  {
+    return $this->get_setting_by_name('accent_color');
+  }
+  public function get_text_color()
+  {
+    return $this->get_setting_by_name('text_color');
+  }
+
+  private function get_setting_by_name($option)
+  {
     $query = $this->pdo->query("SELECT value FROM settings WHERE option = \"$option\"");
     $query->execute();
     return $query->fetch()['value'];
   }
+
+  public function reset_theme() {
+    $this->set_primary_color("hsl(25, 56%, 25%)");
+    $this->set_accent_color("hsl(43, 74%, 49%)");
+    $this->set_text_color("hsl(0,0%,100%)");
+  }
+
+
+
+  function HSLToRGB($hsl) {
+  $values = explode(',', substr(str_replace('%', '', $hsl), 4, -1));
+  $hue = intval($values[0]);
+  $sat = intval($values[1]);
+  $val = intval($values[2]);
+
+  $rgb = array(0, 0, 0);
+  //calc rgb for 100% SV, go +1 for BR-range
+  for ($i = 0; $i < 4; $i++) {
+    if (abs($hue - $i * 120) < 120) {
+      $distance = max(60, abs($hue - $i * 120));
+      $rgb[$i % 3] = 1 - (($distance - 60) / 60);
+    }
+  }
+  //desaturate by increasing lower levels
+  $max = max($rgb);
+  $factor = 255 * ($val / 100);
+  for ($i = 0; $i < 3; $i++) {
+    //use distance between 0 and max (1) and multiply with value
+    $rgb[$i] = round(($rgb[$i] + ($max - $rgb[$i]) * (1 - $sat / 100)) * $factor);
+  }
+  // $rgb['html'] = sprintf('#%02X%02X%02X', $rgb[0], $rgb[1], $rgb[2]);
+  return "rgb($rgb[0], $rgb[1], $rgb[2])";
+}
 
 }

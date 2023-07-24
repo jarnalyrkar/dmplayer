@@ -1,7 +1,7 @@
 <div class="dialog" id="infobox">
   <div class="dialog__outer">
     <div class="dialog__inner">
-      <button data-action="close-dialog" aria-label="close dialog" title="Close settings">&times;</button>
+      <button data-action="close-dialog" aria-label="close dialog" title="Close infobox">&times;</button>
       <h2>Help section</h2>
       <h3>Themes</h3>
       <p>

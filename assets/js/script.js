@@ -704,7 +704,7 @@ document.addEventListener('click', (ev) => {
 
   if (ev.target.getAttribute('data-action') === 'close-dialog') {
     const dialog = ev.target.closest('.dialog')
-    if (dialog.id === "infobox") {
+    if (dialog.id === "infobox" || dialog.id === "settings") {
       dialog.classList.remove('dialog--show')
     } else {
       dialog.remove()
@@ -744,8 +744,22 @@ document.addEventListener('click', (ev) => {
     }
   }
 
+  if (ev.target.getAttribute('data-action') === 'settings') {
+    document.querySelector('#settings').classList.add('dialog--show')
+  }
+
+  if (ev.target.getAttribute('data-action') === 'reset-theme') {
+    loadJson(`/api/settings/reset-theme.php`)
+    location.reload()
+  }
+
   if (ev.target.classList.contains('dialog__outer')) {
-    document.querySelector('.dialog').remove()
+    const dialog = ev.target.closest('.dialog')
+    if (dialog.id === "settings" || dialog.id === "infobox") {
+      dialog.classList.remove('dialog--show')
+    } else {
+      document.querySelector('.dialog').remove()
+    }
   }
 })
 
@@ -823,6 +837,11 @@ document.addEventListener('change', ev => {
       fadeTo(effect, ev.target.value)
     })
     loadJson(`/api/track/set-effect-volume.php?volume=${ev.target.value}`)
+  }
+
+  if (ev.target.id === "bg-img-url") {
+    document.body.style.backgroundImage = `url(${ev.target.value})`
+    loadJson(`/api/settings/set-background.php?url=${ev.target.value}`)
   }
 })
 
@@ -926,16 +945,93 @@ const socket = new WebSocket(host)
 // Theme
 const root = document.documentElement
 
-const primaryColor = document.querySelector('#primary-color').dataset.color
-const primaryValues = primaryColor.match(/\d+/g).map(Number);
-root.style.setProperty('--primary-100', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] + 20}%)`)
-root.style.setProperty('--primary-200', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] + 10}%)`)
-root.style.setProperty('--primary-300', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2]}%)`)
-root.style.setProperty('--primary-400', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 5}%)`)
-root.style.setProperty('--primary-500', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 10}%)`)
-root.style.setProperty('--primary-600', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 15}%)`)
+// Use this for live-preview while in settings menu
+// primary + shades
+// const primaryColor = document.querySelector('#primary-color').dataset.color
+// const primaryValues = primaryColor.match(/\d+/g).map(Number);
 
-const accentColor = document.querySelector('#accent-color').dataset.color
-const accentValues = accentColor.match(/\d+/g).map(Number);
-console.log(accentValues)
-root.style.setProperty('--accent', `hsl(${accentValues[0]}, ${accentValues[1]}%, ${accentValues[2]}%)`)
+
+// accent
+// const accentColor = document.querySelector('#accent-color').dataset.color
+// const accentValues = accentColor.match(/\d+/g).map(Number);
+
+
+// text
+ // do stuff
+
+// Color picker
+const primaryEl = document.querySelector('#primary-color')
+const primaryPicker = new CP(primaryEl)
+let primaryHSL;
+primaryPicker.on('drag', (r, g, b, a) => {
+  const value = `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`
+  primaryEl.nextElementSibling.value = value
+  primaryEl.style.backgroundColor = value
+  // Convert rgba to HSL, then this:
+  const primaryValues = RGBToHSL(r.toFixed(2),g.toFixed(2),b.toFixed(2))
+  root.style.setProperty('--primary-100', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] + 20}%)`)
+  root.style.setProperty('--primary-200', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] + 10}%)`)
+  root.style.setProperty('--primary-300', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2]}%)`)
+  root.style.setProperty('--primary-400', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 5}%)`)
+  root.style.setProperty('--primary-500', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 10}%)`)
+  root.style.setProperty('--primary-600', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 15}%)`)
+  primaryHSL = `hsl(${primaryValues[0].toFixed(2)},${primaryValues[1].toFixed(2)}%,${primaryValues[2].toFixed(2)}%)`
+})
+
+primaryPicker.on('stop', () => {
+  loadJson(`/api/settings/set-primary-color.php?color=${primaryHSL}`)
+})
+
+const accentEl = document.querySelector('#accent-color')
+const accentPicker = new CP(accentEl)
+let accentHSL;
+accentPicker.on('drag', (r,g,b,a) => {
+  const value = `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`
+  accentEl.nextElementSibling.value = value
+  accentEl.style.backgroundColor = value
+  // Convert rgba to hsl, then this:
+  const accentValues = RGBToHSL(r,g,b)
+  accentHSL = `hsl(${accentValues[0].toFixed(2)}, ${accentValues[1].toFixed(2)}%, ${accentValues[2].toFixed(2)}%)`
+  root.style.setProperty('--accent', accentHSL)
+})
+
+accentPicker.on('stop', () => {
+  loadJson(`/api/settings/set-accent-color.php?color=${accentHSL}`)
+})
+
+const textEl = document.querySelector('#text-color')
+const textPicker = new CP(textEl)
+let textHSL;
+textPicker.on('drag', (r,g,b,a) => {
+  const value = `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`
+  textEl.nextElementSibling.value = value
+  textEl.style.backgroundColor = value
+  // convert rgba to hsl, then this:
+  const textValues = RGBToHSL(r,g,b)
+  textHSL = `hsl(${textValues[0].toFixed(2)},${textValues[1].toFixed(2)}%,${textValues[2].toFixed(2)}%)`
+  root.style.setProperty('--text', textHSL)
+})
+
+textPicker.on('stop', () => {
+  loadJson(`/api/settings/set-text-color.php?color=${textHSL}`)
+})
+
+function RGBToHSL(r, g, b) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const l = Math.max(r, g, b);
+  const s = l - Math.min(r, g, b);
+  const h = s
+    ? l === r
+      ? (g - b) / s
+      : l === g
+      ? 2 + (b - r) / s
+      : 4 + (r - g) / s
+    : 0;
+  return [
+    60 * h < 0 ? 60 * h + 360 : 60 * h,
+    100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+    (100 * (2 * l - s)) / 2,
+  ];
+};

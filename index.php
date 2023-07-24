@@ -1,7 +1,6 @@
 <?php
 $partials = $_SERVER['DOCUMENT_ROOT'] . "/partials/";
 include $partials . "setup.php";
-// $background_image = "https://images.ctfassets.net/swt2dsco9mfe/1sM6XUZXHZOP7l9vfJU7PN/d026f03125c3fb337d58de7d23cc16e2/1920x1080-starter.jpg"
 ?>
 
 <!DOCTYPE html>
@@ -11,10 +10,26 @@ include $partials . "setup.php";
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dungeon Master Player</title>
+  <link rel="stylesheet" href="/assets/js/color-picker/index.min.css">
   <link rel="stylesheet" href="/assets/scss/style.css">
-</head>
 
+  <?php if ($shades) : ?>
+    <style>
+      :root {
+        --primary-100: <?= $shades[0] ?>;
+        --primary-200: <?= $shades[1] ?>;
+        --primary-300: <?= $shades[2] ?>;
+        --primary-400: <?= $shades[3] ?>;
+        --primary-500: <?= $shades[4] ?>;
+        --primary-600: <?= $shades[5] ?>;
+        --accent: <?= $accent_color ?>;
+        --text: <?= $text_color ?>;
+      }
+    </style>
+  <?php endif; ?>
+</head>
 <body <?= isset($background_image) ? "style=\"background-image: url($background_image)\"" : '' ?>>
+  <div class="blurlayer"></div>
   <main>
     <button class="action-button" data-action="toggle-themes">
       <span class="arrow">
@@ -48,34 +63,13 @@ include $partials . "setup.php";
     <?php include $partials . "toast.php"; ?>
   </aside>
 
-  <footer class="page-footer">
-    <div class="footer-buttons">
-      <button class="action-button" title="Settings" data-action="settings">
-        <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?>
-      </button>
-      <button class="action-button" title="Stop all tracks" data-action="stop">
-        <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/square.svg" ?>
-      </button>
-      <button class="action-button" title="Info about the program" data-action="info">
-        <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/info.svg" ?>
-      </button>
-    </div>
-
-    <div class="footer-sliders">
-      <div class="footer-slider">
-        <label>Effects</label>
-        <div class="volume-bar">
-          <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/speaker.svg" ?>
-          <div class="volume-bar-background">
-            <input id="main-effects-volume" type="range" min="0" max="100" value="<?= $init_volume; ?>">
-          </div>
-        </div>
-      </div>
-  </footer>
-  <input type="hidden" id="primary-color" data-color="hsl(234, 56%, 29%)">
-  <input type="hidden" id="accent-color" data-color="hsl(41, 15%, 80%)">
-  <input type="hidden" id="text-color" data-color="rgb(255,255,255)">
+  <?php include $partials . "footer.php"; ?>
+  <?php // TODO: get from and save to db
+  ?>
+  <?php include $partials . "settings.php"; ?>
+  <script src="/assets/js/color-picker/index.min.js"></script>
   <script src="/assets/js/script.js"></script>
+
 </body>
 
 </html>
