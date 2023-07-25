@@ -8,13 +8,7 @@
 You play Dungeons and Dragons, and want to play layered tracks of music, ambience and sound effects.
 You already have a local library of music, soundtracks and sound effects, or know how to get it.
 
-Apart from one music sample and one sound effect sample, there are no audio packs or sets included with this software. If you need pre-compiled audio sets and effects that are ready to go, <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option.
-
-### Using for online play:
-There are programs that can patch the audio from an application (such as your browser), into whatever output you require.
-
-I've not yet found time to experiment with this, but this seems like a good start for windows:
-https://vb-audio.com/Cable/
+Apart from one music sample and one sound effect sample (credits below), there are no audio packs or full campaign sets included with this software. If you need complete audio sets and effects tailor-made for an offical campaign<a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option.
 
 ## How to install:
 First, download this repo<br>
@@ -39,7 +33,7 @@ If you'd rather do it manually:
 
 If you have issues with any of these, please create an issue and attach a screenshot of what happens.
 
-### Install PHP (linux):
+### Install PHP (Ubuntu-flavored Linux):
 `sudo apt update && sudo apt upgrade`<br>
 `sudo apt install software-properties-common`<br>
 `sudo add-apt-repository ppa:ondrej/php`<br>
@@ -49,10 +43,16 @@ Verify installation:<br>
 `php -v`<br>
 If you get back a version number, you're good to go.
 
-## How to use it
-First, feel free to delete the sample theme, by clicking the minus symbol next to the theme-name. Now, create your own theme by writing something in the first textbox and pressing the button with a plus icon.
+### Install PHP (MacOS)
+Homebrew, I guess? I'm not too savvy with mac, sorry.<br>
+Let me know if you have an easy-to-follow guide for MacOS!
 
-A default preset is automatically added. You can double click on the title (any title, actually) to change it to something else. A preset contains all the volume settings you make for the tracks, and which tracks should be playing for a given preset. If you select different presets it will fade out tracks that are no longer playing, and fade the volume sliders into the preset position.
+## How to use it
+There is an info-button you can click inside the app to get more info.
+
+First, feel free to delete the sample theme, by clicking the minus symbol next to the theme-name, or double click the title to rename it. If you want to create your own theme, write something in the first textbox and press the button with a plus icon.
+
+A default preset is automatically added. You can double click on the title to change it to something else, if you'd like. A preset contains all the volume settings you make for the tracks, and which tracks should be playing for a given preset. If you select different presets it will fade out tracks that are no longer playing, and fade the volume sliders into the preset position.
 
 Add a track by following the same procedure, filling out the text box, and clicking the adjacent button with the plus icon. Tracks are a little different, in that they contain the actual music or ambience files.
 
@@ -60,10 +60,16 @@ To add a file, click the button with an eye icon, which will display a popup. Pr
 
 Effects are essentially just tracks too, but they are not looped. They are automatically assigned to keyboard shortcuts, so you can play them at the touch of a button. The shortcut is displayed to the left of the effect title, so you can see the shortcut at a quick glance in the heat of battle.
 
-## How it works:
+Settings are located at the bottom-left of the application. There you can add a background image, or change the UI colors.
+
+## How it works (technical):
 The program spins up a local web server, with PHP.
 Data is saved to a locally database-file, that's where your all your themes, presets and tracks are saved.
 When you add a file to a track, it is automatically copied to the audio folder.
+
+I would love to write this again in C++ with QT or something, but I simply don't have the time at the moment, so this is it for now.
+
+If you have any suggestions for technical improvements, I'd love to hear it!
 
 ## Credits:
 Included are two example files:<br>
