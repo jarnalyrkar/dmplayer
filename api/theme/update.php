@@ -1,14 +1,23 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/DB.php');
 
-$data = null;
 $db = new DB();
-if (isset($_GET['id']) && isset($_GET['new-name'])) {
-  $data = $db->update_theme(htmlspecialchars($_GET['id']), htmlspecialchars($_GET['new-name']));
-} else {
-  return "Missing get parameters id or new-name";
+header("Content-Type: application/json");
+
+$missing_params = [];
+if (!isset($_GET['id'])) {
+  $missing_params[] = 'id';
+}
+if (!isset($_GET['new-name'])) {
+  $missing_params[] = 'new-name';
 }
 
-header("Content-Type: application/json");
-echo json_encode($data);
+if (!$missing_params) {
+  header(200);
+  echo json_encode($db->update_theme(htmlspecialchars($_GET['id']), htmlspecialchars($_GET['new-name'])));
+} else {
+  header(400);
+  echo json_encode("Missing parameter(s): " . implode(", ", $missing_params));
+}
+
 exit();

@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
-
 :root {
   --primary-100: hsl(25, 56%, 45%);
   --primary-200: hsl(25, 56%, 35%);
@@ -13,9 +11,8 @@
   --text: white;
 }
 
-// body { color: hsl(234, 56%, 29%)}
 * {
-  font-family: MedievalSharp;
+  font-family: Arial, Helvetica, sans-serif;
   box-sizing: border-box;
 }
 html {
@@ -82,6 +79,10 @@ input[type=file] + label {
   width: 100%;
 }
 
+.file-upload {
+  border: 1px solid var(--accent);
+}
+
 textarea {
   max-width: 100%;
   font-size: 1.25rem;
@@ -118,27 +119,22 @@ main {
 }
 
 .action-section {
-  flex: 1;
-  display: flex;
+  display: grid;
   justify-content: space-between;
-  // grid-template-columns: clamp(300px, 21vw, 400px) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
   margin-left: 1rem;
-  & section + section {
-    margin-left: 1rem;
-  }
-  & section {
-    flex: 1;
-  }
+  gap: 1rem;
+  flex: 1;
 }
 
 .shrinking ~ .action-section {
-  // grid-template-columns: clamp(300px, 21vw, 400px) minmax(0, 1fr) minmax(0, 1.5fr);
+  grid-template-columns: clamp(300px, 21vw, 400px) minmax(0, 1fr) minmax(0, 1.5fr);
+  width: 100%;
   margin-left: unset;
 }
 
-.shrinking + .action-section #effect .list li {
-  flex: 0 0 20%;
-  max-width: 20%;
+.shrinking + .action-section #effect .list {
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 
 .files {
@@ -154,10 +150,11 @@ main {
 }
 
 .empty {
-  background-color: unset !important;
+  background-color: var(--primary-400-trans);
+  padding: .65rem;
   width: 100%;
   max-width: unset !important;
-  padding: unset !important;
+  grid-column: 1 / -1;
 }
 
 .add-form {
@@ -234,7 +231,6 @@ header {
 .track-row {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   flex: 1;
   padding: .25rem 1rem;
   background-color: var(--primary-400-trans);
@@ -328,7 +324,6 @@ header {
 .list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   overflow-y: auto;
   padding-bottom: 1rem;
   scrollbar-gutter: stable;
@@ -380,19 +375,11 @@ section:not(#effect) li + li {
 }
 
 #effect .list {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
   & li {
-    flex: 0 0 30%;
-    max-width: 30%;
     justify-content: space-between;
-  }
-  &::after {
-    content: '';
-    flex: 0 0 30%;
-    max-width: 30%;
   }
 }
 
@@ -596,8 +583,9 @@ button[data-action=close-dialog] {
   border: solid 5px var(--primary-300);
   transition: background-color 300ms cubic-bezier(0.165, 0.84, 0.44, 1);
   pointer-events: initial;
-  height: 6rem;
+  height: auto;
   width: 100%;
+  aspect-ratio: 1/1;
   &:hover {
     background-color:var(--primary-600);
   }
@@ -606,8 +594,6 @@ button[data-action=close-dialog] {
   }
   &__container {
     margin-top: 1rem;
-    padding-left: .5rem;
-    padding-right: .5rem;
   }
 }
 
@@ -687,11 +673,12 @@ button[data-action=close-dialog] {
   background-color: white;
   border: white 1px solid;
   color: black;
-  padding: .5rem 1rem;
+  padding: .25rem 1rem;
   display: block;
   margin-top: 1rem;
-  font-size: 1rem;
+  font-size: .75rem;
   transition: color 300ms, background-color 300ms;
+  margin-inline: auto;
 }
 
 
@@ -709,10 +696,6 @@ button[data-action=close-dialog] {
     justify-content: center;
   }
 }
-.colorpicker-value {
-  width: 21ch;
-  text-align: center;
-}
 
 .circle {
   height: 3rem;
@@ -728,6 +711,7 @@ button[data-action=close-dialog] {
     max-width: 920px;
     width: unset;
   }
+
   & h2 {
     font-size: revert;
     text-align: center;
@@ -735,6 +719,7 @@ button[data-action=close-dialog] {
   }
   h3 {
     margin-bottom: 1rem;
+    text-align: center;
   }
 }
 .blurlayer {
@@ -753,7 +738,7 @@ button[data-action=close-dialog] {
 }
 .settings-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-items: center;
   gap: 2rem;
 }
 

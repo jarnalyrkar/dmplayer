@@ -67,12 +67,12 @@ include $partials . "setup.php";
   <aside>
     <?php include $partials . "infobox.php"; ?>
     <?php include $partials . "toast.php"; ?>
+    <?php include $partials . "settings.php"; ?>
   </aside>
 
   <?php include $partials . "footer.php"; ?>
   <?php // TODO: get from and save to db
   ?>
-  <?php include $partials . "settings.php"; ?>
   <script src="/assets/js/color-picker/index.min.js"></script>
   <script src="/assets/js/script.js"></script>
 

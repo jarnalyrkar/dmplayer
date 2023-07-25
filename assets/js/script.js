@@ -127,34 +127,38 @@ function fadeTo(audio, targetVolume) {
   const interval = 50
   const audio_id = audio.getAttribute('data-id')
   const track = document.querySelector(`#track li[data-id="${audio_id}"]`)
-  if (track) {
-    let range = track.querySelector('input[type=range]')
-    audio.volume = range.value / 100
-    animateRange(range, targetVolume)
-  }
+  if (!track) return
+  let range = track.querySelector('input[type=range]')
+  audio.volume = range.value / 100
   if (audio.volume < target) {
     let fadeTo = setInterval(() => {
       if (audio.volume.toFixed(2) >= target - steps) {
         audio.volume = target
+        range.value = audio.volume * 100
         clearInterval(fadeTo)
       } else {
         audio.volume += steps
+        range.value = audio.volume * 100
       }
     }, interval)
   } else {
     let fadeTo = setInterval(() => {
       if (audio.volume.toFixed(2) <= target + steps) {
         audio.volume = target
+        range.value = audio.volume * 100
         clearInterval(fadeTo)
       } else {
         audio.volume -= steps
+        range.value = audio.volume * 100
       }
     }, interval)
   }
 }
 
+// Deprecate; move to fadeOut, FadeIn, FadeTo
 function animateRange(range, value) {
-  if (range.value == value) return;
+  return
+  if (!range || range.value == value) return;
   let currentValue = parseInt(range.value)
   if (range.value > value) {
      let move = setInterval(() => {
@@ -227,7 +231,9 @@ function setTracks(theme_id) {
         const template = document.querySelector("#track-item")
         const clone = template.content.cloneNode(true)
         const li = clone.querySelector('li')
-        const preset_id = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
+        const selected = document.querySelector('#preset [data-state=selected]')
+        if (!selected) return
+        let preset_id = selected.getAttribute('data-id')
         li.setAttribute('data-id', item.track_id)
         li.setAttribute('data-order', item.order)
         li.querySelector('[data-action=play]').classList.add('active')
@@ -355,41 +361,57 @@ tagTracksWithoutFiles()
 
 // DOM Node references
 // DOM update functions
-function createTheme(value, list) {
-  const order = list.children.length + 1
-  loadJson(`/api/theme/create.php?name=${value}&order=${order}`)
-  .then(id => {
+function createTheme(name, list) {
+  let order
+  if (list.children.length === 1 && list.children[0].classList.contains('empty')) {
+    order = 1
+  } else {
+    order = list.children.length + 1
+  }
+  loadJson(`/api/theme/create.php?name=${name}&order=${order}`)
+  .then(({theme_id}) => {
     const template = document.querySelector('#item')
     const clone = template.content.cloneNode(true)
     const li = clone.querySelector('.list__item')
-    li.setAttribute('data-id', id)
+    li.setAttribute('data-id', theme_id)
     li.setAttribute('data-order', order)
-    clone.querySelector('.list__item input[type=button]').value = value
+    clone.querySelector('.list__item input[type=button]').value = name
     list.append(clone)
-    activateElement(id, list)
+    activateElement(theme_id, list)
     const empty = list.querySelector('.empty')
     if (empty) empty.remove()
     // Add default preset
     const presetList = document.querySelector('#preset .list')
-    createPreset('Default', id, presetList)
+    createPreset('Default', theme_id, presetList)
   })
 }
 
-function createPreset(value, theme_id, list) {
+function createPreset(name, theme_id, list) {
   let current = 0
-  if (value === "Default") {
+  if (name === "Default") {
     current = 1
   }
-  const order = list.children.length + 1
+  let order
+  if (list.children.length === 1 && list.children[0].classList.contains('empty')) {
+    order = 1
+  } else {
+    order = list.children.length + 1
+  }
+  let missing_params = []
+  if (!theme_id) missing_params.push("theme")
+  if (missing_params.length) {
+    showToast("Please select a theme before creating a preset")
+    return
+  }
 
-  loadJson(`/api/preset/create.php?name=${value}&theme_id=${theme_id}&order=${order}&current=${current}`)
+  loadJson(`/api/preset/create.php?name=${name}&theme_id=${theme_id}&order=${order}&current=${current}`)
   .then(id => {
     const template = document.querySelector('#item')
     const clone = template.content.cloneNode(true)
     const li = clone.querySelector('.list__item')
     li.setAttribute('data-id', id)
     li.setAttribute('data-order', order)
-    clone.querySelector('.list__item input[type=button]').value = value
+    clone.querySelector('.list__item input[type=button]').value = name
     list.append(clone)
     if (current) {
       loadJson(`/api/preset/set-last.php?preset_id=${id}&theme_id=${theme_id}`)
@@ -401,14 +423,24 @@ function createPreset(value, theme_id, list) {
 }
 
 function createTrack(value, theme_id, list) {
-  const order = list.children.length + 1
-  const preset_id = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
-  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=1&preset_id=${preset_id}&order=${order}`)
-  .then(id => {
+  const preset = document.querySelector('#preset [data-state=selected]')
+  if (!preset) {
+    showToast("Please add a preset before adding a track")
+    return
+  }
+  const preset_id = preset.getAttribute('data-id')
+  let order
+  if (list.children.length === 1 && list.children[0].classList.contains('empty')) {
+    order = 1
+  } else {
+    order = list.children.length + 1
+  }
+  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=1&order=${order}&preset_id=${preset_id}`)
+  .then((track) => {
     const template = document.querySelector('#track-item')
     const clone = template.content.cloneNode(true)
     const li = clone.querySelector('li')
-    li.setAttribute('data-id', id)
+    li.setAttribute('data-id', track.track_id)
     li.setAttribute('data-order', order)
     li.querySelector('.track-title').innerHTML = value
     list.append(clone)
@@ -419,14 +451,22 @@ function createTrack(value, theme_id, list) {
 }
 
 function createEffect(value, theme_id, list) {
-  const order = list.children.length + 1
-  const preset_id = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
-  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=2&preset_id=${preset_id}&order=${order}`)
-  .then((id) => {
+  let order
+  if (list.children.length === 1 && list.children[0].classList.contains('empty')) {
+    order = 1
+  } else {
+    order = list.children.length + 1
+  }
+  if (!theme_id) {
+    showToast("Please create a theme before adding an effect")
+    return
+  }
+  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=2&order=${order}`)
+  .then((effect) => {
     const template = document.querySelector('#effect-item')
     const clone = template.content.cloneNode(true)
     const li = clone.querySelector('li')
-    li.setAttribute('data-id', id)
+    li.setAttribute('data-id', effect.track_id)
     li.querySelector('.track-title').innerHTML = value
     list.append(clone)
     const keystroke = keystrokes[list.querySelectorAll('li:not(.empty)').length - 1]
@@ -449,7 +489,6 @@ async function createAudio(id) {
   const el = document.createElement('audio')
   const path = await loadJson('/api/file/get_path.php')
   const audio = await loadJson(`/api/file/random.php?id=${id}`)
-
   if (audio && path) {
     el.src = path + audio.filename
     el.setAttribute('data-id', id)
@@ -550,6 +589,7 @@ document.addEventListener('click', (ev) => {
               if (info) {
                 return
               } else {
+                if (track.closest('section').id === "effect") return
                 if (track_id && preset_id) {
                   loadJson(`/api/preset/add-track.php?track_id=${track_id}&preset_id=${preset_id}`)
                 }
@@ -583,17 +623,16 @@ document.addEventListener('click', (ev) => {
     }
     const selected = list.querySelector('[data-state=selected]')
     if (type === 'theme') {
-      loadJson(`/api/preset/delete-related.php?id=${id}`)
+      loadJson(`/api/theme/delete.php?id=${id}`)
     }
     if (type === 'preset') {
-      loadJson(`/api/track/delete-related.php?id=${id}`)
+      loadJson(`/api/preset/delete.php?id=${id}`)
     }
     li.remove()
     if (selected && id === selected.getAttribute('data-id')) {
       let available = list.querySelector('.list__item')
       if (!available) {
         list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
-        loadJson(`/api/${type}/delete.php?id=${id}`)
         if (type === "theme") {
           const tracks = document.querySelectorAll('.list li:not(.empty)')
           tracks.forEach(li => li.remove())
@@ -801,7 +840,6 @@ document.querySelectorAll('.add-form').forEach(form =>
       createTheme(value, list)
     }
     if (type === "preset") {
-      // TODO: If no theme is selected, show "create theme first", message
       createPreset(value, theme_id, list)
     }
     if (type === "track") {
