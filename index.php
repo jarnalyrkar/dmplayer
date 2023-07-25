@@ -1,4 +1,7 @@
 <?php
+if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
+  ini_set("extension_dir", ".\php\ext");
+}
 $partials = $_SERVER['DOCUMENT_ROOT'] . "/partials/";
 include $partials . "setup.php";
 ?>

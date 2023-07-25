@@ -19,6 +19,8 @@ if ($existing) {
   $db->add_file_to_track($existing, htmlspecialchars($_POST['track_id']));
   echo json_encode($existing);
   return;
+} else {
+  echo json_encode("File not found");
 }
 
 $allowedFormats = ['mp3', 'flac', 'ogg', 'vorbis', 'wav', 'mp4'];
