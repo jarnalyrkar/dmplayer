@@ -108,8 +108,6 @@ function fadeOut(audio) {
 }
 
 function fadeIn(audio, targetVolume) {
-  audio.volume = 0
-  audio.play()
   const steps = 0.05
   const interval = 50
   let fadein = setInterval(() => {
@@ -123,6 +121,7 @@ function fadeIn(audio, targetVolume) {
 }
 
 function fadeTo(audio, targetVolume) {
+  if (!audio) return
   const steps = 0.05
   const target = targetVolume / 100
   const interval = 50
@@ -421,8 +420,9 @@ function createTrack(value, theme_id, list) {
 
 function createEffect(value, theme_id, list) {
   const order = list.children.length + 1
-  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=2&order=${order}`)
-  .then(id => {
+  const preset_id = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
+  loadJson(`/api/track/create.php?name=${value}&theme_id=${theme_id}&type_id=2&preset_id=${preset_id}&order=${order}`)
+  .then((id) => {
     const template = document.querySelector('#effect-item')
     const clone = template.content.cloneNode(true)
     const li = clone.querySelector('li')
@@ -516,7 +516,8 @@ document.addEventListener('click', (ev) => {
             const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
             const volume = track.querySelector('[type=range]').value / 100
             if (!existing) {
-              createAudio(track.getAttribute('data-id')).then(audio => {
+              createAudio(track.getAttribute('data-id')).then((audio) => {
+                if (!audio) return
                 audio.volume = volume
                 fadeTo(audio, data.volume)
                 if (!audio.paused && audio.duration > 0) {
@@ -647,6 +648,10 @@ document.addEventListener('click', (ev) => {
         body: data
       })
       .then(data => {
+        const spinner = document.createElement('div')
+        spinner.classList.add('spinner')
+        spinner.innerHTML = "Converting..."
+        document.querySelector('.files').appendChild(spinner)
         if (data.status === 200) {
           data.json().then(id => {
             const template = document.querySelector('#file')
@@ -657,6 +662,7 @@ document.addEventListener('click', (ev) => {
             li.querySelector('.file__name').innerHTML = file.name
             document.querySelector('.files').appendChild(clone)
             tagTracksWithoutFiles()
+            document.querySelector('.spinner').remove()
           })
         }
       })
@@ -682,6 +688,8 @@ document.addEventListener('click', (ev) => {
       targetVolume = volumeBar.value
       if (existingAudio) {
         if (existingAudio.paused) {
+          existingAudio.volume = 0
+          existingAudio.play()
           fadeIn(existingAudio, targetVolume)
         } else {
           fadeOut(existingAudio)
@@ -946,29 +954,14 @@ document.addEventListener("drop", ({target}) => {
 
 
 
-const host = 'ws://127.0.0.1:8009/websockets.php'
-const socket = new WebSocket(host)
+// const host = 'ws://127.0.0.1:8009/websockets.php'
+// const socket = new WebSocket(host)
 
 // Event handler bindings
 // Initial setup
 
 // Theme
 const root = document.documentElement
-
-// Use this for live-preview while in settings menu
-// primary + shades
-// const primaryColor = document.querySelector('#primary-color').dataset.color
-// const primaryValues = primaryColor.match(/\d+/g).map(Number);
-
-
-// accent
-// const accentColor = document.querySelector('#accent-color').dataset.color
-// const accentValues = accentColor.match(/\d+/g).map(Number);
-
-
-// text
- // do stuff
-
 // Color picker
 const primaryEl = document.querySelector('#primary-color')
 const primaryPicker = new CP(primaryEl)
@@ -983,8 +976,10 @@ primaryPicker.on('drag', (r, g, b, a) => {
   root.style.setProperty('--primary-200', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] + 10}%)`)
   root.style.setProperty('--primary-300', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2]}%)`)
   root.style.setProperty('--primary-400', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 5}%)`)
+  root.style.setProperty('--primary-400-trans', `hsla(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 5}%, 70%)`)
   root.style.setProperty('--primary-500', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 10}%)`)
   root.style.setProperty('--primary-600', `hsl(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 15}%)`)
+  root.style.setProperty('--primary-600-trans', `hsla(${primaryValues[0]}, ${primaryValues[1]}%, ${primaryValues[2] - 15}%, 70%)`)
   primaryHSL = `hsl(${primaryValues[0].toFixed(2)},${primaryValues[1].toFixed(2)}%,${primaryValues[2].toFixed(2)}%)`
 })
 

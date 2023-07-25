@@ -14,7 +14,7 @@ class DB
 
   function __construct()
   {
-    $dbfile = $_SERVER['SERVER_NAME'] == "localhost" ? '/dmplayer.db' : '/dmplayer-dev.db';
+    $dbfile = '/dmplayer.db';
     $this->pdo = new PDO("sqlite:" . $_SERVER['DOCUMENT_ROOT'] . $dbfile);
   }
 
@@ -488,8 +488,10 @@ class DB
       "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p2}%)",
       "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p3}%)",
       "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p4}%)",
+      "hsla({$primaryValues[0]}, {$primaryValues[1]}%, {$p4}%, 70%)",
       "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p5}%)",
       "hsl({$primaryValues[0]}, {$primaryValues[1]}%, {$p6}%)",
+      "hsla({$primaryValues[0]}, {$primaryValues[1]}%, {$p6}%, 70%)",
     ];
   }
 

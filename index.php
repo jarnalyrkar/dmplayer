@@ -1,4 +1,5 @@
 <?php
+
 if (strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') {
   ini_set("extension_dir", ".\php\ext");
 }
@@ -23,8 +24,10 @@ include $partials . "setup.php";
         --primary-200: <?= $shades[1] ?>;
         --primary-300: <?= $shades[2] ?>;
         --primary-400: <?= $shades[3] ?>;
-        --primary-500: <?= $shades[4] ?>;
-        --primary-600: <?= $shades[5] ?>;
+        --primary-400-trans: <?= $shades[4] ?>;
+        --primary-500: <?= $shades[5] ?>;
+        --primary-600: <?= $shades[6] ?>;
+        --primary-600-trans: <?= $shades[7] ?>;
         --accent: <?= $accent_color ?>;
         --text: <?= $text_color ?>;
       }
