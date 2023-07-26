@@ -5,17 +5,21 @@
 
 ## Use case:
 ### Using for table play
-You play Dungeons and Dragons, and want to play layered tracks of music, ambience and sound effects.
-You already have a local library of music, soundtracks and sound effects, or know how to get it.
+If you play Dungeons and Dragons (or any TTRPG for that matter), and would like to play layered tracks of music, ambience and sound effects, then this is for you!
 
-Apart from one music sample and one sound effect sample (credits below), there are no audio packs or full campaign sets included with this software. If you need complete audio sets and effects tailor-made for an offical campaign<a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option.
+There are no audio packs or campaign sets included with this software. Maybe you already have audio files on hand, or know where to get it.
+
+If you need complete audio sets and effects tailor-made for offical campaigns <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option, as they offer a subscription-based service to exactly that.
 
 ## How to install:
-First, download this repo<br>
+First, download this repo (code-button -> download zip)<br>
+Unzip anywhere you'd like.
+
 PHP is required, so go ahead and install that, see below for instructions.<br>
 
-On Windows, use dmplayer.bat<br>
-On Linux and MacOS, use dmplayer.sh
+**To start the program:**<br>
+Use dmplayer.bat on Windows<br>
+Use dmplayer.sh on Linux and MacOS<br>
 
 ### Install PHP (windows):
 - Right-click install-php.bat and select "Run as administrator".
@@ -27,7 +31,7 @@ If you'd rather do it manually:
 - <a href="https://www.computerhope.com/issues/ch000549.htm">Add that directory to PATH</a>
 - Start dmplayer.bat
 
-#### Troubleshooting
+#### Troubleshooting, suggestions
 - You may need to restart the machine, so windows can see the new path-variable we just added
 - Right click folder, select properties, and turn off read only
 
@@ -67,11 +71,6 @@ The program spins up a local web server, with PHP.
 Data is saved to a locally database-file, that's where your all your themes, presets and tracks are saved.
 When you add a file to a track, it is automatically copied to the audio folder.
 
-I would love to write this again in C++ with QT or something, but I simply don't have the time at the moment, so this is it for now.
+I'd love to write this again in C++ with QT or something, but I simply don't have the time at the moment, so this is it for now.
 
 If you have any suggestions for technical improvements, I'd love to hear it!
-
-## Credits:
-Included are two example files:<br>
-<a href="https://www.youtube.com/@dndscapes4824">DNDScapes</a> - Three Horses<br>
-<a href="https://freesound.org/people/Sheyvan/">Sheyvan</a> - Orchestral Victory Fanfare
