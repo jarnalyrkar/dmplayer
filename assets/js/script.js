@@ -48,7 +48,7 @@ function showToast(message) {
   }, 4000)
 }
 
-function randomBetween(min, max) { // min and max included
+function randomBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
@@ -155,32 +155,6 @@ function fadeTo(audio, targetVolume) {
   }
 }
 
-// Deprecate; move to fadeOut, FadeIn, FadeTo
-function animateRange(range, value) {
-  return
-  if (!range || range.value == value) return;
-  let currentValue = parseInt(range.value)
-  if (range.value > value) {
-     let move = setInterval(() => {
-       if (range.value > value) {
-        currentValue = parseInt(range.value)
-         range.value = currentValue -= 2
-       } else {
-         clearInterval(move)
-       }
-     }, 50)
-  } else {
-    let move = setInterval(() => {
-      if (parseInt(range.value) < value) {
-        currentValue = parseInt(range.value)
-        range.value = currentValue += 2
-      } else {
-         clearInterval(move)
-       }
-     }, 50)
-  }
-}
-
 function playEffect(id) {
   createAudio(id).then(audio => {
     if (audio) {
@@ -239,9 +213,6 @@ function setTracks(theme_id) {
         li.querySelector('[data-action=play]').classList.add('active')
         loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${item.track_id}`).then(data => {
           const range = li.querySelector('input[type=range]')
-          if (range) {
-            animateRange(range, data.volume)
-          }
           if (data.playing) {
             const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
             if (!existing) {
@@ -989,11 +960,10 @@ document.addEventListener("drop", ({target}) => {
   }
 });
 
-
-
-
-// const host = 'ws://127.0.0.1:8009/websockets.php'
-// const socket = new WebSocket(host)
+if (location.href.includes('localhost')) {
+  const host = 'ws://127.0.0.1:8009/websockets.php'
+  const socket = new WebSocket(host)
+}
 
 // Event handler bindings
 // Initial setup

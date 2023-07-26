@@ -127,6 +127,26 @@ main {
   flex: 1;
 }
 
+
+
+
+
+.files {
+  display: flex;
+  flex-direction: column;
+}
+
+#theme {
+  transition: width 250ms linear, transform 250ms linear;
+  width: 100%;
+  overflow: hidden;
+  max-width: 400px;
+}
+
+#theme.shrinking {
+  transition: width 250ms linear, transform 250ms linear;
+}
+
 .shrinking ~ .action-section {
   grid-template-columns: clamp(300px, 21vw, 400px) minmax(0, 1fr) minmax(0, 1.5fr);
   width: 100%;
@@ -135,18 +155,6 @@ main {
 
 .shrinking + .action-section #effect .list {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-}
-
-.files {
-  display: flex;
-  flex-direction: column;
-}
-
-#theme {
-  transition: width 500ms linear, transform 500ms linear;
-  width: 100%;
-  overflow: hidden;
-  max-width: 400px;
 }
 
 .empty {
@@ -168,6 +176,12 @@ main {
     font-size: 1rem;
     margin-bottom: .5rem;
     text-transform: uppercase;
+  }
+  &__row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: .5rem;
   }
   &__input {
     background-color:var(--primary-500);
