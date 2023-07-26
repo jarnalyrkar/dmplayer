@@ -469,6 +469,15 @@ class DB {
     return $this->get_setting_by_name('background_image');
   }
 
+  public function set_font($font) {
+    $query = $this->pdo->query("UPDATE settings SET value = \"$font\" WHERE option = \"font\"");
+    return $query->fetch();
+  }
+
+  public function get_font() {
+    return $this->get_setting_by_name('font');
+  }
+
   public function set_primary_color($color) {
     $query = $this->pdo->query("UPDATE settings SET value = \"$color\" WHERE option = \"primary_color\"");
     return $query->fetch();

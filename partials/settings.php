@@ -20,10 +20,16 @@
           </div>
           <button data-action="reset-theme">Set Default Colors</button>
         </div>
-        <div class="background-image">
+        <div class="setting" data-section="background-image">
           <label for="bg-img-url">Background image URL</label>
           <input id="bg-img-url" type="text" value="<?= $background_image ?>">
           <p class="explain">Tip: You can also move an image into the app directory and rename it &ldquo;bg.jpeg&rdquo;, and it will be used, if no URL is present.</p>
+        </div>
+        <div class="setting" data-section="font-setting">
+          <label for="font-setting">Google font name</label>
+          <input id="font-setting" type="text" value="<?= $font ?? '' ?>">
+          <p class="explain">Add the name for any <a href="https://fonts.google.com/">google font</a> here.
+            It needs to match exactly, so copy and paste may be a good idea. Click outside the textbox to see the difference.</p>
         </div>
       </div>
     </div>

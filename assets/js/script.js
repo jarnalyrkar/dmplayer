@@ -870,6 +870,17 @@ document.addEventListener('change', ev => {
     document.body.style.backgroundImage = `url(${ev.target.value})`
     loadJson(`/api/settings/set-background.php?url=${ev.target.value}`)
   }
+  if (ev.target.id === "font-setting") {
+    loadJson(`/api/settings/set-font.php?font=${ev.target.value}`)
+    root.style.setProperty("--font", `"${ev.target.value}"`)
+
+    const font = ev.target.value.replace(' ', '+')
+    WebFont.load({
+      google: {
+        families: [font]
+      }
+    })
+  }
 })
 
 document.addEventListener('dblclick', ev => {
