@@ -1,15 +1,14 @@
 # Dungeon Master Player
-<b>Warning: Pre-Alpha version - not all functionality is implemented yet.</b>
+<b>Beta: Feel free to report bugs!</b>
 
 <img src="readme.jpeg" alt="Preview of the application">
 
-## Use case:
-### Using for table play
-If you play Dungeons and Dragons (or any TTRPG for that matter), and would like to play layered tracks of music, ambience and sound effects, then this is for you!
+## What this is for:
+If you play Dungeons and Dragons (or any TTRPG for that matter), and would like to play layered tracks of music, ambience and sound effects with presets controlling volume, then this is for you!
 
-There are no audio packs or campaign sets included with this software. Maybe you already have audio files on hand, or know where to get it.
+There are no audio packs or campaign sets included with this software. This is simply a tool for game masters to use at the game table. But maybe you already have audio files on hand, or know how to get it.
 
-If you need complete audio sets and effects tailor-made for offical campaigns <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option, as they offer a subscription-based service to exactly that.
+If you need complete audio sets and effects tailor-made for offical campaigns <a href="https://syrinscape.com/subscriptions/3-supersyrin/">Syrinscape</a> might be a better option, as they offer a subscription-based service for exactly that.
 
 ## How to install:
 First, download this repo (code-button -> download zip)<br>
