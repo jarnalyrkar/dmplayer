@@ -14,7 +14,7 @@ include $partials . "setup.php";
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dungeon Master Player</title>
+  <title>Game Master Player</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="/assets/js/color-picker/index.min.css">
@@ -53,13 +53,13 @@ include $partials . "setup.php";
     $title = "Themes";
     $data_type = "theme";
     $items = $db->get_themes();
-    $placeholder = "E.g Dungeon, Airship, Mountains, Village";
+    $placeholder = "E.g The Heart of Flamespike Citadel";
     include $partials . "section.php";
 
     $title = "Presets";
     $data_type = "preset";
     $items = $db->get_presets_by_theme($active_theme_id);
-    $placeholder = "E.g Busy townsquare, Quiet Night, Execution";
+    $placeholder = "E.g Tavern, Forest, Temple, Goblin Hideout";
     ?>
     <div class="action-section">
       <?php
@@ -76,8 +76,6 @@ include $partials . "setup.php";
   </aside>
 
   <?php include $partials . "footer.php"; ?>
-  <?php // TODO: get from and save to db
-  ?>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.0.1/color-thief.min.js"></script>
   <script src="/assets/js/color-picker/index.min.js"></script>

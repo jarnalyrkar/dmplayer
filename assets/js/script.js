@@ -625,9 +625,9 @@ document.addEventListener('click', (ev) => {
       const empty = dialog.querySelector('.empty')
       if (empty) empty.remove()
 
-      const file = document.querySelector('#new-file').files[0]
+      const files = document.querySelector('#new-file').files
       const data = new FormData()
-      data.append('file', file)
+      Array.from(files).forEach((file, i) => data.append('file-'+i, file))
       data.append('track_id', track_id)
       fetch('/api/file/create.php', {
         method: 'POST',
@@ -636,19 +636,23 @@ document.addEventListener('click', (ev) => {
       .then(data => {
         const spinner = document.createElement('div')
         spinner.classList.add('spinner')
-        spinner.innerHTML = "Converting..."
+        spinner.innerHTML = "Creating..."
         document.querySelector('.files').appendChild(spinner)
         if (data.status === 200) {
-          data.json().then(id => {
-            const template = document.querySelector('#file')
-            const clone = template.content.cloneNode(true)
-            const li = clone.querySelector('li')
-            li.setAttribute('data-filename', file.name)
-            li.setAttribute('data-id', id)
-            li.querySelector('.file__name').innerHTML = file.name
-            document.querySelector('.files').appendChild(clone)
-            tagTracksWithoutFiles()
-            document.querySelector('.spinner').remove()
+          data.json().then(res => {
+            if (res.files) {
+              res.files.forEach(file => {
+                const template = document.querySelector('#file')
+                const clone = template.content.cloneNode(true)
+                const li = clone.querySelector('li')
+                li.setAttribute('data-filename', file.name)
+                li.setAttribute('data-id', file.id)
+                li.querySelector('.file__name').innerHTML = file.name
+                document.querySelector('.files').appendChild(clone)
+                tagTracksWithoutFiles()
+                document.querySelector('.spinner').remove()
+              })
+            }
           })
         }
       })

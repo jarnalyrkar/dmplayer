@@ -66,8 +66,8 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
         <div class="dialog__inner">
           <button data-action="close-dialog" aria-label="close dialog" title="Close settings">&times;</button>
           <form action="/api/file/create.php" method="post" enctype="multipart/form-data">
-            <input type="file" id="new-file" name="new-file">
-            <label class="file-upload" data-action="add-file" for="new-file">Add file to track...</label>
+            <input type="file" id="new-file" name="new-file" multiple>
+            <label class="file-upload" data-action="add-file" for="new-file">Add file(s) to track...</label>
           </form>
           <div class="dialog__files">
             <h2>Files in track:</h2>
