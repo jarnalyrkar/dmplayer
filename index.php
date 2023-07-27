@@ -21,6 +21,7 @@ include $partials . "setup.php";
   <link rel="stylesheet" href="/assets/scss/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=<?= $font; ?>&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --primary-100: <?= $shades[0] ?>;
@@ -77,6 +78,8 @@ include $partials . "setup.php";
   <?php include $partials . "footer.php"; ?>
   <?php // TODO: get from and save to db
   ?>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.0.1/color-thief.min.js"></script>
   <script src="/assets/js/color-picker/index.min.js"></script>
   <script src="/assets/js/script.js"></script>
 

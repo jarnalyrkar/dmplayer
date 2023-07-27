@@ -23,7 +23,12 @@
         <div class="setting" data-section="background-image">
           <label for="bg-img-url">Background image URL</label>
           <input id="bg-img-url" type="text" value="<?= $background_image ?>">
-          <p class="explain">Tip: You can also move an image into the app directory and rename it &ldquo;bg.jpeg&rdquo;, and it will be used, if no URL is present.</p>
+          <p class="explain">Tip: You can also move an image into the app directory and rename it &ldquo;bg.jpeg&rdquo;, and that will be used if no URL is present.</p>
+        </div>
+        <div class="setting">
+          <label>Dominant Colors</label>
+          <p class="explain">Click to use background image as base for Interface Colors</p>
+          <button data-action="dominant-theme">Set Interface Colors</button>
         </div>
         <div class="setting" data-section="font-setting">
           <label for="font-setting">Google font name</label>

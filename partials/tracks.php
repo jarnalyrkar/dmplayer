@@ -75,7 +75,9 @@ $placeholder = "E.g Howling wind, Water drips, War cries";
             <template id="file">
               <li class="files__file" data-filename="" data-id="">
                 <span class="file__name">filename</span>
-                <button class="action-button" data-action="delete-file" title="Delete">-</button>
+                <button class="action-button" data-action="delete-file" title="Delete">
+                  <?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?>
+                </button>
               </li>
             </template>
           </div>

@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 $data = null;
 if (isset($_GET['id'])) {
   $data = $db->delete_track(htmlspecialchars($_GET['id']));
-  http_response_code(204);
+  http_response_code(200);
   return;
 } else {
   http_response_code(402);

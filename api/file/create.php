@@ -31,7 +31,7 @@ if (in_array($extension, $allowedFormats)) {
   move_uploaded_file($_FILES['file']['tmp_name'], $pathAndFilename);
   header("Content-Type: application/json");
   http_response_code(200);
-  json_encode($db->create_file(htmlspecialchars($filename), htmlspecialchars($_POST['track_id'])));
+  echo json_encode($db->create_file(htmlspecialchars($filename), htmlspecialchars($_POST['track_id'])));
 } else {
   header("Content-Type: application/json");
   http_response_code(400);

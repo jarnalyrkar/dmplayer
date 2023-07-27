@@ -38,15 +38,17 @@ $keyCounter = 0;
   </ul>
   <template id="effect-item">
     <li draggable="true" data-order="" data-id="" data-keystroke="">
-      <div class="track-title__container">
-        <span class="track-title"></span>
-      </div>
-      <div class="keystroke__container">
-        <button class="keystroke" data-action="play"></button>
-      </div>
-      <div class="play-actions">
-        <button class="action-button" data-action="see-files"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?></button>
-        <button class="action-button" data-action="delete"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?></button>
+      <div class="track__inner">
+        <div class="track-title__container">
+          <span class="track-title"></span>
+        </div>
+        <div class="keystroke__container">
+          <button class="keystroke" data-action="play"></button>
+        </div>
+        <div class="play-actions">
+          <button class="action-button" data-action="see-files"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/cogwheel.svg" ?></button>
+          <button class="action-button" data-action="delete"><?php include $_SERVER['DOCUMENT_ROOT'] . "/assets/img/trashcan.svg" ?></button>
+        </div>
       </div>
     </li>
   </template>

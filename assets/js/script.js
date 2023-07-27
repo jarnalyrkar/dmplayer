@@ -348,9 +348,11 @@ function createTheme(name, list) {
     li.setAttribute('data-order', order)
     clone.querySelector('.list__item input[type=button]').value = name
     list.append(clone)
-    activateElement(theme_id, list)
     const empty = list.querySelector('.empty')
-    if (empty) empty.remove()
+    if (empty) {
+      empty.remove()
+      activateElement(theme_id, list)
+    }
     // Add default preset
     const presetList = document.querySelector('#preset .list')
     createPreset('Default', theme_id, presetList)
@@ -359,6 +361,11 @@ function createTheme(name, list) {
 
 function createPreset(name, theme_id, list) {
   let current = 0
+  const selectedTheme = document.querySelector('#theme [data-state=selected]')
+  let selectedThemeId = null
+  if (selectedTheme) {
+    selectedThemeId = selectedTheme.getAttribute('data-id')
+  }
   if (name === "Default") {
     current = 1
   }
@@ -377,6 +384,9 @@ function createPreset(name, theme_id, list) {
 
   loadJson(`/api/preset/create.php?name=${name}&theme_id=${theme_id}&order=${order}&current=${current}`)
   .then(id => {
+    if (parseInt(theme_id) !== parseInt(selectedThemeId)) {
+      return
+    }
     const template = document.querySelector('#item')
     const clone = template.content.cloneNode(true)
     const li = clone.querySelector('.list__item')
@@ -387,9 +397,11 @@ function createPreset(name, theme_id, list) {
     if (current) {
       loadJson(`/api/preset/set-last.php?preset_id=${id}&theme_id=${theme_id}`)
     }
-    activateElement(id, list)
     const empty = list.querySelector(".empty")
-    if (empty) empty.remove()
+    if (empty) {
+      empty.remove()
+      activateElement(id, list)
+    }
   })
 }
 
@@ -518,59 +530,7 @@ document.addEventListener('click', (ev) => {
     activateElement(preset_id, list)
 
     if (section.id === "preset") {
-      const tracks = document.querySelectorAll('#track li')
-      tracks.forEach(track => {
-        const track_id = track.getAttribute('data-id')
-        loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${track_id}`).then(data => {
-          if (data) {
-            const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
-            const volume = track.querySelector('[type=range]').value / 100
-            if (!existing) {
-              createAudio(track.getAttribute('data-id')).then((audio) => {
-                if (!audio) return
-                audio.volume = volume
-                fadeTo(audio, data.volume)
-                if (!audio.paused && audio.duration > 0) {
-                  // nada
-                } else {
-                  if (data.playing) {
-                    audio.play()
-                  } else {
-                    fadeOut(audio)
-                  }
-                }
-              })
-            } else {
-              existing.volume = volume
-              if (data.playing) {
-                fadeTo(existing, data.volume)
-                existing.play()
-              } else {
-                fadeOut(existing)
-              }
-            }
-            if (data.playing) {
-              track.querySelector('[data-action=play]').classList.add('active')
-            } else {
-              track.querySelector('[data-action=play]').classList.remove('active')
-            }
-          } else {
-            // Create preset_track connection
-            loadJson(`/api/preset/get-track.php?track_id=${track_id}&preset_id=${preset_id}`).then(info => {
-              if (info) {
-                return
-              } else {
-                if (track.closest('section').id === "effect") return
-                if (track_id && preset_id) {
-                  loadJson(`/api/preset/add-track.php?track_id=${track_id}&preset_id=${preset_id}`)
-                }
-              }
-            })
-          }
-          let range = track.querySelector('input[type="range"]')
-          animateRange(range, data.volume)
-        })
-      })
+      getTrackSettings(preset_id)
     }
   }
 
@@ -603,11 +563,11 @@ document.addEventListener('click', (ev) => {
     if (selected && id === selected.getAttribute('data-id')) {
       let available = list.querySelector('.list__item')
       if (!available) {
-        list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
         if (type === "theme") {
           const tracks = document.querySelectorAll('.list li:not(.empty)')
           tracks.forEach(li => li.remove())
         }
+        list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
         removePresets()
         return
       }
@@ -743,6 +703,8 @@ document.addEventListener('click', (ev) => {
         fadeOut(file)
       })
     }
+    const activeTracks = document.querySelectorAll('[data-action=play].active')
+    activeTracks.forEach(track => track.classList.remove('active'))
   }
 
   if (ev.target.getAttribute('data-action') === 'info') {
@@ -781,6 +743,11 @@ document.addEventListener('click', (ev) => {
     })
   }
 
+  if (ev.target.getAttribute('data-action') === 'dominant-theme') {
+    setColors()
+  }
+
+
   if (ev.target.classList.contains('dialog__outer')) {
     const dialog = ev.target.closest('.dialog')
     if (dialog.id === "settings" || dialog.id === "infobox") {
@@ -790,6 +757,104 @@ document.addEventListener('click', (ev) => {
     }
   }
 })
+
+function getTrackSettings(preset_id) {
+  const tracks = document.querySelectorAll('#track li')
+  tracks.forEach(track => {
+    const track_id = track.getAttribute('data-id')
+    loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${track_id}`).then(data => {
+      if (data) {
+        // Gjør om noe, eller alt under til en eller flere funksjoner, og kall dette på etter logg'en "adding track to preset"
+        const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
+        const volume = track.querySelector('[type=range]').value / 100
+        if (!existing) {
+          createAudio(track.getAttribute('data-id')).then((audio) => {
+            if (!audio) return
+            audio.volume = volume
+            fadeTo(audio, data.volume)
+            if (!audio.paused && audio.duration > 0) {
+              // nada
+            } else {
+              if (data.playing) {
+                audio.play()
+              } else {
+                fadeOut(audio)
+              }
+            }
+          })
+        } else {
+          existing.volume = volume
+          if (data.playing) {
+            fadeTo(existing, data.volume)
+            existing.play()
+          } else {
+            fadeOut(existing)
+          }
+        }
+        if (data.playing) {
+          track.querySelector('[data-action=play]').classList.add('active')
+        } else {
+          track.querySelector('[data-action=play]').classList.remove('active')
+        }
+      } else {
+        // Create preset_track connection
+        loadJson(`/api/preset/get-track.php?track_id=${track_id}&preset_id=${preset_id}`).then(info => {
+          if (!info) {
+            if (track_id && preset_id) {
+              loadJson(`/api/preset/add-track.php?track_id=${track_id}&preset_id=${preset_id}`).then((settings) => {
+                // Recursive or infinite loop - who can tell?
+                getTrackSettings(preset_id)
+              })
+            }
+          }
+        })
+      }
+    })
+  })
+}
+
+function hueShift(h,s) {
+  h+=s; while (h>=360.0) h-=360.0; while (h<0.0) h+=360.0; return h;
+}
+
+function setColors() {
+  const colorThief = new ColorThief();
+  const img = new Image();
+
+  img.addEventListener('load', function() {
+    colorThief.getColor(img);
+  });
+
+  let imageURL = document.querySelector('#bg-img-url').value;
+
+  if (!imageURL) return;
+  let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+
+  img.crossOrigin = 'Anonymous';
+  img.src = googleProxyURL + encodeURIComponent(imageURL);
+
+  let imageLoader = setInterval(() => {
+    if (img.complete) {
+      const dominant = colorThief.getColor(img, 2)
+      const accent = colorThief.getPalette(img, 2)
+      const hsl = RGBToHSL(dominant[0], dominant[1], dominant[2])
+      if (hsl[2] <= 10) {
+        hsl[2] = 10
+      }
+      loadJson(`/api/settings/set-primary-color.php?color=hsl(${hsl})`)
+
+      const accentHSL = RGBToHSL(accent[1][0], accent[1][1], accent[1][2])
+      console.log(hsl[2])
+      if (hsl[2] <= 30) {
+        accentHSL[2] = 90 // for readability of text
+      }
+      loadJson(`/api/settings/set-accent-color.php?color=hsl(${accentHSL[0]},${accentHSL[1]}%,${accentHSL[2]}%)`).then(() => {
+        clearInterval(imageLoader)
+        location.reload()
+      })
+    }
+  }, 500)
+}
 
 document.querySelectorAll('.add-form').forEach(form =>
   form.addEventListener('submit', (ev) => {
@@ -869,6 +934,7 @@ document.addEventListener('change', ev => {
   if (ev.target.id === "bg-img-url") {
     document.body.style.backgroundImage = `url(${ev.target.value})`
     loadJson(`/api/settings/set-background.php?url=${ev.target.value}`)
+    setColors()
   }
   if (ev.target.id === "font-setting") {
     loadJson(`/api/settings/set-font.php?font=${ev.target.value}`)
@@ -985,6 +1051,7 @@ const root = document.documentElement
 const primaryEl = document.querySelector('#primary-color')
 const primaryPicker = new CP(primaryEl)
 let primaryHSL;
+
 primaryPicker.on('drag', (r, g, b, a) => {
   const value = `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`
   primaryEl.nextElementSibling.value = value
