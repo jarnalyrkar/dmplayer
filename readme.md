@@ -1,10 +1,10 @@
-# Dungeon Master Player
+# Game Master Player
 <b>Beta: Feel free to report bugs!</b>
 
 <img src="readme.jpeg" alt="Preview of the application">
 
 ## What this is for:
-If you play Dungeons and Dragons (or any TTRPG for that matter), and would like to play layered tracks of music, ambience and sound effects with presets controlling volume, then this is for you!
+If you play a TTRPG for that matter, and would like to play layered tracks of music, ambience and sound effects, then this might be for you!
 
 There are no audio packs or campaign sets included with this software. This is simply a tool for game masters to use at the game table. But maybe you already have audio files on hand, or know how to get it.
 
@@ -17,18 +17,18 @@ Unzip anywhere you'd like.
 PHP is required, so go ahead and install that, see below for instructions.<br>
 
 **To start the program:**<br>
-Use dmplayer.bat on Windows<br>
-Use dmplayer.sh on Linux and MacOS<br>
+Use gmplayer.bat on Windows<br>
+Use gmplayer.sh on Linux and MacOS<br>
 
 ### Install PHP (windows):
 - Right-click install-php.bat and select "Run as administrator".
-- Start dmplayer.bat
+- Start gmplayer.bat
 
 If you'd rather do it manually:
 - Download the most recent <a href="https://windows.php.net/download">php</a> zip-file
 - Unzip anywhere, but remember the directory
 - <a href="https://www.computerhope.com/issues/ch000549.htm">Add that directory to PATH</a>
-- Start dmplayer.bat
+- Start gmplayer.bat
 
 #### Troubleshooting, suggestions
 - You may need to restart the machine, so windows can see the new path-variable we just added

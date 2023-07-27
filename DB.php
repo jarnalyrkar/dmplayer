@@ -12,7 +12,7 @@ class DB {
   public $pdo;
 
   function __construct() {
-    $dbfile = '/dmplayer.db';
+    $dbfile = '/gmplayer.db';
     $this->pdo = new PDO("sqlite:" . $_SERVER['DOCUMENT_ROOT'] . $dbfile);
   }
 

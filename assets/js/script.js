@@ -4,6 +4,7 @@ let theme_width = document.querySelector('#theme').clientWidth // inline-padding
 document.querySelector('#theme').style.width = theme_width + "px"
 setListHeight();
 
+
 function setListHeight() {
 
   // get header height
@@ -88,21 +89,20 @@ function activateElement(id, list) {
 }
 
 function fadeOut(audio) {
+  console.log("Fading out")
   const steps = 0.05
   const interval = 50
+  targetVolume = 0
+  console.log(audio.volume)
   let fadeout = setInterval(() => {
-    if (audio.volume >= steps) {
-      try {
-        audio.volume -= steps
-      } catch (error) {
-        audio.remove()
-        clearInterval(fadeout)
-        return
-      }
+    console.log(audio.volume)
+    if (audio.volume.toFixed(2) > targetVolume + steps) {
+      audio.volume -= steps
     } else {
+      audio.volume = 0
       audio.pause()
       audio.remove()
-      return
+      clearInterval(fadeout)
     }
   }, interval)
 }
@@ -110,8 +110,11 @@ function fadeOut(audio) {
 function fadeIn(audio, targetVolume) {
   const steps = 0.05
   const interval = 50
+  audio.volume = 0
+  audio.play()
+  targetVolume = parseInt(targetVolume)
   let fadein = setInterval(() => {
-    if (audio.volume.toFixed(2) <= (targetVolume / 100) - steps) {
+    if (audio.volume.toFixed(2) < (targetVolume / 100) - steps) {
       audio.volume += steps
     } else {
       audio.volume = targetVolume / 100
@@ -156,14 +159,13 @@ function fadeTo(audio, targetVolume) {
 }
 
 function playEffect(id) {
-  createAudio(id).then(audio => {
-    if (audio) {
-      audio.play()
-      audio.addEventListener('ended', () => {
-        audio.remove()
-      })
-    }
-  })
+  let audio = createAudio(id)
+  if (audio) {
+    audio.play()
+    audio.addEventListener('ended', () => {
+      audio.remove()
+    })
+  }
 }
 
 // Application state
@@ -213,22 +215,26 @@ function setTracks(theme_id) {
         li.querySelector('[data-action=play]').classList.add('active')
         loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${item.track_id}`).then(data => {
           const range = li.querySelector('input[type=range]')
+          range.value = data.volume
+          const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
           if (data.playing) {
-            const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
             if (!existing) {
-              createAudio(item.track_id).then(audio => {
-                if (audio) {
-                  if (audio.paused) {
-                    audio.play()
-                  }
-                  fadeTo(audio, data.volume)
+              let audio = createAudio(item.track_id)
+              if (audio) {
+                if (audio.paused) {
+                  audio.play()
                 }
-              })
+                fadeTo(audio, data.volume)
+              }
             } else {
               if (existing.paused) {
                 existing.play()
               }
               fadeTo(existing, data.volume)
+            }
+          } else {
+            if (existing) {
+              fadeOut(existing)
             }
           }
 
@@ -262,7 +268,7 @@ function setEffects(theme_id) {
         counter++;
       })
     } else {
-      parent.innerHTML = '<li class="empty">No tracks added yet!</li>'
+      parent.innerHTML = '<li class="empty">No effects added yet!</li>'
     }
   })
 }
@@ -469,15 +475,16 @@ async function createAudio(id) {
   if (isMusic(id) && document.querySelector(`audio[data-id="${id}"]`)) {
     return;
   }
-  const el = document.createElement('audio')
   const path = await loadJson('/api/file/get_path.php')
   const audio = await loadJson(`/api/file/random.php?id=${id}`)
   if (audio && path) {
+    let el = document.createElement('audio')
     el.src = path + audio.filename
     el.setAttribute('data-id', id)
     document.body.appendChild(el)
+
     if (!audio.filename) {
-      loadJson('/api/file/delete.php?id=' + id).then(data => {
+      loadJson('/api/file/delete.php?id=' + id).then(() => {
         showToast(`File ${audio.filename} was not found. Removing from track.`)
         if (isMusic()) {
           document.querySelector(`#track [data-id="${id}"] .active`).classList.remove('active')
@@ -486,7 +493,7 @@ async function createAudio(id) {
       })
       return
     }
-    // get and play new track when ended
+    // Play effect
     if (!isMusic(id)) {
       el.volume = document.querySelector('[id=main-effects-volume]').value / 100
       el.setAttribute('data-type', 'effect')
@@ -496,20 +503,19 @@ async function createAudio(id) {
       el.remove()
       if (isMusic(id)) {
         const timeout = randomBetween(3000, 15000)
+        // get and play new track when ended
         setTimeout(() => {
-          createAudio(id).then(newEl => {
+          newEl = createAudio(id)
             if (newEl) {
               let volume = document.querySelector(`#track [data-id="${id}"] [type=range]`).value / 100
               newEl.volume = volume
               newEl.play()
             }
-          })
         }, timeout)
       }
-      })
+    })
     return el
   } else {
-
     return false
   }
 }
@@ -555,6 +561,7 @@ document.addEventListener('click', (ev) => {
     const selected = list.querySelector('[data-state=selected]')
     if (type === 'theme') {
       loadJson(`/api/theme/delete.php?id=${id}`)
+      document.querySelectorAll("audio").forEach(track => track.remove())
     }
     if (type === 'preset') {
       loadJson(`/api/preset/delete.php?id=${id}`)
@@ -564,8 +571,17 @@ document.addEventListener('click', (ev) => {
       let available = list.querySelector('.list__item')
       if (!available) {
         if (type === "theme") {
-          const tracks = document.querySelectorAll('.list li:not(.empty)')
-          tracks.forEach(li => li.remove())
+          let parent = document.querySelector('#track')
+          parent.querySelectorAll('li:not(.empty)').forEach(li => li.remove())
+          if (parent.querySelectorAll('li:not(.empty)').length === 0) {
+            document.querySelector('#track .list').innerHTML = `<li class="empty">No tracks added yet!</li>`
+          }
+          parent = document.querySelector('#effect')
+          const effects = document.querySelectorAll('li:not(.empty)')
+          effects.forEach(li => li.remove())
+          if (parent.querySelectorAll('li:not(.empty)').length === 0) {
+            document.querySelector('#effect .list').innerHTML = `<li class="empty">No effects added yet!</li>`
+          }
         }
         list.innerHTML = `<li class="empty">No ${type}s added yet!</li>`
         removePresets()
@@ -658,22 +674,18 @@ document.addEventListener('click', (ev) => {
       targetVolume = volumeBar.value
       if (existingAudio) {
         if (existingAudio.paused) {
-          existingAudio.volume = 0
-          existingAudio.play()
           fadeIn(existingAudio, targetVolume)
         } else {
           fadeOut(existingAudio)
         }
         return
       } else {
-        createAudio(id).then(audio => {
-          if (audio) {
-            audio.volume = 0
-            audio.play()
-            fadeIn(audio, targetVolume)
-            return
-          }
-        })
+      createAudio(id).then(audio => {
+        if (audio) {
+          fadeIn(audio, targetVolume)
+          return
+        }
+      })
     }
   } else { // Effect
     createAudio(id)
@@ -761,32 +773,31 @@ document.addEventListener('click', (ev) => {
 function getTrackSettings(preset_id) {
   const tracks = document.querySelectorAll('#track li')
   tracks.forEach(track => {
+    if (track.classList.contains('no-files')) return
     const track_id = track.getAttribute('data-id')
     loadJson(`/api/preset/track-settings.php?preset_id=${preset_id}&track_id=${track_id}`).then(data => {
       if (data) {
-        // Gjør om noe, eller alt under til en eller flere funksjoner, og kall dette på etter logg'en "adding track to preset"
         const existing = document.querySelector(`audio[data-id="${track.getAttribute('data-id')}"]`)
-        const volume = track.querySelector('[type=range]').value / 100
+        const range = track.querySelector('[type=range]')
+        const volume = range.value / 100
         if (!existing) {
-          createAudio(track.getAttribute('data-id')).then((audio) => {
-            if (!audio) return
-            audio.volume = volume
-            fadeTo(audio, data.volume)
-            if (!audio.paused && audio.duration > 0) {
-              // nada
-            } else {
-              if (data.playing) {
-                audio.play()
+          createAudio(track_id).then(audio => {
+            if (audio) {
+              if (data.playing && audio.playing) {
+                fadeTo(audio, data.volume)
+              } else if (data.playing && !audio.playing){
+                range.value = data.volume
+                fadeIn(audio, data.volume)
               } else {
-                fadeOut(audio)
+                range.value = data.volume
               }
             }
           })
         } else {
-          existing.volume = volume
+          existing.volume = data.volume / 100
           if (data.playing) {
-            fadeTo(existing, data.volume)
             existing.play()
+            fadeTo(existing, data.volume)
           } else {
             fadeOut(existing)
           }
@@ -803,6 +814,7 @@ function getTrackSettings(preset_id) {
             if (track_id && preset_id) {
               loadJson(`/api/preset/add-track.php?track_id=${track_id}&preset_id=${preset_id}`).then((settings) => {
                 // Recursive or infinite loop - who can tell?
+                console.log("Get settings for new track")
                 getTrackSettings(preset_id)
               })
             }
@@ -813,48 +825,7 @@ function getTrackSettings(preset_id) {
   })
 }
 
-function hueShift(h,s) {
-  h+=s; while (h>=360.0) h-=360.0; while (h<0.0) h+=360.0; return h;
-}
 
-function setColors() {
-  const colorThief = new ColorThief();
-  const img = new Image();
-
-  img.addEventListener('load', function() {
-    colorThief.getColor(img);
-  });
-
-  let imageURL = document.querySelector('#bg-img-url').value;
-
-  if (!imageURL) return;
-  let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-
-  img.crossOrigin = 'Anonymous';
-  img.src = googleProxyURL + encodeURIComponent(imageURL);
-
-  let imageLoader = setInterval(() => {
-    if (img.complete) {
-      const dominant = colorThief.getColor(img, 2)
-      const accent = colorThief.getPalette(img, 2)
-      const hsl = RGBToHSL(dominant[0], dominant[1], dominant[2])
-      if (hsl[2] <= 10) {
-        hsl[2] = 10
-      }
-      loadJson(`/api/settings/set-primary-color.php?color=hsl(${hsl})`)
-
-      const accentHSL = RGBToHSL(accent[1][0], accent[1][1], accent[1][2])
-      console.log(hsl[2])
-      if (hsl[2] <= 30) {
-        accentHSL[2] = 90 // for readability of text
-      }
-      loadJson(`/api/settings/set-accent-color.php?color=hsl(${accentHSL[0]},${accentHSL[1]}%,${accentHSL[2]}%)`).then(() => {
-        clearInterval(imageLoader)
-        location.reload()
-      })
-    }
-  }, 500)
-}
 
 document.querySelectorAll('.add-form').forEach(form =>
   form.addEventListener('submit', (ev) => {
@@ -914,7 +885,7 @@ document.addEventListener('keydown', ev => {
 
 // Volume handling
 document.addEventListener('change', ev => {
-  if (ev.target.getAttribute('data-type') === "music") {
+  if (ev.target.classList.contains('track-volume')) {
     const audioId = ev.target.closest('li').getAttribute('data-id')
     const audioElement = document.querySelector(`audio[data-id="${audioId}"]`)
     const presetId = document.querySelector('#preset [data-state=selected]').getAttribute('data-id')
@@ -934,7 +905,7 @@ document.addEventListener('change', ev => {
   if (ev.target.id === "bg-img-url") {
     document.body.style.backgroundImage = `url(${ev.target.value})`
     loadJson(`/api/settings/set-background.php?url=${ev.target.value}`)
-    setColors()
+    // setColors()
   }
   if (ev.target.id === "font-setting") {
     loadJson(`/api/settings/set-font.php?font=${ev.target.value}`)
@@ -1089,6 +1060,48 @@ accentPicker.on('drag', (r,g,b,a) => {
 accentPicker.on('stop', () => {
   loadJson(`/api/settings/set-accent-color.php?color=${accentHSL}`)
 })
+
+function hueShift(h,s) {
+  h+=s; while (h>=360.0) h-=360.0; while (h<0.0) h+=360.0; return h;
+}
+
+function setColors() {
+  const colorThief = new ColorThief();
+  const img = new Image();
+
+  img.addEventListener('load', function() {
+    colorThief.getColor(img);
+  });
+
+  let imageURL = document.querySelector('#bg-img-url').value;
+
+  if (!imageURL) return;
+  let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+
+  img.crossOrigin = 'Anonymous';
+  img.src = googleProxyURL + encodeURIComponent(imageURL);
+
+  let imageLoader = setInterval(() => {
+    if (img.complete) {
+      const dominant = colorThief.getColor(img, 2)
+      const accent = colorThief.getPalette(img, 2)
+      const hsl = RGBToHSL(dominant[0], dominant[1], dominant[2])
+      if (hsl[2] <= 10) {
+        hsl[2] = 10
+      }
+      loadJson(`/api/settings/set-primary-color.php?color=hsl(${hsl})`)
+
+      const accentHSL = RGBToHSL(accent[1][0], accent[1][1], accent[1][2])
+      if (hsl[2] <= 30) {
+        accentHSL[2] = 90 // for readability of text
+      }
+      loadJson(`/api/settings/set-accent-color.php?color=hsl(${accentHSL[0]},${accentHSL[1]}%,${accentHSL[2]}%)`).then(() => {
+        clearInterval(imageLoader)
+        location.reload()
+      })
+    }
+  }, 500)
+}
 
 function RGBToHSL(r, g, b) {
   r /= 255;
