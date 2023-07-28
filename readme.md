@@ -1,7 +1,8 @@
 # Game Master Player
 <b>Beta: Feel free to report bugs!</b>
 
-<img src="readme.jpeg" alt="Preview of the application">
+<a href="https://www.youtube.com/watch?v=uuV0xVCfOZY"><img src="https://img.youtube.com/vi/uuV0xVCfOZY/0.jpg" alt="See showcase video on YouTube"></a>
+<p>Click image above to see showcase video on YouTube</p>
 
 ## What this is for:
 If you play a TTRPG for that matter, and would like to play layered tracks of music, ambience and sound effects, then this might be for you!
