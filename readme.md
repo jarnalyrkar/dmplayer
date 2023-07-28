@@ -54,7 +54,7 @@ Let me know if you have an easy-to-follow guide for MacOS!
 ## How to use it
 There is an info-button you can click inside the app to get more info.
 
-First, feel free to delete the sample theme, by clicking the minus symbol next to the theme-name, or double click the title to rename it. If you want to create your own theme, write something in the first textbox and press the button with a plus icon.
+If you want to create your own theme, write something in the first textbox and press the button with a plus icon.
 
 A default preset is automatically added. You can double click on the title to change it to something else, if you'd like. A preset contains all the volume settings you make for the tracks, and which tracks should be playing for a given preset. If you select different presets it will fade out tracks that are no longer playing, and fade the volume sliders into the preset position.
 
