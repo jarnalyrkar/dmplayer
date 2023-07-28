@@ -19,7 +19,10 @@ PHP is required, so go ahead and install that, see below for instructions.<br>
 
 **To start the program:**<br>
 Use gmplayer.bat on Windows<br>
+
 Use gmplayer.sh on Linux and MacOS<br>
+You might need to make the script executable by opening the directory in a terminal, and run the following command:<br>
+`chmod +x gmplayer.sh`
 
 ### Install PHP (windows):
 - Right-click install-php.bat and select "Run as administrator".
@@ -48,8 +51,7 @@ Verify installation:<br>
 If you get back a version number, you're good to go.
 
 ### Install PHP (MacOS)
-Homebrew, I guess? I'm not too savvy with mac, sorry.<br>
-Let me know if you have an easy-to-follow guide for MacOS!
+I haven't had the time to look into MacOS yet, but as long as you have php, you might be able to use the gmplayer.sh.
 
 ## How to use it
 There is an info-button you can click inside the app to get more info.
