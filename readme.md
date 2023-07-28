@@ -21,8 +21,7 @@ PHP is required, so go ahead and install that, see below for instructions.<br>
 Use gmplayer.bat on Windows<br>
 
 Use gmplayer.sh on Linux and MacOS<br>
-You might need to make the script executable by opening the directory in a terminal, and run the following command:<br>
-`chmod +x gmplayer.sh`
+You might need to make the script executable by opening the directory in a terminal, and run the following command: `chmod +x gmplayer.sh`
 
 ### Install PHP (windows):
 - Right-click install-php.bat and select "Run as administrator".
