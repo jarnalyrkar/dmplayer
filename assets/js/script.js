@@ -505,12 +505,13 @@ async function createAudio(id) {
         const timeout = randomBetween(3000, 15000)
         // get and play new track when ended
         setTimeout(() => {
-          newEl = createAudio(id)
+          createAudio(id).then(newEl => {
             if (newEl) {
               let volume = document.querySelector(`#track [data-id="${id}"] [type=range]`).value / 100
               newEl.volume = volume
               newEl.play()
             }
+          })
         }, timeout)
       }
     })
