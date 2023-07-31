@@ -1062,7 +1062,8 @@ accentPicker.on('drag', (r,g,b,a) => {
 })
 
 accentPicker.on('stop', () => {
-  loadJson(`/api/settings/set-accent-color.php?color=${accentHSL}`)
+  console.log(accentHSL)
+  loadJson(`/api/settings/set-accent-color.php?color=${accentHSL.toString()}`)
 })
 
 function hueShift(h,s) {
